@@ -115,18 +115,35 @@
             height: 100vh;
             background: #000;
             z-index: 100;
-            display: grid;
-            place-items: center;
+            /* display: flex; */ /* Removido */
+            /* flex-direction: column; */ /* Removido */
+            /* align-items: center; */ /* Removido */
+            /* justify-content: center; */ /* Removido */
+            /* gap: 1.5rem; */ /* Removido */
+            display: grid; /* Voltamos ao grid */
+            place-items: center; /* Para centralizar perfeitamente */
         }
         .intro-heading {
             font-size: clamp(2.5rem, 10vw, 10rem);
             color: #fff;
             text-align: center;
-            position: absolute;
+            position: absolute; /* Adicionado de volta */
             opacity: 0; 
             visibility: hidden;
             will-change: opacity, visibility;
             font-family: 'Cinzel', serif;
+        }
+
+        .intro-logo-img {
+            position: absolute; /* Adicionado de volta */
+            opacity: 0;
+            visibility: hidden;
+            will-change: opacity, visibility;
+            filter: invert(1); /* Transforma o logo preto em branco */
+            width: 250px; /* Tamanho fixo */
+            max-width: 80%; /* Para telas pequenas
+            max-width: 80%; /* Para telas pequenas */
+            height: auto; /* Para manter a proporção */
         }
 
     </style>
@@ -136,6 +153,7 @@
     <!-- Intro Section -->
     <div id="intro-sequence">
         <h1 id="intro-text-1" class="intro-heading">O Corvo de Hekate</h1>
+        <img id="intro-logo" src="https://i.ibb.co/LXGVm7pP/Black-Friday.png" alt="Logo O Corvo" class="intro-logo-img">
     </div>
 
     <div id="app-root" style="display: none;">
@@ -590,6 +608,9 @@
         
         // --- INTRO ANIMATION ---
         function runIntroAnimation() {
+            const introSection = document.getElementById('intro-sequence');
+            const appRoot = document.getElementById('app-root');
+
             const masterTl = gsap.timeline({
                 onComplete: () => {
                     gsap.to(introSection, 0.8, {
@@ -605,7 +626,9 @@
             });
 
             const text1 = document.getElementById('intro-text-1');
+            const logo = document.getElementById('intro-logo'); // <-- Adicionei a logo
 
+            /* Removi a função antiga
             function animateFade(target) {
                 const tl = gsap.timeline();
                 tl.to(target, { autoAlpha: 1, duration: 2.5, ease: 'power2.out' }) // Fade In
@@ -613,8 +636,18 @@
                   .to(target, { autoAlpha: 0, duration: 2.0, ease: 'power2.in' }); // Fade Out
                 return tl;
             }
-
             masterTl.add(animateFade(text1));
+            */
+
+            // Nova sequência de animação (Um de cada vez)
+            masterTl
+                .to(text1, { autoAlpha: 1, duration: 1.5, ease: 'power2.out' }) // 1. Título aparece
+                .to(text1, { duration: 1.5 })                                  // 2. Título segura
+                .to(text1, { autoAlpha: 0, duration: 1.5, ease: 'power2.in' }) // 3. Título desaparece
+                .to(logo, { autoAlpha: 1, duration: 1.5, ease: 'power2.out' }) // 4. Logo aparece
+                .to(logo, { duration: 2.0 })                                  // 5. Logo segura
+                .to(logo, { autoAlpha: 0, duration: 1.5, ease: 'power2.in' }); // 6. Logo desaparece
+
         }
 
         // --- CORE APP LOGIC ---
