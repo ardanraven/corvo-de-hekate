@@ -130,32 +130,13 @@
             left: 0;
             width: 100%;
             height: 100vh;
-            background: #000;
+            /* MUDANÇA: Fundo branco para mesclar com o vídeo */
+            background: #fff; 
             z-index: 100;
             display: grid; 
             place-items: center; 
         }
-        .intro-heading {
-            font-size: clamp(2.5rem, 10vw, 10rem);
-            color: #fff;
-            text-align: center;
-            position: absolute; 
-            opacity: 0; 
-            visibility: hidden;
-            will-change: opacity, visibility;
-            font-family: 'Cinzel', serif;
-        }
-
-        .intro-logo-img {
-            position: absolute; 
-            opacity: 0;
-            visibility: hidden;
-            will-change: opacity, visibility;
-            filter: invert(1); 
-            width: 250px; 
-            max-width: 80%; 
-            height: auto; 
-        }
+        /* REMOVIDO: .intro-heading e .intro-logo-img não são mais necessários */
         
         /* Estilo para Checkbox no Modal de Aluno */
         .student-section-label {
@@ -182,8 +163,26 @@
 
     <!-- Intro Section -->
     <div id="intro-sequence">
-        <h1 id="intro-text-1" class="intro-heading">O Corvo de Hekate</h1>
-        <img id="intro-logo" src="https://i.ibb.co/LXGVm7pP/Black-Friday.png" alt="Logo O Corvo" class="intro-logo-img">
+        <!-- 
+            MUDANÇA: O texto e a imagem do logo foram removidos.
+            O vídeo do Vimeo foi adicionado abaixo.
+            O CSS de #intro-sequence foi mudado para background: #fff 
+        -->
+        
+        <!-- Wrapper para controlar o tamanho máximo do vídeo -->
+        <div style="width: 100%; max-width: 1024px; min-width: 300px;"> 
+            <!-- Div do Vimeo para manter o aspect ratio 16:9 -->
+            <div style="padding:56.25% 0 0 0;position:relative;">
+                <iframe 
+                    src="https://player.vimeo.com/video/1136095667?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&controls=0&title=0&byline=0&portrait=0" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    style="position:absolute;top:0;left:0;width:100%;height:100%;" 
+                    title="Intro Logo Corvo de Hekate">
+                </iframe>
+            </div>
+        </div>
     </div>
 
     <div id="app-root" style="display: none;">
@@ -351,7 +350,7 @@
                         </div>
                     </div>
                     
-                    <!-- NOVO: Gerenciar Alunos -->
+                    <!-- Gerenciar Alunos -->
                     <div class="mt-12 border-t border-gray-700 pt-6">
                         <h3 class="text-xl font-semibold mb-3 text-purple-200 title-font">Gerenciar Alunos (Assinantes)</h3>
                         <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
@@ -469,6 +468,10 @@
             </header>
             <main class="p-4 md:p-8 lg:p-12 max-w-4xl mx-auto">
                  <h2 id="post-view-title" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-purple-300 mb-6 title-font text-glow"></h2>
+                 <!-- View count display -->
+                 <div id="post-view-meta" class="text-gray-400 mb-6 text-lg title-font">
+                     <i class="fas fa-eye mr-1"></i> <span id="post-view-count">0</span> visualizações
+                 </div>
                  <img id="post-view-cover-image" src="" alt="Imagem de Capa" class="w-full h-64 md:h-96 object-cover rounded-lg mb-8 border border-purple-800 shadow-lg">
                  <div id="post-view-content" class="text-gray-300 body-font leading-relaxed whitespace-pre-wrap text-lg"></div>
                  <div id="post-view-attachment-container" class="hidden mt-10">
@@ -533,7 +536,7 @@
         </div>
     </div>
     
-    <!-- NOVO: Modal de Gerenciar Aluno -->
+    <!-- Modal de Gerenciar Aluno -->
     <div id="manage-student-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
         <div class="bg-gray-900 bg-opacity-95 backdrop-blur-sm border border-purple-800 rounded-lg max-w-lg w-full p-8 relative">
             <button id="close-student-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
@@ -572,12 +575,15 @@
     </div>
 
 
+    <!-- MUDANÇA: Script do player do Vimeo adicionado -->
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    
     <!-- Firebase SDKs -->
     <script type="module">
         // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // SUA NOVA CONFIGURAÇÃO DO FIREBASE
         const firebaseConfig = {
@@ -609,11 +615,11 @@
 
         // State variables
         let currentUser = null;
-        let currentUserPermissions = []; // NOVO: Guarda as permissões do aluno logado
+        let currentUserPermissions = []; // Guarda as permissões do aluno logado
         let itemToDelete = { id: null, type: null }; // { id: 'xyz', type: 'post' | 'section' }
         let allPosts = [];
         let allSections = [];
-        let allStudents = []; // NOVO: Guarda a lista de alunos para o admin
+        let allStudents = []; // Guarda a lista de alunos para o admin
 
         // DOM Elements
         const introSection = document.getElementById('intro-sequence');
@@ -648,7 +654,7 @@
         const editPostStatus = document.getElementById('edit-post-status');
         const sectionStatus = document.getElementById('section-status');
         const sectionsListAdmin = document.getElementById('sections-list-admin');
-        const studentsListAdmin = document.getElementById('students-list-admin'); // NOVO
+        const studentsListAdmin = document.getElementById('students-list-admin'); 
 
         // Selects & Filters
         const sectionFilter = document.getElementById('section-filter');
@@ -672,13 +678,14 @@
         const postViewContent = document.getElementById('post-view-content');
         const postViewAttachmentContainer = document.getElementById('post-view-attachment-container');
         const postViewAttachment = document.getElementById('post-view-attachment');
+        const postViewCountSpan = document.getElementById('post-view-count');
 
         // Modals
         const deleteConfirmModal = document.getElementById('delete-confirm-modal');
         const deleteModalTitle = document.getElementById('delete-modal-title');
         const deleteModalText = document.getElementById('delete-modal-text');
         
-        // NOVO: Elementos do Modal de Aluno
+        // Elementos do Modal de Aluno
         const manageStudentModal = document.getElementById('manage-student-modal');
         const closeStudentModalBtn = document.getElementById('close-student-modal-btn');
         const cancelStudentModalBtn = document.getElementById('cancel-student-modal-btn');
@@ -689,41 +696,38 @@
         const studentModalStatus = document.getElementById('student-modal-status');
         
 
-        // --- INTRO ANIMATION ---
+        // --- MUDANÇA: INTRO ANIMATION ---
         function runIntroAnimation() {
             const introSection = document.getElementById('intro-sequence');
             const appRoot = document.getElementById('app-root');
+            
+            // A duração do seu vídeo em milissegundos
+            // O vídeo tem 10 segundos.
+            const VIDEO_DURATION_MS = 10000; 
+            // const VIDEO_DURATION_MS = 1000; // Tempo curto para testar
 
-            const masterTl = gsap.timeline({
-                onComplete: () => {
-                    gsap.to(introSection, 0.8, {
-                        opacity: 0,
-                        ease: 'power2.inOut',
-                        onComplete: () => {
-                            introSection.style.display = 'none';
-                            appRoot.style.display = 'block';
-                            document.body.style.overflow = 'auto';
-                        }
-                    });
-                }
-            });
+            // O que fazer quando a intro (vídeo) terminar
+            const onIntroComplete = () => {
+                // Usa GSAP para um fade suave de saída
+                gsap.to(introSection, 0.8, { 
+                    opacity: 0,
+                    ease: 'power2.inOut',
+                    onComplete: () => {
+                        introSection.style.display = 'none';
+                        appRoot.style.display = 'block';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            };
 
-            const text1 = document.getElementById('intro-text-1');
-            const logo = document.getElementById('intro-logo'); 
-
-            masterTl
-                .to(text1, { autoAlpha: 1, duration: 1.5, ease: 'power2.out' }) 
-                .to(text1, { duration: 1.5 })                                  
-                .to(text1, { autoAlpha: 0, duration: 1.5, ease: 'power2.in' }) 
-                .to(logo, { autoAlpha: 1, duration: 1.5, ease: 'power2.out' }) 
-                .to(logo, { duration: 2.0 })                                  
-                .to(logo, { autoAlpha: 0, duration: 1.5, ease: 'power2.in' }); 
+            // Aguarda a duração do vídeo e então chama a função de "complete"
+            setTimeout(onIntroComplete, VIDEO_DURATION_MS);
         }
 
         // --- CORE APP LOGIC ---
         
         window.onload = () => {
-            runIntroAnimation();
+            runIntroAnimation(); // Inicia a nova intro de vídeo
             showView('home-view'); // Começa na Home
         };
 
@@ -787,7 +791,7 @@
                         await signOut(auth); // Isso irá re-trigger onAuthStateChanged
                         return;
                     }
-                    // NOVO: Carrega as permissões do aluno
+                    // Carrega as permissões do aluno
                     currentUserPermissions = userDocSnap.data().accessibleSections || [];
                     console.log("Permissões do aluno carregadas:", currentUserPermissions);
 
@@ -809,7 +813,7 @@
                 adminPanel.style.display = isAdmin ? 'block' : 'none';
                 document.querySelectorAll('.admin-only-controls').forEach(el => el.style.display = isAdmin ? 'flex' : 'none');
                 
-                // NOVO: Se for admin, carrega a lista de alunos
+                // Se for admin, carrega a lista de alunos
                 if (isAdmin) {
                     fetchAndRenderStudents();
                 }
@@ -871,7 +875,7 @@
                 const now = new Date();
                 const expiresAt = new Date(now.setMonth(now.getMonth() + validityMonths));
                 
-                // NOVO: Adiciona a lista de seções acessíveis (vazia)
+                // Adiciona a lista de seções acessíveis (vazia)
                 await setDoc(doc(db, "users", user.uid), {
                     email: user.email,
                     createdAt: new Date(),
@@ -895,7 +899,7 @@
             }
         });
         
-        // --- NOVO: STUDENT MANAGEMENT (Admin) ---
+        // --- STUDENT MANAGEMENT (Admin) ---
         function fetchAndRenderStudents() {
             const q = query(collection(db, "users"));
             onSnapshot(q, (snapshot) => {
@@ -1114,7 +1118,8 @@
                     access: createPostForm['post-access'].value, 
                     sectionId: createPostForm['post-section'].value,
                     sectionName: sectionName,
-                    createdAt: new Date()
+                    createdAt: new Date(),
+                    viewCount: 0 // Inicializa o contador de views
                 });
                 postStatus.textContent = "Publicado com sucesso!";
                 postStatus.className = 'text-green-500 mt-2';
@@ -1181,7 +1186,11 @@
                         <div class="p-4 flex-grow flex flex-col">
                             <h3 class="text-xl font-bold text-purple-300 mb-2 title-font text-glow flex-grow">${post.title}</h3>
                             <p class="text-gray-400 mb-4 h-12 overflow-hidden text-ellipsis">${previewText}...</p>
-                            <div class="text-center mt-auto bg-gray-800 text-amber-400 font-semibold py-2 px-4 rounded title-font">
+                            <!-- View count no card -->
+                            <span class="text-gray-400 text-sm title-font mt-auto pt-2 border-t border-gray-600">
+                                <i class="fas fa-eye mr-1"></i> ${post.viewCount || 0} visualizações
+                            </span>
+                            <div class="text-center mt-2 bg-gray-800 text-amber-400 font-semibold py-2 px-4 rounded title-font">
                                 Ler Postagem
                             </div>
                         </div>
@@ -1192,7 +1201,7 @@
                     postsListAberto.appendChild(postCard);
                     abertoCount++;
                 } else if (post.access === 'pago') { 
-                    // NOVO: Lógica de Permissão
+                    // Lógica de Permissão
                     let canViewPaidPost = false;
                     if (currentUser && currentUser.uid === ADMIN_UID) {
                         canViewPaidPost = true; // Admin vê tudo
@@ -1220,7 +1229,7 @@
             renderPosts(e.target.value);
         });
 
-        // ATUALIZADO com checagem de permissão
+        // ATUALIZADO com checagem de permissão E contador de views
         async function openPost(postId) {
             loadingSpinner.style.display = 'flex';
             const docRef = doc(db, "posts", postId);
@@ -1228,7 +1237,7 @@
             if (docSnap.exists()) {
                 const post = docSnap.data();
 
-                // NOVO: Checagem de Segurança
+                // Checagem de Segurança
                 if (post.access === 'pago') {
                     let canView = false;
                     if (currentUser && currentUser.uid === ADMIN_UID) {
@@ -1246,14 +1255,26 @@
                         } else {
                             // Se logado mas sem permissão, só manda de volta pro blog
                             showView('blog-view');
-                            // (Opcional: mostrar uma mensagem de "acesso negado" no blog)
                         }
                         return; // Bloqueia a abertura do post
                     }
                 }
 
+                // Incrementa o contador de visualizações
+                // "Fire and forget" - não precisamos esperar (await) isso
+                const postRef = doc(db, "posts", postId);
+                updateDoc(postRef, {
+                    viewCount: increment(1)
+                }).catch(err => {
+                    console.warn("Não foi possível atualizar o view count:", err.message);
+                });
+
+
                 // Se passou na checagem, abre o post
                 postViewTitle.textContent = post.title;
+                // Popula o contador de views na página do post
+                // Mostra o valor + 1 (contando a view atual)
+                postViewCountSpan.textContent = (post.viewCount || 0) + 1; 
                 postViewCoverImage.src = post.coverImage;
                 postViewCoverImage.onerror = () => {
                     postViewCoverImage.src = 'httpsS://placehold.co/600x400/0a0a0a/4a148c?text=Corvo&font=cinzel';
@@ -1371,7 +1392,7 @@
             if(e.target.closest('.delete-btn')){
                  handleDeleteClick(e.target.closest('.delete-btn').dataset.id);
             }
-            // NOVO: Listener para o botão de gerenciar aluno
+            // Listener para o botão de gerenciar aluno
             if(e.target.closest('.manage-student-btn')){
                  openStudentModal(e.target.closest('.manage-student-btn').dataset.id_student);
             }
