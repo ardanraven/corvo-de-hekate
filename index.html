@@ -71,6 +71,11 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(74, 20, 140, 0.4);
         }
+        .btn-primary:disabled {
+            background: #333;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
         .btn-accent {
             background: linear-gradient(145deg, #f59e0b, #b45309);
             color: #1a1a1a;
@@ -84,6 +89,18 @@
         .btn-accent:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+        .btn-secondary {
+            background-color: #4a4a4a;
+            color: #e5e5e5;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: #5a5a5a;
+            transform: translateY(-2px);
         }
 
         .view-container { 
@@ -115,19 +132,14 @@
             height: 100vh;
             background: #000;
             z-index: 100;
-            /* display: flex; */ /* Removido */
-            /* flex-direction: column; */ /* Removido */
-            /* align-items: center; */ /* Removido */
-            /* justify-content: center; */ /* Removido */
-            /* gap: 1.5rem; */ /* Removido */
-            display: grid; /* Voltamos ao grid */
-            place-items: center; /* Para centralizar perfeitamente */
+            display: grid; 
+            place-items: center; 
         }
         .intro-heading {
             font-size: clamp(2.5rem, 10vw, 10rem);
             color: #fff;
             text-align: center;
-            position: absolute; /* Adicionado de volta */
+            position: absolute; 
             opacity: 0; 
             visibility: hidden;
             will-change: opacity, visibility;
@@ -135,15 +147,33 @@
         }
 
         .intro-logo-img {
-            position: absolute; /* Adicionado de volta */
+            position: absolute; 
             opacity: 0;
             visibility: hidden;
             will-change: opacity, visibility;
-            filter: invert(1); /* Transforma o logo preto em branco */
-            width: 250px; /* Tamanho fixo */
-            max-width: 80%; /* Para telas pequenas
-            max-width: 80%; /* Para telas pequenas */
-            height: auto; /* Para manter a proporção */
+            filter: invert(1); 
+            width: 250px; 
+            max-width: 80%; 
+            height: auto; 
+        }
+        
+        /* Estilo para Checkbox no Modal de Aluno */
+        .student-section-label {
+            display: block;
+            padding: 0.75rem 1rem;
+            background-color: #2a2a2a;
+            border: 1px solid #4a148c;
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .student-section-label:hover {
+            background-color: #3a3a3a;
+        }
+        .student-section-label input {
+            margin-right: 0.75rem;
+            accent-color: #f59e0b;
         }
 
     </style>
@@ -259,7 +289,7 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label for="post-section" class="block text-sm font-medium text-gray-300 mb-2">Seção</label>
+                                        <label for="post-section" class="block text-sm font-medium text-gray-300 mb-2">Seção (Módulo)</label>
                                         <select id="post-section" class="w-full p-3 form-input" required>
                                             <option value="">Carregando seções...</option>
                                         </select>
@@ -297,15 +327,15 @@
                         </div>
                     </div>
 
-                    <!-- NOVO: Gerenciar Seções -->
+                    <!-- Gerenciar Seções -->
                     <div class="mt-12 border-t border-gray-700 pt-6">
-                        <h3 class="text-xl font-semibold mb-3 text-purple-200 title-font">Gerenciar Seções</h3>
+                        <h3 class="text-xl font-semibold mb-3 text-purple-200 title-font">Gerenciar Seções (Módulos)</h3>
                         <div class="grid md:grid-cols-2 gap-8">
                             <!-- Criar Seção -->
                             <div>
                                 <form id="create-section-form">
                                     <label for="section-name" class="block text-sm font-medium text-gray-300 mb-2">Nome da Nova Seção</label>
-                                    <input type="text" id="section-name" placeholder="Ex: Umbanda, Tarot..." class="w-full p-3 form-input" required>
+                                    <input type="text" id="section-name" placeholder="Ex: Módulo 1, Tarot..." class="w-full p-3 form-input" required>
                                     <button type="submit" class="btn-primary mt-3">Criar Seção</button>
                                     <p id="section-status" class="text-green-500 mt-2"></p>
                                 </form>
@@ -320,6 +350,19 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- NOVO: Gerenciar Alunos -->
+                    <div class="mt-12 border-t border-gray-700 pt-6">
+                        <h3 class="text-xl font-semibold mb-3 text-purple-200 title-font">Gerenciar Alunos (Assinantes)</h3>
+                        <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Alunos Atuais</label>
+                            <div id="students-list-admin" class="space-y-2 max-h-64 overflow-y-auto">
+                                <!-- Lista de alunos será populada pelo JS -->
+                                <p class="text-gray-400">Carregando alunos...</p>
+                            </div>
+                        </div>
+                    </div>
+
                      <!-- API Key (movida para o final do painel) -->
                     <div class="mt-12 p-4 bg-gray-800 border border-gray-700 rounded-md">
                         <label for="gemini-api-key" class="block text-sm font-medium text-gray-300 mb-2">Chave API do Google AI Studio</G>
@@ -328,7 +371,7 @@
                     </div>
                 </div>
 
-                <!-- NOVO: Filtro de Seção -->
+                <!-- Filtro de Seção -->
                 <div class="mb-8 max-w-sm">
                     <label for="section-filter" class="block text-sm font-medium text-gray-300 mb-2 title-font">Filtrar por Seção:</label>
                     <select id="section-filter" class="w-full p-3 form-input">
@@ -345,7 +388,7 @@
                         <div id="posts-list-pago" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <!-- Paid post cards will be injected here -->
                         </div>
-                        <p id="empty-pago" class="text-gray-400 col-span-full text-center hidden">Nenhuma postagem encontrada nesta seção.</p>
+                        <p id="empty-pago" class="text-gray-400 col-span-full text-center hidden">Nenhuma postagem encontrada nesta seção ou você não tem permissão.</p>
                     </div>
                     <!-- Seção de Conteúdo Aberto -->
                     <div>
@@ -368,7 +411,7 @@
                 </div>
             </div>
 
-            <!-- NOVA SEÇÃO: Sobre Mim View -->
+            <!-- SEÇÃO: Sobre Mim View -->
             <div id="sobre-view" class="view-container">
                  <div class="p-8 md:p-12 bg-gray-900 bg-opacity-70 rounded-lg border border-purple-800 max-w-5xl mx-auto">
                     <h2 class="text-4xl font-bold text-white mb-10 text-center title-font text-glow">Sobre o Sacerdote Leonardo</h2>
@@ -473,7 +516,7 @@
                             </select>
                         </div>
                         <div>
-                            <label for="edit-post-section" class="block text-sm font-medium text-gray-300 mb-2">Seção</label>
+                            <label for="edit-post-section" class="block text-sm font-medium text-gray-300 mb-2">Seção (Módulo)</label>
                             <select id="edit-post-section" class="w-full p-3 form-input" required>
                                 <option value="">Carregando seções...</option>
                             </select>
@@ -489,6 +532,32 @@
              </main>
         </div>
     </div>
+    
+    <!-- NOVO: Modal de Gerenciar Aluno -->
+    <div id="manage-student-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
+        <div class="bg-gray-900 bg-opacity-95 backdrop-blur-sm border border-purple-800 rounded-lg max-w-lg w-full p-8 relative">
+            <button id="close-student-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-white mb-2 title-font">Gerenciar Acessos</h2>
+            <p class="text-purple-300 mb-6 text-lg">Aluno: <span id="student-modal-email"></span></p>
+            
+            <input type="hidden" id="student-modal-id">
+            
+            <label class="block text-sm font-medium text-gray-300 mb-2">Liberar acesso às seções (módulos):</label>
+            <div id="student-modal-sections-list" class="max-h-64 overflow-y-auto bg-gray-800 p-4 rounded-lg border border-gray-700 mb-6">
+                <!-- Checkboxes das seções serão populadas pelo JS -->
+                <p class="text-gray-400">Carregando seções...</p>
+            </div>
+            
+            <div class="flex justify-end gap-4">
+                <button id="cancel-student-modal-btn" class="btn-secondary">Cancelar</button>
+                <button id="save-student-sections-btn" class="btn-primary">Salvar Permissões</button>
+            </div>
+            <p id="student-modal-status" class="text-green-500 mt-4 text-center"></p>
+        </div>
+    </div>
+    
     
     <!-- Delete Confirmation Modal -->
     <div id="delete-confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
@@ -540,9 +609,11 @@
 
         // State variables
         let currentUser = null;
+        let currentUserPermissions = []; // NOVO: Guarda as permissões do aluno logado
         let itemToDelete = { id: null, type: null }; // { id: 'xyz', type: 'post' | 'section' }
         let allPosts = [];
         let allSections = [];
+        let allStudents = []; // NOVO: Guarda a lista de alunos para o admin
 
         // DOM Elements
         const introSection = document.getElementById('intro-sequence');
@@ -577,6 +648,7 @@
         const editPostStatus = document.getElementById('edit-post-status');
         const sectionStatus = document.getElementById('section-status');
         const sectionsListAdmin = document.getElementById('sections-list-admin');
+        const studentsListAdmin = document.getElementById('students-list-admin'); // NOVO
 
         // Selects & Filters
         const sectionFilter = document.getElementById('section-filter');
@@ -606,6 +678,17 @@
         const deleteModalTitle = document.getElementById('delete-modal-title');
         const deleteModalText = document.getElementById('delete-modal-text');
         
+        // NOVO: Elementos do Modal de Aluno
+        const manageStudentModal = document.getElementById('manage-student-modal');
+        const closeStudentModalBtn = document.getElementById('close-student-modal-btn');
+        const cancelStudentModalBtn = document.getElementById('cancel-student-modal-btn');
+        const saveStudentSectionsBtn = document.getElementById('save-student-sections-btn');
+        const studentModalEmail = document.getElementById('student-modal-email');
+        const studentModalIdInput = document.getElementById('student-modal-id');
+        const studentModalSectionsList = document.getElementById('student-modal-sections-list');
+        const studentModalStatus = document.getElementById('student-modal-status');
+        
+
         // --- INTRO ANIMATION ---
         function runIntroAnimation() {
             const introSection = document.getElementById('intro-sequence');
@@ -626,28 +709,15 @@
             });
 
             const text1 = document.getElementById('intro-text-1');
-            const logo = document.getElementById('intro-logo'); // <-- Adicionei a logo
+            const logo = document.getElementById('intro-logo'); 
 
-            /* Removi a função antiga
-            function animateFade(target) {
-                const tl = gsap.timeline();
-                tl.to(target, { autoAlpha: 1, duration: 2.5, ease: 'power2.out' }) // Fade In
-                  .to(target, { duration: 1.5 }) // Hold
-                  .to(target, { autoAlpha: 0, duration: 2.0, ease: 'power2.in' }); // Fade Out
-                return tl;
-            }
-            masterTl.add(animateFade(text1));
-            */
-
-            // Nova sequência de animação (Um de cada vez)
             masterTl
-                .to(text1, { autoAlpha: 1, duration: 1.5, ease: 'power2.out' }) // 1. Título aparece
-                .to(text1, { duration: 1.5 })                                  // 2. Título segura
-                .to(text1, { autoAlpha: 0, duration: 1.5, ease: 'power2.in' }) // 3. Título desaparece
-                .to(logo, { autoAlpha: 1, duration: 1.5, ease: 'power2.out' }) // 4. Logo aparece
-                .to(logo, { duration: 2.0 })                                  // 5. Logo segura
-                .to(logo, { autoAlpha: 0, duration: 1.5, ease: 'power2.in' }); // 6. Logo desaparece
-
+                .to(text1, { autoAlpha: 1, duration: 1.5, ease: 'power2.out' }) 
+                .to(text1, { duration: 1.5 })                                  
+                .to(text1, { autoAlpha: 0, duration: 1.5, ease: 'power2.in' }) 
+                .to(logo, { autoAlpha: 1, duration: 1.5, ease: 'power2.out' }) 
+                .to(logo, { duration: 2.0 })                                  
+                .to(logo, { autoAlpha: 0, duration: 1.5, ease: 'power2.in' }); 
         }
 
         // --- CORE APP LOGIC ---
@@ -667,11 +737,12 @@
         // --- NAVIGATION ---
         function showView(viewId) {
             allViews.forEach(view => {
-                // Mantém a view de login como um overlay
-                if (view.id === 'login-view') {
-                    if (viewId === 'login-view') {
+                // Mantém os modais como overlays (login e os novos)
+                if (view.classList.contains('fixed')) {
+                    if (view.id === viewId) {
                         view.style.display = 'flex';
-                    } else {
+                    } else if (view.id !== 'manage-student-modal' && view.id !== 'delete-confirm-modal') {
+                         // Não esconde os modais de gerenciamento se estiver trocando de view principal
                         view.style.display = 'none';
                     }
                 } 
@@ -680,7 +751,7 @@
                     view.style.display = view.id === viewId ? 'block' : 'none';
                 }
             });
-            if (viewId !== 'login-view') {
+            if (viewId !== 'login-view' && viewId !== 'manage-student-modal' && viewId !== 'delete-confirm-modal') {
                 window.scrollTo(0, 0);
             }
             mobileMenu.classList.add('hidden'); // Esconde menu mobile ao trocar de view
@@ -701,20 +772,26 @@
         });
 
         onAuthStateChanged(auth, async (user) => {
+            currentUserPermissions = []; // Reseta permissões a cada mudança
             if (user) { // USER IS LOGGED IN
                 console.log("Usuário logado:", user.uid);
                 const userDocRef = doc(db, "users", user.uid);
                 const userDocSnap = await getDoc(userDocRef);
+                const isAdmin = user.uid === ADMIN_UID;
 
-                // Verifica validade da conta
-                if (userDocSnap.exists()) {
+                // Verifica validade da conta (exceto para admin)
+                if (!isAdmin && userDocSnap.exists()) {
                     const expiresAt = userDocSnap.data().expiresAt.toDate();
                     if (new Date() > expiresAt) {
                         console.log("Conta expirada. Fazendo logout.");
                         await signOut(auth); // Isso irá re-trigger onAuthStateChanged
                         return;
                     }
-                } else if (user.uid !== ADMIN_UID) {
+                    // NOVO: Carrega as permissões do aluno
+                    currentUserPermissions = userDocSnap.data().accessibleSections || [];
+                    console.log("Permissões do aluno carregadas:", currentUserPermissions);
+
+                } else if (!isAdmin && !userDocSnap.exists()) {
                     // Se não tem documento E não é admin, é um usuário inválido.
                     console.log("Usuário sem registro. Fazendo logout.");
                     await signOut(auth); // Isso irá re-trigger onAuthStateChanged
@@ -728,10 +805,14 @@
                 loginBtn.style.display = 'none';
                 pagoSection.style.display = 'block'; // Mostra seção paga
                 
-                const isAdmin = user.uid === ADMIN_UID;
                 console.log("É admin?", isAdmin);
                 adminPanel.style.display = isAdmin ? 'block' : 'none';
                 document.querySelectorAll('.admin-only-controls').forEach(el => el.style.display = isAdmin ? 'flex' : 'none');
+                
+                // NOVO: Se for admin, carrega a lista de alunos
+                if (isAdmin) {
+                    fetchAndRenderStudents();
+                }
 
                 // Se estava na tela de login, manda para o blog
                 if (document.getElementById('login-view').style.display === 'flex') {
@@ -749,7 +830,7 @@
                 document.querySelectorAll('.admin-only-controls').forEach(el => el.style.display = 'none');
             }
             fetchPosts(); // Fetch posts (abertos) para todos
-            fetchAndRenderSections(); // NOVO: Puxa as seções
+            fetchAndRenderSections(); // Puxa as seções
             loadingSpinner.style.display = 'none';
         });
 
@@ -784,17 +865,18 @@
             accountStatus.textContent = "Criando conta...";
             accountStatus.className = 'text-yellow-500 mt-2';
             
-            // ATENÇÃO: A lógica original do usuário de criar conta aqui pode deslogar o admin.
-            // Mantendo a lógica conforme solicitado.
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
                 const now = new Date();
                 const expiresAt = new Date(now.setMonth(now.getMonth() + validityMonths));
+                
+                // NOVO: Adiciona a lista de seções acessíveis (vazia)
                 await setDoc(doc(db, "users", user.uid), {
                     email: user.email,
                     createdAt: new Date(),
-                    expiresAt: expiresAt
+                    expiresAt: expiresAt,
+                    accessibleSections: [] // Começa sem acesso a nenhum módulo
                 });
                 accountStatus.textContent = `Conta criada para ${email} com sucesso!`;
                 accountStatus.className = 'text-green-500 mt-2';
@@ -812,8 +894,128 @@
                 accountStatus.className = 'text-red-500 mt-2';
             }
         });
+        
+        // --- NOVO: STUDENT MANAGEMENT (Admin) ---
+        function fetchAndRenderStudents() {
+            const q = query(collection(db, "users"));
+            onSnapshot(q, (snapshot) => {
+                allStudents = [];
+                studentsListAdmin.innerHTML = '';
+                
+                let studentCount = 0;
+                snapshot.forEach(doc => {
+                    // Pula a conta do Admin
+                    if (doc.id === ADMIN_UID) return; 
+                    
+                    const student = { id: doc.id, ...doc.data() };
+                    allStudents.push(student);
+                    studentCount++;
 
-        // --- NOVO: SECTION MANAGEMENT (CRUD) ---
+                    // Formata a data de expiração
+                    const expiresDate = student.expiresAt.toDate();
+                    const isExpired = new Date() > expiresDate;
+                    const dateString = expiresDate.toLocaleDateString('pt-BR');
+
+                    const studentItem = document.createElement('div');
+                    studentItem.className = `flex justify-between items-center bg-gray-700 p-3 rounded ${isExpired ? 'opacity-50' : ''}`;
+                    studentItem.innerHTML = `
+                        <div>
+                            <span class="text-gray-200">${student.email}</span>
+                            <span class="block text-xs ${isExpired ? 'text-red-400' : 'text-gray-400'}">
+                                ${isExpired ? 'Expirado em' : 'Expira em'}: ${dateString}
+                            </span>
+                        </div>
+                        <button class="manage-student-btn btn-accent text-sm py-1 px-3" data-id_student="${student.id}">
+                            <i class="fas fa-tasks mr-1"></i> Gerenciar
+                        </button>
+                    `;
+                    studentsListAdmin.appendChild(studentItem);
+                });
+                
+                if (studentCount === 0) {
+                     studentsListAdmin.innerHTML = '<p class="text-gray-400">Nenhum aluno assinante encontrado.</p>';
+                }
+            });
+        }
+        
+        function openStudentModal(studentId) {
+            const student = allStudents.find(s => s.id === studentId);
+            if (!student) {
+                console.error("Aluno não encontrado:", studentId);
+                return;
+            }
+            
+            studentModalEmail.textContent = student.email;
+            studentModalIdInput.value = student.id;
+            studentModalSectionsList.innerHTML = '';
+            studentModalStatus.textContent = '';
+            
+            if (allSections.length === 0) {
+                studentModalSectionsList.innerHTML = '<p class="text-gray-400">Nenhuma seção (módulo) foi criada ainda.</p>';
+                return;
+            }
+
+            // Popula a lista de seções (módulos) com checkboxes
+            allSections.forEach(section => {
+                const isChecked = student.accessibleSections && student.accessibleSections.includes(section.id);
+                const label = document.createElement('label');
+                label.className = 'student-section-label';
+                label.innerHTML = `
+                    <input type="checkbox" value="${section.id}" ${isChecked ? 'checked' : ''} class="w-4 h-4">
+                    ${section.name}
+                `;
+                studentModalSectionsList.appendChild(label);
+            });
+            
+            manageStudentModal.style.display = 'flex';
+        }
+        
+        async function saveStudentSections() {
+            const studentId = studentModalIdInput.value;
+            saveStudentSectionsBtn.disabled = true;
+            saveStudentSectionsBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Salvando...';
+            studentModalStatus.textContent = '';
+            
+            const checkedBoxes = studentModalSectionsList.querySelectorAll('input[type="checkbox"]:checked');
+            const newSections = Array.from(checkedBoxes).map(cb => cb.value);
+            
+            try {
+                const studentRef = doc(db, "users", studentId);
+                await updateDoc(studentRef, {
+                    accessibleSections: newSections
+                });
+                
+                // Atualiza a lista local 'allStudents' para refletir a mudança
+                const studentIndex = allStudents.findIndex(s => s.id === studentId);
+                if (studentIndex > -1) {
+                    allStudents[studentIndex].accessibleSections = newSections;
+                }
+                
+                studentModalStatus.className = 'text-green-500 mt-4 text-center';
+                studentModalStatus.textContent = 'Permissões atualizadas com sucesso!';
+                
+                setTimeout(() => {
+                    manageStudentModal.style.display = 'none';
+                    studentModalStatus.textContent = '';
+                }, 1500);
+
+            } catch (error) {
+                console.error("Erro ao salvar permissões:", error);
+                studentModalStatus.className = 'text-red-500 mt-4 text-center';
+                studentModalStatus.textContent = 'Erro ao salvar permissões.';
+            } finally {
+                saveStudentSectionsBtn.disabled = false;
+                saveStudentSectionsBtn.innerHTML = 'Salvar Permissões';
+            }
+        }
+        
+        // Listeners do Modal de Aluno
+        saveStudentSectionsBtn.addEventListener('click', saveStudentSections);
+        closeStudentModalBtn.addEventListener('click', () => manageStudentModal.style.display = 'none');
+        cancelStudentModalBtn.addEventListener('click', () => manageStudentModal.style.display = 'none');
+
+
+        // --- SECTION MANAGEMENT (CRUD) ---
         function fetchAndRenderSections() {
             const q = query(collection(db, "sections"), orderBy("name"));
             onSnapshot(q, (snapshot) => {
@@ -909,7 +1111,7 @@
                     content: createPostForm['post-content'].value,
                     attachmentURL: createPostForm['post-attachment-link'].value || null,
                     attachmentName: createPostForm['post-attachment-name'].value || null,
-                    access: createPostForm['post-access'].value, // 'pago' ou 'aberto'
+                    access: createPostForm['post-access'].value, 
                     sectionId: createPostForm['post-section'].value,
                     sectionName: sectionName,
                     createdAt: new Date()
@@ -925,7 +1127,6 @@
             }
         });
 
-        // ATUALIZADO: `fetchPosts` agora só busca. `renderPosts` é quem desenha.
         function fetchPosts() {
             const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
             
@@ -939,7 +1140,7 @@
             });
         }
         
-        // NOVO: `renderPosts` para filtrar e desenhar os posts na tela
+        // ATUALIZADO com lógica de permissão
         function renderPosts(filterSectionId) {
             postsListPago.innerHTML = '';
             postsListAberto.innerHTML = '';
@@ -947,12 +1148,10 @@
             let pagoCount = 0;
             let abertoCount = 0;
 
-            // 1. Filtra a lista de posts
             const filteredPosts = (filterSectionId === 'todos')
                 ? allPosts
                 : allPosts.filter(post => post.sectionId === filterSectionId);
 
-            // 2. Renderiza os posts filtrados
             filteredPosts.forEach(post => {
                 const postCard = document.createElement('div');
                 postCard.className = "bg-gray-900 bg-opacity-80 backdrop-blur-sm overflow-hidden rounded-lg border border-gray-700 hover:border-purple-600 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-pointer relative flex flex-col";
@@ -968,7 +1167,6 @@
                     `;
                 }
 
-                // NOVO: Tag da Seção
                 const sectionTagHTML = post.sectionName 
                     ? `<span class="absolute top-2 left-2 bg-purple-800 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">${post.sectionName}</span>` 
                     : '';
@@ -979,7 +1177,7 @@
                     ${adminControlsHTML}
                     ${sectionTagHTML}
                     <div class="post-card-content flex-grow flex flex-col">
-                        <img src="${post.coverImage}" alt="${post.title}" class="w-full h-48 object-cover" onerror="this.src='httpsS://placehold.co/600x400/0a0a0a/4a148c?text=Corvo&font=cinzel'; this.onerror=null;">
+                        <img src="${post.coverImage}" alt="${post.title}" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/600x400/0a0a0a/4a148c?text=Corvo&font=cinzel'; this.onerror=null;">
                         <div class="p-4 flex-grow flex flex-col">
                             <h3 class="text-xl font-bold text-purple-300 mb-2 title-font text-glow flex-grow">${post.title}</h3>
                             <p class="text-gray-400 mb-4 h-12 overflow-hidden text-ellipsis">${previewText}...</p>
@@ -994,21 +1192,35 @@
                     postsListAberto.appendChild(postCard);
                     abertoCount++;
                 } else if (post.access === 'pago') { 
-                    postsListPago.appendChild(postCard);
-                    pagoCount++;
+                    // NOVO: Lógica de Permissão
+                    let canViewPaidPost = false;
+                    if (currentUser && currentUser.uid === ADMIN_UID) {
+                        canViewPaidPost = true; // Admin vê tudo
+                    } else if (currentUser && currentUserPermissions.includes(post.sectionId)) {
+                        canViewPaidPost = true; // Aluno tem permissão para esta seção
+                    }
+                    
+                    if (canViewPaidPost) {
+                        postsListPago.appendChild(postCard);
+                        pagoCount++;
+                    }
                 }
             });
             
-            // 3. Mostra mensagens de "vazio"
             emptyAberto.style.display = (abertoCount === 0) ? 'block' : 'none';
+            // Mensagem de "vazio" para pagos considera se o usuário está logado
+            const emptyPagoText = (currentUser) 
+                ? "Nenhuma postagem encontrada para suas permissões."
+                : "Faça login para ver o conteúdo de assinante.";
+            emptyPago.textContent = emptyPagoText;
             emptyPago.style.display = (pagoCount === 0 && pagoSection.style.display === 'block') ? 'block' : 'none';
         }
         
-        // NOVO: Event listener para o filtro
         sectionFilter.addEventListener('change', (e) => {
             renderPosts(e.target.value);
         });
 
+        // ATUALIZADO com checagem de permissão
         async function openPost(postId) {
             loadingSpinner.style.display = 'flex';
             const docRef = doc(db, "posts", postId);
@@ -1016,14 +1228,31 @@
             if (docSnap.exists()) {
                 const post = docSnap.data();
 
-                // Security Check: if the post is 'pago', user MUST be logged in
-                if (post.access === 'pago' && !currentUser) {
-                    loadingSpinner.style.display = 'none';
-                    showView('login-view');
-                    loginError.textContent = "Você precisa fazer login para acessar este conteúdo."
-                    return;
+                // NOVO: Checagem de Segurança
+                if (post.access === 'pago') {
+                    let canView = false;
+                    if (currentUser && currentUser.uid === ADMIN_UID) {
+                        canView = true; // Admin pode ver
+                    } else if (currentUser && currentUserPermissions.includes(post.sectionId)) {
+                        canView = true; // Aluno tem permissão
+                    }
+
+                    if (!canView) {
+                        loadingSpinner.style.display = 'none';
+                        if (!currentUser) {
+                            // Se deslogado, manda pro login
+                            showView('login-view');
+                            loginError.textContent = "Você precisa fazer login para acessar este conteúdo.";
+                        } else {
+                            // Se logado mas sem permissão, só manda de volta pro blog
+                            showView('blog-view');
+                            // (Opcional: mostrar uma mensagem de "acesso negado" no blog)
+                        }
+                        return; // Bloqueia a abertura do post
+                    }
                 }
 
+                // Se passou na checagem, abre o post
                 postViewTitle.textContent = post.title;
                 postViewCoverImage.src = post.coverImage;
                 postViewCoverImage.onerror = () => {
@@ -1058,7 +1287,6 @@
                 editPostForm['edit-post-content'].value = post.content;
                 editPostForm['edit-post-attachment-name'].value = post.attachmentName || '';
                 editPostForm['edit-post-attachment-link'].value = post.attachmentURL || '';
-                // ATUALIZADO: seleciona os valores corretos nos dropdowns
                 editPostForm['edit-post-access'].value = post.access || 'aberto';
                 editPostForm['edit-post-section'].value = post.sectionId || '';
                 showView('edit-post-view');
@@ -1082,9 +1310,9 @@
                     content: editPostForm['edit-post-content'].value,
                     attachmentName: editPostForm['edit-post-attachment-name'].value || null,
                     attachmentURL: editPostForm['edit-post-attachment-link'].value || null,
-                    access: editPostForm['edit-post-access'].value, // ATUALIZADO
-                    sectionId: editPostForm['edit-post-section'].value, // ATUALIZADO
-                    sectionName: sectionName // ATUALIZADO
+                    access: editPostForm['edit-post-access'].value, 
+                    sectionId: editPostForm['edit-post-section'].value, 
+                    sectionName: sectionName
                 });
                 editPostStatus.textContent = 'Salvo com sucesso!';
                 editPostStatus.className = 'text-green-500 mt-4';
@@ -1115,7 +1343,6 @@
                     }
                 } else if (itemToDelete.type === 'section') {
                     await deleteDoc(doc(db, "sections", itemToDelete.id));
-                    // Os posts dessa seção não serão excluídos, apenas ficarão "sem seção"
                 }
             } catch (error) {
                 console.error("Erro ao excluir:", error);
@@ -1143,6 +1370,10 @@
             }
             if(e.target.closest('.delete-btn')){
                  handleDeleteClick(e.target.closest('.delete-btn').dataset.id);
+            }
+            // NOVO: Listener para o botão de gerenciar aluno
+            if(e.target.closest('.manage-student-btn')){
+                 openStudentModal(e.target.closest('.manage-student-btn').dataset.id_student);
             }
         });
         
@@ -1201,7 +1432,6 @@
         async function handleAIFormat(textareaElement, buttonElement) {
             const apiKey = geminiApiKeyInput.value;
             if (!apiKey) {
-                // Não usar alert()
                 console.error("Chave API não inserida.");
                 textareaElement.placeholder = "Por favor, insira sua chave API do Google AI Studio para usar a formatação.";
                 return;
@@ -1217,7 +1447,6 @@
                 textareaElement.value = formattedText;
             } catch (error) {
                 console.error("AI Formatting Error:", error);
-                // Não usar alert()
                 const statusElement = textareaElement.id.includes('create') ? postStatus : editPostStatus;
                 if (statusElement) {
                     statusElement.textContent = "Erro ao formatar. Verifique a chave API.";
