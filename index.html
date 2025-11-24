@@ -269,7 +269,7 @@
                                 <div class="mb-4">
                                     <label for="post-content" class="block text-sm font-medium text-gray-300 mb-2">Conteúdo</label>
                                     <textarea id="post-content" rows="8" class="w-full p-3 form-input" required></textarea>
-                                    <p class="text-xs text-gray-400 mt-1">Use `**` para negrito, `*` para destaque, `##` para termo místico, ou use a IA.</p>
+                                    <p class="text-xs text-gray-400 mt-1">Use `**` para negrito, `*` para destaque, `##` para termo místico, ou `![legenda](link-imagem)` para imagens no texto.</p>
                                 </div>
                                 <div class="mb-4">
                                     <label for="post-attachment-name" class="block text-sm font-medium text-gray-300 mb-2">Nome do Link (Opcional)</label>
@@ -500,7 +500,7 @@
                     <div class="mb-4">
                         <label for="edit-post-content" class="block text-sm font-medium text-gray-300 mb-2">Conteúdo</label>
                         <textarea id="edit-post-content" rows="12" class="w-full p-3 form-input" required></textarea>
-                         <p class="text-xs text-gray-400 mt-1">Use `**` para negrito, `*` para destaque, `##` para termo místico, ou use a IA.</p>
+                         <p class="text-xs text-gray-400 mt-1">Use `**` para negrito, `*` para destaque, `##` para termo místico, ou `![legenda](link-imagem)` para imagens no texto.</p>
                     </div>
                     <div class="mb-4">
                         <label for="edit-post-attachment-name" class="block text-sm font-medium text-gray-300 mb-2">Nome do Link (Opcional)</label>
@@ -1404,7 +1404,7 @@
         cancelEditBtn.addEventListener('click', () => showView('blog-view')); 
         
         // --- AI FORMATTING ---
-        const systemPrompt = "Você é um escriba místico e assistente de formatação. Sua tarefa é pegar o texto de uma aula e aplicar uma formatação elegante e temática. Siga estas regras CRÍTICAS e ESTRITAS:\n1. Use **APENAS** as seguintes formatações:\n   - `**texto**` para forte destaque (negrito).\n   - `*texto*` para ênfase sutil em **palavras-chave ou frases curtas**. NUNCA use `*` para sentenças longas.\n   - `##termo##` para nomes e termos místicos importantes.\n2. **PROIBIDO**: É estritamente proibido usar qualquer outro tipo de markdown. NÃO use cabeçalhos (`#`), listas (`-`), linhas (`---`) ou underscores (`_texto_`). Use sempre asteriscos para itálico.\n3. Organize o conteúdo em parágrafos claros e bem espaçados.\n4. Não adicione informações novas nem altere o conteúdo original. Apenas formate.";
+        const systemPrompt = "Você é um escriba místico e assistente de formatação. Sua tarefa é pegar o texto de uma aula e aplicar uma formatação elegante e temática. Siga estas regras CRÍTICAS e ESTRITAS:\n1. Use **APENAS** as seguintes formatações:\n   - `**texto**` para forte destaque (negrito).\n   - `*texto*` para ênfase sutil em **palavras-chave ou frases curtas**. NUNCA use `*` para sentenças longas.\n   - `##termo##` para nomes e termos místicos importantes.\n   - `![legenda](url)` se houver links de imagem no texto original que devam ser preservados.\n2. **PROIBIDO**: É estritamente proibido usar qualquer outro tipo de markdown. NÃO use cabeçalhos (`#`), listas (`-`), linhas (`---`) ou underscores (`_texto_`). Use sempre asteriscos para itálico.\n3. Organize o conteúdo em parágrafos claros e bem espaçados.\n4. Não adicione informações novas nem altere o conteúdo original. Apenas formate.";
 
         async function formatTextWithAI(text, apiKey) {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
@@ -1485,24 +1485,37 @@
         // --- UTILS ---
         function formatPostText(text) {
             if (!text) return '';
+            // 1. Sanitização Básica
             let processedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
             
-            // Remove markdown indesejado
+            // 2. Imagens no texto: ![legenda](link)
+            // É importante processar imagens antes de quebrar linhas ou outras formatações
+            processedText = processedText.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, src) => {
+                return `<figure class="my-6 text-center">
+                            <img src="${src}" alt="${alt}" class="max-w-full h-auto rounded-lg border border-purple-800 shadow-lg mx-auto" onerror="this.style.display='none'">
+                            <figcaption class="text-sm text-gray-400 mt-2 italic font-serif">${alt}</figcaption>
+                        </figure>`;
+            });
+
+            // 3. Remove markdown indesejado (mas mantém o resto)
             processedText = processedText.replace(/^(#+\s*|---\s*$)/gm, ''); // Headers e linhas
             processedText = processedText.replace(/_(.*?)_/g, '$1'); // Remove underscores
 
+            // 4. Formatações de Texto (Negrito, Destaque, Místico)
             const boldFormatted = processedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             const highlightFormatted = boldFormatted.replace(/\*(.*?)\*/g, '<span class="highlight">$1</span>');
             let finalFormatted = highlightFormatted.replace(/##(.*?)##/g, '<span class="mystic-term">$1</span>');
             
             finalFormatted = finalFormatted.replace(/##/g, ''); // Limpeza final
 
-            return finalFormatted.replace(/\n/g, '<br>'); // Mantém quebras de linha
+            // 5. Quebras de linha
+            return finalFormatted.replace(/\n/g, '<br>'); 
         }
 
         function stripMarkdown(text) {
             if (!text) return '';
-            return text.replace(/(\*\*|##|\*|_)/g, "");
+            // Remove também a sintaxe de imagem do preview
+            return text.replace(/!\[(.*?)\]\(.*?\)/g, "[Imagem: $1]").replace(/(\*\*|##|\*|_)/g, "");
         }
 
     </script>
