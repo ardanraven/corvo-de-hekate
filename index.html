@@ -156,6 +156,12 @@
             margin-right: 0.75rem;
             accent-color: #f59e0b;
         }
+        
+        /* Audio Player Styles */
+        .audio-playing {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+            border-color: #f59e0b;
+        }
 
     </style>
 </head>
@@ -163,12 +169,6 @@
 
     <!-- Intro Section -->
     <div id="intro-sequence">
-        <!-- 
-            MUDANÇA: O texto e a imagem do logo foram removidos.
-            O vídeo do Vimeo foi adicionado abaixo.
-            O CSS de #intro-sequence foi mudado para background: #fff 
-        -->
-        
         <!-- Wrapper para controlar o tamanho máximo do vídeo -->
         <div style="width: 100%; max-width: 1024px; min-width: 300px;"> 
             <!-- Div do Vimeo para manter o aspect ratio 16:9 -->
@@ -362,11 +362,11 @@
                         </div>
                     </div>
 
-                     <!-- API Key (movida para o final do painel) -->
-                    <div class="mt-12 p-4 bg-gray-800 border border-gray-700 rounded-md">
+                     <!-- API Key (Seção atualizada para esconder se houver chave no código) -->
+                    <div id="api-key-section" class="mt-12 p-4 bg-gray-800 border border-gray-700 rounded-md">
                         <label for="gemini-api-key" class="block text-sm font-medium text-gray-300 mb-2">Chave API do Google AI Studio</G>
                         <input type="password" id="gemini-api-key" placeholder="Cole sua chave API aqui para habilitar a formatação com IA" class="w-full p-3 form-input">
-                        <p class="text-xs text-gray-400 mt-1">A chave é necessária para formatar textos. Ela é salva apenas no seu navegador.</p>
+                        <p class="text-xs text-gray-400 mt-1">A chave é necessária para formatar textos e gerar áudio das aulas. Ela é salva apenas no seu navegador.</p>
                     </div>
                 </div>
 
@@ -468,6 +468,20 @@
             </header>
             <main class="p-4 md:p-8 lg:p-12 max-w-4xl mx-auto">
                  <h2 id="post-view-title" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-purple-300 mb-6 title-font text-glow"></h2>
+                 
+                 <!-- Audio Player Button (Gemini AI TTS) -->
+                 <div id="audio-controls" class="flex items-center gap-4 mb-6 bg-gray-800 bg-opacity-50 p-3 rounded-lg border border-purple-800 w-fit transition-all duration-300">
+                    <button id="btn-speak" class="text-amber-400 hover:text-amber-300 transition flex items-center">
+                        <i id="btn-speak-icon" class="fas fa-volume-up text-xl"></i> 
+                        <span id="btn-speak-text" class="ml-2 font-bold title-font text-sm uppercase tracking-wide">Ouvir o Chamado</span>
+                    </button>
+                    <button id="btn-stop-speak" class="text-gray-400 hover:text-red-400 transition hidden" title="Parar Leitura">
+                        <i class="fas fa-stop"></i>
+                    </button>
+                    <!-- Elemento de áudio invisível para tocar o WAV gerado -->
+                    <audio id="gemini-audio-player" class="hidden"></audio>
+                </div>
+
                  <!-- View count display -->
                  <div id="post-view-meta" class="text-gray-400 mb-6 text-lg title-font">
                      <i class="fas fa-eye mr-1"></i> <span id="post-view-count">0</span> visualizações
@@ -585,6 +599,16 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // ------------------------------------------------------------
+        // ✨ LOCAL PARA A CHAVE API (HARDCODED) ✨
+        // ------------------------------------------------------------
+        // Se você quiser pular a etapa de colar a chave no site toda vez,
+        // cole sua chave API do Google AI Studio dentro das aspas abaixo.
+        // Exemplo: const HARDCODED_API_KEY = "AIzaSyB...";
+        // ------------------------------------------------------------
+        const HARDCODED_API_KEY = "AIzaSyDlXkGIMOeQuf3ZZ9vOqOHHRG05usqOayg"; 
+        // ------------------------------------------------------------
+
         // SUA NOVA CONFIGURAÇÃO DO FIREBASE
         const firebaseConfig = {
           apiKey: "AIzaSyBQXn_dPUivGjfGrWvMwysa-IDX8eXNbCA",
@@ -633,6 +657,7 @@
         const adminPanel = document.getElementById('admin-panel');
         const pagoSection = document.getElementById('pago-section');
         const geminiApiKeyInput = document.getElementById('gemini-api-key');
+        const apiKeySection = document.getElementById('api-key-section'); // Nova referência
         const mobileMenu = document.getElementById('mobile-menu');
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         
@@ -680,6 +705,15 @@
         const postViewAttachment = document.getElementById('post-view-attachment');
         const postViewCountSpan = document.getElementById('post-view-count');
 
+        // TTS Elements
+        const btnSpeak = document.getElementById('btn-speak');
+        const btnSpeakText = document.getElementById('btn-speak-text');
+        const btnSpeakIcon = document.getElementById('btn-speak-icon');
+        const btnStopSpeak = document.getElementById('btn-stop-speak');
+        const audioContainer = document.getElementById('audio-controls');
+        const geminiAudioPlayer = document.getElementById('gemini-audio-player');
+
+
         // Modals
         const deleteConfirmModal = document.getElementById('delete-confirm-modal');
         const deleteModalTitle = document.getElementById('delete-modal-title');
@@ -702,13 +736,9 @@
             const appRoot = document.getElementById('app-root');
             
             // A duração do seu vídeo em milissegundos
-            // O vídeo tem 10 segundos.
             const VIDEO_DURATION_MS = 10000; 
-            // const VIDEO_DURATION_MS = 1000; // Tempo curto para testar
 
-            // O que fazer quando a intro (vídeo) terminar
             const onIntroComplete = () => {
-                // Usa GSAP para um fade suave de saída
                 gsap.to(introSection, 0.8, { 
                     opacity: 0,
                     ease: 'power2.inOut',
@@ -720,7 +750,6 @@
                 });
             };
 
-            // Aguarda a duração do vídeo e então chama a função de "complete"
             setTimeout(onIntroComplete, VIDEO_DURATION_MS);
         }
 
@@ -729,9 +758,15 @@
         window.onload = () => {
             runIntroAnimation(); // Inicia a nova intro de vídeo
             showView('home-view'); // Começa na Home
+            
+            // Verifica se a chave foi hardcoded
+            if (HARDCODED_API_KEY && HARDCODED_API_KEY.length > 10) {
+                console.log("Chave API Hardcoded detectada.");
+                if(apiKeySection) apiKeySection.style.display = 'none'; // Esconde o input
+            }
         };
 
-        if (localStorage.getItem('geminiApiKey')) {
+        if (localStorage.getItem('geminiApiKey') && !HARDCODED_API_KEY) {
             geminiApiKeyInput.value = localStorage.getItem('geminiApiKey');
         }
         geminiApiKeyInput.addEventListener('input', () => {
@@ -767,6 +802,8 @@
                 const viewId = e.currentTarget.dataset.view;
                 if (viewId) {
                     showView(viewId);
+                    // IMPORTANTE: Parar o áudio ao trocar de tela
+                    stopSpeaking();
                 }
             });
         });
@@ -1288,6 +1325,12 @@
                 } else {
                     postViewAttachmentContainer.style.display = 'none';
                 }
+                
+                // Reinicia UI de Audio
+                stopSpeaking(); // Garante que não tem nada tocando do anterior
+                btnSpeakText.textContent = "Ouvir o Chamado";
+                btnStopSpeak.classList.add('hidden');
+
                 postViewEditBtn.dataset.id = postId;
                 postViewDeleteBtn.dataset.id = postId;
                 loadingSpinner.style.display = 'none';
@@ -1398,13 +1441,17 @@
             }
         });
         
-        backToPostsBtn.addEventListener('click', () => showView('blog-view'));
+        backToPostsBtn.addEventListener('click', () => {
+            stopSpeaking(); // Para o áudio ao voltar
+            showView('blog-view');
+        });
         postViewEditBtn.addEventListener('click', (e) => openEditForm(e.currentTarget.dataset.id));
         postViewDeleteBtn.addEventListener('click', (e) => handleDeleteClick(e.currentTarget.dataset.id));
         cancelEditBtn.addEventListener('click', () => showView('blog-view')); 
         
-        // --- AI FORMATTING ---
-        const systemPrompt = "Você é um escriba místico e assistente de formatação. Sua tarefa é pegar o texto de uma aula e aplicar uma formatação elegante e temática. Siga estas regras CRÍTICAS e ESTRITAS:\n1. Use **APENAS** as seguintes formatações:\n   - `**texto**` para forte destaque (negrito).\n   - `*texto*` para ênfase sutil em **palavras-chave ou frases curtas**. NUNCA use `*` para sentenças longas.\n   - `##termo##` para nomes e termos místicos importantes.\n   - `![legenda](url)` se houver links de imagem no texto original que devam ser preservados.\n2. **PROIBIDO**: É estritamente proibido usar qualquer outro tipo de markdown. NÃO use cabeçalhos (`#`), listas (`-`), linhas (`---`) ou underscores (`_texto_`). Use sempre asteriscos para itálico.\n3. Organize o conteúdo em parágrafos claros e bem espaçados.\n4. Não adicione informações novas nem altere o conteúdo original. Apenas formate.";
+        // --- AI FORMATTING (PROMPT MELHORADO) ---
+        // Mudança: Prompt mais estrito sobre não alterar conteúdo.
+        const systemPrompt = "Você é um editor de texto mágico. Sua ÚNICA função é formatar o texto fornecido para melhor leitura, SEM alterar, adicionar ou remover nenhuma palavra. Regras CRÍTICAS:\n1. Identifique conceitos chave e coloque em negrito (**texto**).\n2. Identifique termos místicos e envolva em ##termo## para destaque.\n3. Mantenha TODA a pontuação, estrutura de parágrafos e conteúdo original. É proibido resumir.\n4. Se houver links de imagem `![legenda](url)`, mantenha-os intactos.\n5. NÃO use cabeçalhos (#) ou listas (-). Apenas use a formatação visual pedida.";
 
         async function formatTextWithAI(text, apiKey) {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
@@ -1451,9 +1498,12 @@
         }
 
         async function handleAIFormat(textareaElement, buttonElement) {
-            const apiKey = geminiApiKeyInput.value;
+            // Mudança: Usa a chave Hardcoded se existir, senão tenta o input
+            const apiKey = HARDCODED_API_KEY || geminiApiKeyInput.value || localStorage.getItem('geminiApiKey');
+            
             if (!apiKey) {
                 console.error("Chave API não inserida.");
+                alert("Por favor, insira sua chave API no painel ou adicione ao código.");
                 textareaElement.placeholder = "Por favor, insira sua chave API do Google AI Studio para usar a formatação.";
                 return;
             }
@@ -1517,6 +1567,226 @@
             // Remove também a sintaxe de imagem do preview
             return text.replace(/!\[(.*?)\]\(.*?\)/g, "[Imagem: $1]").replace(/(\*\*|##|\*|_)/g, "");
         }
+
+
+        // --- TTS LOGIC (GEMINI AI) ---
+        
+        // Helper: Convert Base64 to ArrayBuffer
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        // Helper: Create WAV Header for PCM Data
+        function createWavHeader(dataLength, sampleRate = 24000, numChannels = 1, bitsPerSample = 16) {
+            const buffer = new ArrayBuffer(44);
+            const view = new DataView(buffer);
+            
+            // RIFF chunk descriptor
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataLength, true);
+            writeString(view, 8, 'WAVE');
+            
+            // fmt sub-chunk
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true); // Subchunk1Size (16 for PCM)
+            view.setUint16(20, 1, true); // AudioFormat (1 for PCM)
+            view.setUint16(22, numChannels, true); // NumChannels
+            view.setUint32(24, sampleRate, true); // SampleRate
+            view.setUint32(28, sampleRate * numChannels * (bitsPerSample / 8), true); // ByteRate
+            view.setUint16(32, numChannels * (bitsPerSample / 8), true); // BlockAlign
+            view.setUint16(34, bitsPerSample, true); // BitsPerSample
+            
+            // data sub-chunk
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataLength, true);
+            
+            return buffer;
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+        
+        // Main Speak Function
+        async function speakText() {
+             // 1. Se já está tocando (o player está ativo), pause.
+            if (!geminiAudioPlayer.paused && geminiAudioPlayer.src) {
+                geminiAudioPlayer.pause();
+                btnSpeakText.textContent = "Continuar Leitura";
+                btnSpeakIcon.className = "fas fa-play";
+                audioContainer.classList.remove('audio-playing');
+                return;
+            }
+
+            // 2. Se está pausado (tem src), retome.
+            if (geminiAudioPlayer.paused && geminiAudioPlayer.src && geminiAudioPlayer.currentTime > 0) {
+                geminiAudioPlayer.play();
+                btnSpeakText.textContent = "Pausar Leitura";
+                btnSpeakIcon.className = "fas fa-pause";
+                audioContainer.classList.add('audio-playing');
+                return;
+            }
+            
+            // 3. Fallback: Verifica se o navegador está falando com a voz robótica antiga (para limpar)
+             if (window.speechSynthesis.speaking) {
+                 window.speechSynthesis.cancel();
+             }
+
+            // 4. Nova Geração:
+            // Mudança: Usa a chave Hardcoded se existir
+            const apiKey = HARDCODED_API_KEY || geminiApiKeyInput.value || localStorage.getItem('geminiApiKey');
+            
+            // Fallback para voz do navegador se não tiver API Key
+            if (!apiKey) {
+                console.warn("Sem API Key. Usando voz do navegador.");
+                alert("Para usar a voz natural da Gemini, adicione sua chave API no Painel ou no código. Usando voz padrão...");
+                speakTextBrowserFallback();
+                return;
+            }
+
+            // UI Loading
+            const originalBtnText = btnSpeakText.textContent;
+            btnSpeakText.textContent = "Invocando a voz...";
+            btnSpeakIcon.className = "fas fa-spinner fa-spin";
+            btnSpeak.disabled = true;
+
+            // Pega o texto
+            const contentDiv = document.getElementById('post-view-content');
+            // Remove markdown extra para leitura mais limpa (opcional, mas bom)
+            const textToRead = stripMarkdown(contentDiv.innerText).substring(0, 4500); // Limite de segurança
+
+            try {
+                // Configuração da API TTS
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: textToRead }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: {
+                                prebuiltVoiceConfig: {
+                                    voiceName: "Kore" // Voz feminina, suave
+                                }
+                            }
+                        }
+                    }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`Erro na API: ${response.status}`);
+                
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0].inlineData) {
+                    const audioData = result.candidates[0].content.parts[0].inlineData;
+                    const base64PCM = audioData.data;
+                    
+                    // Convert PCM to WAV
+                    const pcmBuffer = base64ToArrayBuffer(base64PCM);
+                    const wavHeader = createWavHeader(pcmBuffer.byteLength, 24000); // Gemini usa 24kHz por padrão
+                    
+                    const wavBlob = new Blob([wavHeader, pcmBuffer], { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    
+                    // Setup Player
+                    geminiAudioPlayer.src = audioUrl;
+                    
+                    // Listeners para UI
+                    geminiAudioPlayer.onplay = () => {
+                         btnSpeakText.textContent = "Pausar Leitura";
+                         btnSpeakIcon.className = "fas fa-pause";
+                         btnStopSpeak.classList.remove('hidden');
+                         audioContainer.classList.add('audio-playing');
+                    };
+                    
+                    geminiAudioPlayer.onpause = () => {
+                        if(geminiAudioPlayer.currentTime < geminiAudioPlayer.duration && !geminiAudioPlayer.ended){
+                             btnSpeakText.textContent = "Continuar Leitura";
+                             btnSpeakIcon.className = "fas fa-play";
+                             audioContainer.classList.remove('audio-playing');
+                        }
+                    };
+
+                    geminiAudioPlayer.onended = () => {
+                        stopSpeaking();
+                    };
+
+                    await geminiAudioPlayer.play();
+
+                } else {
+                    throw new Error("Formato de resposta inválido.");
+                }
+
+            } catch (error) {
+                console.error("Erro no TTS da Gemini:", error);
+                alert("Não foi possível gerar a voz mística. Usando voz padrão.");
+                speakTextBrowserFallback(); // Fallback
+            } finally {
+                btnSpeak.disabled = false;
+                if(geminiAudioPlayer.paused && !geminiAudioPlayer.src) {
+                     btnSpeakText.textContent = "Ouvir o Chamado";
+                     btnSpeakIcon.className = "fas fa-volume-up";
+                }
+            }
+        }
+
+        // Função Antiga (Fallback)
+        function speakTextBrowserFallback() {
+             const contentDiv = document.getElementById('post-view-content');
+             if (!contentDiv) return;
+             const textToRead = contentDiv.innerText;
+             const utterance = new SpeechSynthesisUtterance(textToRead);
+             utterance.lang = 'pt-BR';
+             utterance.rate = 1.0; 
+             
+             utterance.onstart = () => {
+                btnSpeakText.textContent = "Pausar Leitura";
+                btnSpeakIcon.className = "fas fa-pause";
+                btnStopSpeak.classList.remove('hidden');
+            };
+            utterance.onend = () => {
+                btnSpeakText.textContent = "Ouvir o Chamado";
+                btnSpeakIcon.className = "fas fa-volume-up";
+                btnStopSpeak.classList.add('hidden');
+            };
+             window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeaking() {
+            // Stop Gemini Audio
+            if(geminiAudioPlayer.src) {
+                geminiAudioPlayer.pause();
+                geminiAudioPlayer.currentTime = 0;
+                geminiAudioPlayer.src = ""; // Unload
+            }
+            
+            // Stop Browser Audio
+            if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+                window.speechSynthesis.cancel();
+            }
+            
+            // Reset UI
+            if(btnSpeakText) btnSpeakText.textContent = "Ouvir o Chamado";
+            if(btnSpeakIcon) btnSpeakIcon.className = "fas fa-volume-up";
+            if(btnStopSpeak) btnStopSpeak.classList.add('hidden');
+            if(audioContainer) audioContainer.classList.remove('audio-playing');
+        }
+
+        btnSpeak.addEventListener('click', speakText);
+        btnStopSpeak.addEventListener('click', stopSpeaking);
 
     </script>
 </body>
