@@ -3,613 +3,619 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Corvo de Hekate</title>
-    <!-- Tailwind CSS CDN -->
+    <title>O Corvo de Hekate | Solstício de Inverno</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Cinzel, Lato, Merriweather -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@400;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- GSAP & SplitType for Animation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#050505', // O Preto Original
+                        gold: {
+                            400: '#D4AF37', // Ouro Original
+                            500: '#C5A028',
+                            900: '#3D3008',
+                        },
+                        obsidian: '#0f0f10',
+                        crimson: '#4a0404' // Um vermelho sangue BEM escuro para detalhes de Natal
+                    },
+                    fontFamily: {
+                        display: ['Cinzel', 'serif'],
+                        body: ['Lato', 'sans-serif'],
+                    },
+                    animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        /* Paleta Mística de Hekate:
-           Base: Preto profundo (#0a0a0a)
-           Primária: Roxo escuro/místico (#4a148c, #38006b)
-           Secundária: Cinza escuro (#1a1a1a, #212121)
-           Acento (Tochas): Âmbar/Dourado escuro (#b45309, #f59e0b)
-           Texto: Cinza claro (#e5e5e5), Branco (#f9f9f9)
-        */
-        body {
-            font-family: 'Lato', sans-serif;
-            background-color: #0a0a0a;
-            color: #e5e5e5;
-            background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
-            overflow: hidden; /* Prevent scrollbars during intro */
-        }
-        .title-font {
-            font-family: 'Cinzel', serif;
-        }
-        .body-font {
-            font-family: 'Merriweather', serif;
-        }
-        .text-glow {
-            text-shadow: 0 0 8px rgba(245, 158, 11, 0.4); /* Brilho de tocha */
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1a1a1a; }
-        ::-webkit-scrollbar-thumb { background: #4a148c; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #38006b; }
+        /* --- ESTÉTICA ONYX & GOLD (ORIGINAL) --- */
+        body { background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
         
-        .form-input {
-            background-color: rgba(0,0,0,0.3);
-            border: 1px solid #4a148c;
-            color: #f3f4f6;
-            border-radius: 0.375rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: #f59e0b;
-            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.5), inset 0 0 5px rgba(245, 158, 11, 0.2);
-        }
-        .btn-primary {
-            background: linear-gradient(145deg, #4a148c, #38006b);
-            color: #e5e5e5;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.375rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 20, 140, 0.2);
-            border: 1px solid #6a1b9a;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(74, 20, 140, 0.4);
-        }
-        .btn-primary:disabled {
-            background: #333;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        .btn-accent {
-            background: linear-gradient(145deg, #f59e0b, #b45309);
-            color: #1a1a1a;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.375rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
-            border: 1px solid #d97706;
-        }
-        .btn-accent:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-        }
-        .btn-secondary {
-            background-color: #4a4a4a;
-            color: #e5e5e5;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.375rem;
-            transition: all 0.3s ease;
-        }
-        .btn-secondary:hover {
-            background-color: #5a5a5a;
-            transform: translateY(-2px);
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+
+        .glass-dark {
+            background: rgba(15, 15, 20, 0.85); /* Vidro escuro original */
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .view-container { 
-            display: none; 
-            animation: fadeIn 0.5s ease-in-out;
-            min-height: 80vh;
+        .text-gold-gradient {
+            background: linear-gradient(to right, #AA8C2C, #F2E3BC, #D4AF37, #AA8C2C);
+            -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 6s linear infinite;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes shine { to { background-position: 200% center; } }
 
-        /* Formatação de Conteúdo */
-        .highlight { color: #fde68a; font-style: italic; } /* Amarelo claro */
-        .mystic-term { color: #d8b4fe; font-weight: 600; text-shadow: 0 0 6px rgba(216, 180, 254, 0.5); } /* Roxo claro */
-
-        /* Estilo para links de navegação */
-        .nav-link {
-            cursor: pointer;
-            padding: 0.5rem 0; /* Adiciona padding para toque mobile */
-        }
-
-        /* Intro Animation Styles */
-        #intro-sequence {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100vh;
-            /* MUDANÇA: Fundo branco para mesclar com o vídeo */
-            background: #fff; 
-            z-index: 100;
-            display: grid; 
-            place-items: center; 
-        }
-        /* REMOVIDO: .intro-heading e .intro-logo-img não são mais necessários */
+        .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
         
-        /* Estilo para Checkbox no Modal de Aluno */
-        .student-section-label {
-            display: block;
-            padding: 0.75rem 1rem;
-            background-color: #2a2a2a;
-            border: 1px solid #4a148c;
-            border-radius: 0.375rem;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .student-section-label:hover {
-            background-color: #3a3a3a;
-        }
-        .student-section-label input {
-            margin-right: 0.75rem;
-            accent-color: #f59e0b;
-        }
+        #intro-sequence { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+
+        /* --- DECORAÇÃO DE NATAL (SUTIL) --- */
         
-        /* Audio Player Styles */
-        .audio-playing {
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
-            border-color: #f59e0b;
+        /* 1. Neve Mágica (Branca e Dourada) */
+        .snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden;}
+        .snowflake { position: absolute; top: -10px; color: rgba(255,255,255,0.2); font-size: 0.8em; opacity: 0; animation: fall linear infinite; }
+        .snowflake.gold-flake { color: rgba(212, 175, 55, 0.3); text-shadow: 0 0 5px #D4AF37; } /* Flocos dourados */
+        
+        @keyframes fall {
+            0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+            20% { opacity: 0.6; }
+            100% { opacity: 0; transform: translateY(100vh) rotate(360deg); }
         }
+
+        /* 2. Cards com toque de Azevinho */
+        .project-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; overflow: hidden;
+        }
+        /* Icone de azevinho (holly) no canto */
+        .project-card::after {
+            content: '\f788'; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; top: 15px; right: 15px; font-size: 1.2rem;
+            color: #333; /* Começa discreto */
+            transition: 0.4s; opacity: 0.5;
+        }
+        .project-card:hover::after {
+            color: #8B0000; /* Fica vermelho sangue no hover */
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+            transform: rotate(20deg) scale(1.1);
+            opacity: 1;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: #D4AF37;
+            box-shadow: 0 10px 40px -10px rgba(212, 175, 55, 0.15); /* Glow Dourado original */
+        }
+
+        .input-luxe { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #fff; transition: 0.3s; }
+        .input-luxe:focus { outline: none; border-color: #D4AF37; background: rgba(212, 175, 55, 0.05); }
+
+        /* --- CORVO SVG (O MESMO ANTIGO + GORRO) --- */
+        .mystic-crow-svg {
+            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
+            animation: hoverCrow 5s ease-in-out infinite alternate;
+        }
+        .crow-wing-left { transform-origin: center; animation: flapLeft 1.5s ease-in-out infinite alternate; }
+        .crow-wing-right { transform-origin: center; animation: flapRight 1.5s ease-in-out infinite alternate; }
+        /* Animação suave do gorro */
+        .santa-hat { transform-origin: top center; animation: hatSway 3s ease-in-out infinite alternate; }
+
+        @keyframes hoverCrow { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
+        @keyframes flapLeft { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-8deg) translateY(3px); } }
+        @keyframes flapRight { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(8deg) translateY(3px); } }
+        @keyframes hatSway { 0% { transform: rotate(-2deg); } 100% { transform: rotate(2deg); } }
 
     </style>
 </head>
-<body class="bg-black text-gray-200">
+<body class="antialiased">
 
-    <!-- Intro Section -->
+    <div class="snow-container" id="snow"></div>
+    <script>
+        const snowContainer = document.getElementById('snow');
+        const snowflakeCount = 35; // Poucos flocos para ser sutil
+        for (let i = 0; i < snowflakeCount; i++) {
+            const snowflake = document.createElement('div');
+            snowflake.className = Math.random() > 0.7 ? 'snowflake gold-flake' : 'snowflake'; // 30% de chance de ser dourado
+            snowflake.innerHTML = '❄'; 
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = Math.random() * 15 + 10 + 's';
+            snowflake.style.animationDelay = Math.random() * 10 + 's';
+            snowflake.style.fontSize = Math.random() * 8 + 4 + 'px'; // Pequenos
+            snowContainer.appendChild(snowflake);
+        }
+    </script>
+
     <div id="intro-sequence">
-        <!-- Wrapper para controlar o tamanho máximo do vídeo -->
-        <div style="width: 100%; max-width: 1024px; min-width: 300px;"> 
-            <!-- Div do Vimeo para manter o aspect ratio 16:9 -->
+        <div style="width: 100%; max-width: 1000px; padding: 20px;"> 
             <div style="padding:56.25% 0 0 0;position:relative;">
-                <iframe 
-                    src="https://player.vimeo.com/video/1136095667?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&controls=0&title=0&byline=0&portrait=0" 
-                    frameborder="0" 
-                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
-                    referrerpolicy="strict-origin-when-cross-origin" 
-                    style="position:absolute;top:0;left:0;width:100%;height:100%;" 
-                    title="Intro Logo Corvo de Hekate">
-                </iframe>
+                <iframe src="https://player.vimeo.com/video/1136095667?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&controls=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Intro"></iframe>
             </div>
+            <button onclick="forceOpenSite()" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-600 text-[10px] uppercase tracking-widest hover:text-white transition z-50">Entrar</button>
         </div>
     </div>
 
-    <div id="app-root" style="display: none;">
-        <!-- Loading Spinner -->
-        <div id="loading-spinner" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
+    <div id="app-root" style="display: none; opacity: 0;">
+        
+        <div id="loading-spinner" class="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center hidden">
+            <div class="relative mb-4">
+                <i class="fas fa-crow text-4xl text-gold-400 animate-pulse"></i>
+                <i class="fas fa-hat-santa absolute -top-3 -right-2 text-crimson text-sm transform -rotate-12 drop-shadow-md"></i>
+            </div>
+            <p class="text-gold-400 text-xs tracking-[0.3em] uppercase">Despertando Magia...</p>
         </div>
 
-        <!-- Header e Navegação Principal -->
-        <header class="bg-gray-900 bg-opacity-80 backdrop-blur-sm shadow-md border-b-2 border-purple-800 p-4 flex justify-between items-center sticky top-0 z-40">
-            <div class="flex items-center">
-                <img src="https://i.ibb.co/2705r709/Black-Friday.png" alt="Logo O Corvo de Hekate" class="h-12 w-12 mr-3 object-contain" onerror="this.style.display='none'">
-                <h1 class="text-xl sm:text-2xl font-bold text-white title-font hidden md:block">O Corvo de Hekate</h1>
-            </div>
-            <nav class="hidden md:flex items-center space-x-6">
-                <!-- Botões internos usam data-view -->
-                <button data-view="home-view" class="internal-link nav-link text-gray-300 hover:text-amber-400 transition title-font">Início</button>
-                <button data-view="blog-view" class="internal-link nav-link text-gray-300 hover:text-amber-400 transition title-font">Blog</button>
-                <button data-view="sobre-view" class="internal-link nav-link text-gray-300 hover:text-amber-400 transition title-font">Sobre Mim</button>
-                <!-- Links externos usam <a> -->
-                <a href="https://ardanraven.github.io/Calendario/" target="_blank" rel="noopener noreferrer" class="nav-link text-gray-300 hover:text-amber-400 transition title-font">Calendário</a>
-                <a href="https://caminhodatocha.site" target="_blank" rel="noopener noreferrer" class="nav-link text-gray-300 hover:text-amber-400 transition title-font">Mentoria</a>
-            </nav>
-            <div>
-                <div id="user-info" class="hidden items-center">
-                    <span id="user-email" class="text-gray-300 mr-4 hidden sm:inline"></span>
-                    <button id="logout-btn" class="text-gray-300 hover:text-amber-400 transition">
-                        <i class="fas fa-sign-out-alt mr-1"></i>
-                        <span class="hidden sm:inline">Sair</span>
-                    </button>
+        <header class="fixed top-0 w-full z-40 bg-void/90 backdrop-blur border-b border-white/5 h-20 transition-all duration-300">
+            <div class="container mx-auto px-6 h-full flex justify-between items-center">
+                <div class="flex items-center gap-3 cursor-pointer group" onclick="showView('home-view')">
+                    <img src="https://i.ibb.co/2705r709/Black-Friday.png" alt="Logo" class="h-10 w-auto opacity-80 group-hover:opacity-100 transition filter drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-gold-400 uppercase tracking-[0.3em]">O Corvo de</span>
+                        <h1 class="text-lg font-display text-white tracking-widest group-hover:text-gold-400 transition">HEKATE</h1>
+                    </div>
                 </div>
-                <button id="login-btn" class="hidden btn-primary text-sm py-2 px-4">Login</button>
+
+                <nav class="hidden md:flex items-center space-x-8">
+                    <button data-view="home-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Santuário</button>
+                    <button data-view="blog-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Grimório</button>
+                    <button data-view="sobre-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Sacerdote</button>
+                    <div class="w-[1px] h-4 bg-white/10"></div>
+                    <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-gold-400" title="Calendário"><i class="fas fa-moon"></i></a>
+                    <a href="https://caminhodatocha.site" target="_blank" class="border border-gold-900 text-gold-400 px-5 py-2 text-[10px] uppercase tracking-widest hover:bg-gold-400 hover:text-black transition font-bold">Mentoria</a>
+                </nav>
+
+                <div class="flex items-center gap-4">
+                    <div id="user-info" class="hidden items-center gap-3">
+                        <span id="user-email" class="text-[10px] text-gray-500 hidden sm:inline"></span>
+                        <button id="logout-btn" class="text-gray-400 hover:text-red-500"><i class="fas fa-power-off"></i></button>
+                    </div>
+                    <button id="login-btn" class="hidden text-xs font-display text-gold-400 uppercase tracking-widest hover:text-white border-b border-transparent hover:border-gold-400 pb-1">Login</button>
+                    <button id="mobile-menu-btn" class="md:hidden text-gold-400 text-xl"><i class="fas fa-bars"></i></button>
+                </div>
             </div>
-            <button id="mobile-menu-btn" class="md:hidden text-white text-2xl">
-                <i class="fas fa-bars"></i>
-            </button>
         </header>
 
-        <!-- Menu Mobile -->
-        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 bg-opacity-95 p-4 space-y-3 fixed top-16 right-0 left-0 z-30 shadow-lg">
-            <button data-view="home-view" class="internal-link nav-link block w-full text-left text-gray-300 hover:text-amber-400 transition title-font py-2">Início</button>
-            <button data-view="blog-view" class="internal-link nav-link block w-full text-left text-gray-300 hover:text-amber-400 transition title-font py-2">Blog</button>
-            <button data-view="sobre-view" class="internal-link nav-link block w-full text-left text-gray-300 hover:text-amber-400 transition title-font py-2">Sobre Mim</button>
-            <a href="https://ardanraven.github.io/Calendario/" target="_blank" rel="noopener noreferrer" class="nav-link block w-full text-left text-gray-300 hover:text-amber-400 transition title-font py-2">Calendário</a>
-            <a href="https://caminhodatocha.site" target="_blank" rel="noopener noreferrer" class="nav-link block w-full text-left text-gray-300 hover:text-amber-400 transition title-font py-2">Mentoria</a>
+        <div id="mobile-menu" class="hidden fixed inset-0 z-30 bg-black pt-24 px-8 md:hidden">
+            <div class="flex flex-col gap-6 text-center">
+                <button data-view="home-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Santuário</button>
+                <button data-view="blog-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Grimório</button>
+                <button data-view="sobre-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Sacerdote</button>
+                <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-gray-500 mt-8 uppercase text-xs">Fechar</button>
+            </div>
         </div>
 
-
-        <!-- ===== SEÇÕES PRINCIPAIS (VIEWS) ===== -->
-        <main class="p-4 md:p-8">
-
-            <!-- Home View -->
+        <main class="pt-20 min-h-screen relative z-10">
+            
             <div id="home-view" class="view-container">
-                <div class="text-center p-8 md:p-16 bg-gray-900 bg-opacity-70 rounded-lg border border-purple-800">
-                    <h2 class="text-4xl md:text-6xl font-bold text-white mb-6 title-font text-glow">Bem-vinda às Encruzilhadas</h2>
-                    <p class="text-lg md:text-xl text-gray-300 body-font max-w-3xl mx-auto leading-relaxed">
-                        Este é o seu santuário digital, um espaço dedicado aos mistérios de Hekate e à jornada da bruxaria. 
-                        Explore, aprenda e conecte-se com o poder interior.
-                    </p>
-                    <button data-view="blog-view" class="internal-link nav-link btn-primary mt-10 title-font text-lg">Explorar o Blog</button>
-                </div>
-            </div>
-
-            <!-- Blog View (Antiga App View) -->
-            <div id="blog-view" class="view-container">
-                <!-- Admin Panel -->
-                <div id="admin-panel" class="hidden mb-8 p-4 sm:p-6 bg-gray-900 bg-opacity-80 backdrop-blur-sm border border-purple-800 rounded-lg">
-                    <h2 class="text-2xl font-bold text-purple-300 border-b border-gray-700 pb-2 mb-4 title-font text-glow">Painel da Guardiã</h2>
+                
+                <section class="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+                    <div class="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black"></div>
                     
-                    <!-- Gerenciar Postagens e Contas -->
-                    <div class="grid md:grid-cols-2 gap-8">
-                        <!-- Create Post Form -->
-                        <div>
-                            <h3 class="text-xl font-semibold mb-3 text-purple-200 title-font">Criar Nova Postagem</h3>
-                            <form id="create-post-form">
-                                <div class="mb-4">
-                                    <label for="post-title" class="block text-sm font-medium text-gray-300 mb-2">Título</label>
-                                    <input type="text" id="post-title" class="w-full p-3 form-input" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="post-cover-image" class="block text-sm font-medium text-gray-300 mb-2">Imagem de Capa (Link)</label>
-                                    <input type="url" id="post-cover-image" placeholder="https://i.ibb.co/..." class="w-full p-3 form-input" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="post-content" class="block text-sm font-medium text-gray-300 mb-2">Conteúdo</label>
-                                    <textarea id="post-content" rows="8" class="w-full p-3 form-input" required></textarea>
-                                    <p class="text-xs text-gray-400 mt-1">Use `**` para negrito, `*` para destaque, `##` para termo místico, ou `![legenda](link-imagem)` para imagens no texto.</p>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="post-attachment-name" class="block text-sm font-medium text-gray-300 mb-2">Nome do Link (Opcional)</label>
-                                    <input type="text" id="post-attachment-name" placeholder="Ex: Material de Apoio" class="w-full p-3 form-input">
-                                </div>
-                                 <div class="mb-4">
-                                    <label for="post-attachment-link" class="block text-sm font-medium text-gray-300 mb-2">Link do Anexo (Opcional)</label>
-                                    <input type="url" id="post-attachment-link" placeholder="https://..." class="w-full p-3 form-input">
-                                </div>
-                                <div class="grid grid-cols-2 gap-4 mb-4">
-                                    <div>
-                                        <label for="post-access" class="block text-sm font-medium text-gray-300 mb-2">Acesso</label>
-                                        <select id="post-access" class="w-full p-3 form-input">
-                                            <option value="pago">Acesso Pago (Assinantes)</option>
-                                            <option value="aberto" selected>Acesso Aberto (Público)</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label for="post-section" class="block text-sm font-medium text-gray-300 mb-2">Seção (Módulo)</label>
-                                        <select id="post-section" class="w-full p-3 form-input" required>
-                                            <option value="">Carregando seções...</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-4">
-                                    <button type="submit" class="btn-primary">Publicar</button>
-                                    <button type="button" id="format-create-btn" class="btn-accent"><i class="fas fa-magic mr-2"></i>Formatar com IA</button>
-                                </div>
-                                <p id="post-status" class="text-green-500 mt-2"></p>
-                            </form>
+                    <div class="relative z-10 max-w-4xl mx-auto space-y-6">
+                        
+                        <div class="flex justify-center mb-6 h-32 md:h-40">
+                            <svg class="mystic-crow-svg h-full w-auto" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="crowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#3a3a3a;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
+                                    </linearGradient>
+                                    <linearGradient id="hatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#720e1e;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#3d030b;stop-opacity:1" />
+                                    </linearGradient>
+                                    <filter id="goldGlow">
+                                        <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+                                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                    </filter>
+                                </defs>
+                                
+                                <g class="crow-body" filter="url(#goldGlow)">
+                                    <path d="M250,200 C220,250 230,350 250,400 C270,350 280,250 250,200 Z" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1.5"/>
+                                    <path d="M250,200 C230,180 230,150 250,130 C270,150 270,180 250,200 Z" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1.5"/>
+                                    <path d="M250,130 L240,110 L260,110 Z" fill="#D4AF37"/>
+                                    
+                                    <g class="crow-wing-left">
+                                        <path d="M230,220 C150,200 50,150 20,100 C80,150 180,250 230,280 Z" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1" opacity="0.9"/>
+                                    </g>
+                                    <g class="crow-wing-right">
+                                        <path d="M270,220 C350,200 450,150 480,100 C420,150 320,250 270,280 Z" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1" opacity="0.9"/>
+                                    </g>
+                                    <circle cx="250" cy="165" r="4" fill="#D4AF37"/>
+                                </g>
+
+                                <g class="santa-hat">
+                                    <path d="M245,138 C230,100 210,70 255,40 C270,60 290,110 270,140 Z" fill="url(#hatGradient)" stroke="#2b0207" stroke-width="1"/>
+                                    <circle cx="255" cy="40" r="10" fill="#f7e7ce" stroke="#D4AF37" stroke-width="0.5"/>
+                                    <path d="M238,135 C248,145 267,145 277,135 L277,150 C267,160 248,160 238,150 Z" fill="#f7e7ce" stroke="#D4AF37" stroke-width="0.5"/>
+                                </g>
+                            </svg>
                         </div>
-                        <!-- Create User Account Form -->
-                        <div>
-                            <h3 class="text-xl font-semibold mb-3 text-purple-200 title-font">Criar Acesso de Assinante</h3>
-                            <form id="create-account-form">
-                                <div class="mb-4">
-                                    <label for="new-email" class="block text-sm font-medium text-gray-300 mb-2">Email do Assinante</label>
-                                    <input type="email" id="new-email" class="w-full p-3 form-input" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label for="new-password" class="block text-sm font-medium text-gray-300 mb-2">Senha Provisória</label>
-                                    <input type="password" id="new-password" class="w-full p-3 form-input" required>
-                                </div>
-                                <div class="mb-6">
-                                    <label for="account-validity" class="block text-sm font-medium text-gray-300 mb-2">Validade da Conta</label>
-                                    <select id="account-validity" class="w-full p-3 form-input">
-                                        <option value="1" selected>1 Mês</option>
-                                        <option value="3">3 Meses</option>
-                                    </select>
-                                </div>
-                                <button type="submit" class="btn-primary">Criar Conta</button>
-                                 <p id="account-status" class="text-green-500 mt-2"></p>
-                            </form>
+
+                        <h2 class="text-gold-500 text-xs md:text-sm tracking-[0.6em] uppercase fade-in-up" style="animation-delay: 0.1s">Nas Asas da Noite</h2>
+                        <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-black text-white leading-tight fade-in-up" style="animation-delay: 0.3s">
+                            O CORVO DE <br><span class="text-gold-gradient">HEKATE</span>
+                        </h1>
+                        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-gold-400 to-transparent mx-auto my-6 fade-in-up" style="animation-delay: 0.5s"></div>
+                        <p class="text-gray-300 max-w-2xl mx-auto text-lg md:text-xl font-body font-light leading-relaxed fade-in-up" style="animation-delay: 0.6s">
+                            Onde os caminhos se cruzam e a magia antiga sussurra. <br>
+                            Seja bem-vindo ao santuário do Sacerdote Leonardo.
+                        </p>
+                        <div class="pt-8 flex justify-center fade-in-up" style="animation-delay: 0.8s">
+                            <button data-view="blog-view" class="internal-link px-10 py-4 bg-transparent border border-gold-400 text-gold-400 font-display text-sm font-bold tracking-[0.2em] uppercase hover:bg-gold-400 hover:text-black transition shadow-[0_0_20px_rgba(212,175,55,0.1)]">
+                                Ler o Grimório
+                            </button>
                         </div>
                     </div>
+                </section>
 
-                    <!-- Gerenciar Seções -->
-                    <div class="mt-12 border-t border-gray-700 pt-6">
-                        <h3 class="text-xl font-semibold mb-3 text-purple-200 title-font">Gerenciar Seções (Módulos)</h3>
-                        <div class="grid md:grid-cols-2 gap-8">
-                            <!-- Criar Seção -->
-                            <div>
-                                <form id="create-section-form">
-                                    <label for="section-name" class="block text-sm font-medium text-gray-300 mb-2">Nome da Nova Seção</label>
-                                    <input type="text" id="section-name" placeholder="Ex: Módulo 1, Tarot..." class="w-full p-3 form-input" required>
-                                    <button type="submit" class="btn-primary mt-3">Criar Seção</button>
-                                    <p id="section-status" class="text-green-500 mt-2"></p>
+                <section id="about-section" class="py-24 px-6 bg-obsidian border-t border-white/5 relative">
+                    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+                        <div class="order-2 md:order-1 space-y-8 text-justify">
+                            <h3 class="text-3xl font-display text-white flex items-center gap-4">
+                                <span class="h-[1px] w-12 bg-gold-500"></span> O Mensageiro
+                            </h3>
+                            <p class="text-gray-400 font-body leading-loose text-lg">
+                                Por que o <strong>Corvo</strong>? Na antiguidade, acreditava-se que os corvos eram os olhos dos deuses. Eles voam entre os mundos, carregando mensagens do submundo para a terra dos vivos.
+                            </p>
+                            <p class="text-gray-400 font-body leading-loose text-lg">
+                                Hekate, a Senhora das Encruzilhadas, segura as chaves do cosmos. Este blog nasce dessa conexão: ser um mensageiro digital, um ponto de encontro para aqueles que buscam o conhecimento oculto.
+                            </p>
+                            <div class="pt-4 flex items-center gap-4">
+                                <i class="fas fa-key text-gold-500"></i>
+                                <p class="text-gold-400 font-display text-sm tracking-widest uppercase">Sacerdote Leonardo</p>
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 flex justify-center relative">
+                            <div class="absolute inset-0 bg-gold-400/5 blur-3xl rounded-full"></div>
+                            <div class="relative border border-white/10 p-2 bg-void/50 rotate-3 hover:rotate-0 transition duration-700">
+                                <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=800&auto=format&fit=crop" 
+                                     onerror="this.src='https://placehold.co/600x800/1a1a1a/D4AF37?text=O+Corvo&font=playfair'"
+                                     alt="Corvo Místico" 
+                                     class="w-full h-auto max-w-sm grayscale hover:grayscale-0 transition duration-700 shadow-2xl object-cover aspect-[3/4]">
+                                <div class="absolute -bottom-4 -right-4 bg-black border border-gold-900 p-4">
+                                    <i class="fas fa-feather-alt text-2xl text-gold-500"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="py-24 px-6 bg-void relative overflow-hidden">
+                    <div class="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                    <div class="max-w-7xl mx-auto">
+                        <div class="text-center mb-16 space-y-4">
+                            <i class="fas fa-star text-gold-500 text-xl animate-pulse"></i>
+                            <h3 class="text-4xl font-display text-white">Os Pilares do Templo</h3>
+                            <p class="text-gray-500 text-sm uppercase tracking-widest">Projetos e Caminhos</p>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-8">
+                            <div class="project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer" onclick="showView('blog-view')">
+                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition">
+                                    <i class="fas fa-book-open text-6xl text-white"></i>
+                                </div>
+                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition">O Grimório</h4>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                                    O coração deste site. Artigos profundos, rituais práticos e reflexões sobre a Bruxaria Hekatina.
+                                </p>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition">Ler Agora <i class="fas fa-arrow-right ml-2"></i></span>
+                            </div>
+
+                            <a href="https://caminhodatocha.site" target="_blank" class="project-card bg-obsidian border border-white/5 p-8 relative group block">
+                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition">
+                                    <i class="fas fa-fire text-6xl text-white"></i>
+                                </div>
+                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition">Caminho da Tocha</h4>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                                    A Mentoria Oficial. Um mergulho estruturado e profundo nos mistérios para além da teoria.
+                                </p>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition">Saber Mais <i class="fas fa-external-link-alt ml-2"></i></span>
+                            </a>
+
+                            <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="project-card bg-obsidian border border-white/5 p-8 relative group block">
+                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition">
+                                    <i class="fas fa-calendar-alt text-6xl text-white"></i>
+                                </div>
+                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition">Calendário Hekatino</h4>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                                    Sincronize-se com as luas. Mapeando os dias sagrados, as fases lunares e os rituais de Hekate.
+                                </p>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition">Acessar <i class="fas fa-external-link-alt ml-2"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="py-20 px-6 border-t border-white/5 bg-[#080808] text-center">
+                    <div class="max-w-2xl mx-auto space-y-8">
+                        <i class="fas fa-crow text-3xl text-gray-600"></i>
+                        <h3 class="text-3xl font-display text-white">Faça parte do Coven</h3>
+                        <p class="text-gray-400 font-body">
+                            Alguns segredos são sussurrados apenas para os iniciados. <br>
+                            Verifique o acesso à área de membros.
+                        </p>
+                        <button onclick="document.getElementById('login-view').style.display='flex'" class="inline-block border border-gray-700 px-8 py-3 text-gray-300 font-display text-xs font-bold tracking-[0.2em] uppercase hover:border-gold-400 hover:text-gold-400 transition">
+                            Área de Membros
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+            <div id="blog-view" class="view-container hidden max-w-7xl mx-auto pt-10 px-4">
+                
+                <div id="admin-panel" class="hidden mb-16 p-8 bg-obsidian border border-white/5 rounded-sm relative overflow-hidden">
+                    <h3 class="text-gold-400 font-display text-xl mb-6 flex items-center gap-2"><i class="fas fa-crown"></i> Painel do Sacerdote</h3>
+                    <div class="grid lg:grid-cols-2 gap-10 relative z-10">
+                        <form id="create-post-form" class="space-y-4">
+                            <input type="text" id="post-title" class="input-luxe w-full p-3 font-display text-lg" placeholder="Título" required>
+                            <input type="url" id="post-cover-image" class="input-luxe w-full p-3 font-body text-sm" placeholder="Imagem URL" required>
+                            <div class="relative">
+                                <textarea id="post-content" rows="6" class="input-luxe w-full p-3 font-body text-sm" placeholder="Conteúdo..." required></textarea>
+                                <button type="button" id="format-create-btn" class="absolute bottom-2 right-2 text-[10px] bg-black border border-gold-900 text-gold-400 px-3 py-1 uppercase hover:bg-gold-900 transition"><i class="fas fa-magic mr-1"></i> IA</button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <select id="post-access" class="input-luxe w-full p-2 text-sm bg-black cursor-pointer"><option value="aberto">🔓 Público</option><option value="pago">🔐 Membros</option></select>
+                                <select id="post-section" class="input-luxe w-full p-2 text-sm bg-black cursor-pointer" required><option value="">Carregando...</option></select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="post-attachment-name" placeholder="Nome Anexo" class="input-luxe w-full p-2 text-sm">
+                                <input type="url" id="post-attachment-link" placeholder="Link Anexo" class="input-luxe w-full p-2 text-sm">
+                            </div>
+                            <button type="submit" class="w-full bg-gold-900/40 border border-gold-500/50 text-gold-400 py-3 font-bold uppercase text-xs tracking-widest hover:bg-gold-500 hover:text-black transition">Publicar</button>
+                            <p id="post-status" class="text-center text-xs h-4 text-gold-500"></p>
+                        </form>
+
+                        <div class="space-y-6">
+                            <div class="bg-black/40 p-5 border border-white/5">
+                                <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3">Novo Assinante</h4>
+                                <form id="create-account-form" class="flex gap-2 flex-col">
+                                    <input type="email" id="new-email" placeholder="Email" class="input-luxe p-2 text-sm">
+                                    <input type="password" id="new-password" placeholder="Senha" class="input-luxe p-2 text-sm">
+                                    <select id="account-validity" class="input-luxe p-2 text-sm bg-black"><option value="1">1 Mês</option><option value="3">3 Meses</option></select>
+                                    <button type="submit" class="border border-white/20 text-white py-2 text-xs uppercase hover:bg-white hover:text-black transition">Criar</button>
+                                    <p id="account-status" class="text-xs h-4"></p>
                                 </form>
                             </div>
-                            <!-- Seções Atuais -->
-                            <div>
-                                <label class="block text-sm font-medium text-gray-300 mb-2">Seções Atuais</label>
-                                <div id="sections-list-admin" class="space-y-2 max-h-48 overflow-y-auto bg-gray-800 p-3 rounded-lg border border-gray-700">
-                                    <!-- Lista de seções será populada pelo JS -->
-                                    <p class="text-gray-400">Carregando seções...</p>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-black/40 p-4 border border-white/5">
+                                    <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3">Módulos</h4>
+                                    <form id="create-section-form" class="flex gap-2 mb-2">
+                                        <input type="text" id="section-name" placeholder="Nome" class="input-luxe w-full p-1 text-xs">
+                                        <button type="submit" class="text-gold-400 hover:text-white"><i class="fas fa-plus"></i></button>
+                                    </form>
+                                    <div id="sections-list-admin" class="max-h-24 overflow-y-auto text-xs text-gray-500 custom-scrollbar"></div>
+                                </div>
+                                <div class="bg-black/40 p-4 border border-white/5">
+                                    <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3">Alunos</h4>
+                                    <div id="students-list-admin" class="max-h-32 overflow-y-auto text-xs text-gray-500 space-y-1 custom-scrollbar"></div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Gerenciar Alunos -->
-                    <div class="mt-12 border-t border-gray-700 pt-6">
-                        <h3 class="text-xl font-semibold mb-3 text-purple-200 title-font">Gerenciar Alunos (Assinantes)</h3>
-                        <div class="bg-gray-800 p-3 rounded-lg border border-gray-700">
-                            <label class="block text-sm font-medium text-gray-300 mb-2">Alunos Atuais</label>
-                            <div id="students-list-admin" class="space-y-2 max-h-64 overflow-y-auto">
-                                <!-- Lista de alunos será populada pelo JS -->
-                                <p class="text-gray-400">Carregando alunos...</p>
+                            <div class="bg-black/40 p-2 border border-white/5">
+                                <input type="password" id="gemini-api-key" placeholder="API Key" class="input-luxe w-full p-1 text-[10px]">
                             </div>
                         </div>
                     </div>
+                </div>
 
-                     <!-- API Key (Seção atualizada para esconder se houver chave no código) -->
-                    <div id="api-key-section" class="mt-12 p-4 bg-gray-800 border border-gray-700 rounded-md">
-                        <label for="gemini-api-key" class="block text-sm font-medium text-gray-300 mb-2">Chave API do Google AI Studio</G>
-                        <input type="password" id="gemini-api-key" placeholder="Cole sua chave API aqui para habilitar a formatação com IA" class="w-full p-3 form-input">
-                        <p class="text-xs text-gray-400 mt-1">A chave é necessária para formatar textos e gerar áudio das aulas. Ela é salva apenas no seu navegador.</p>
+                <div class="flex justify-center md:justify-end mb-10">
+                    <div class="relative">
+                        <select id="section-filter" class="appearance-none bg-transparent text-gold-400 border-b border-white/20 py-2 pr-8 pl-4 text-right focus:outline-none cursor-pointer text-lg font-display uppercase tracking-wider hover:border-gold-500 transition">
+                            <option value="todos" class="bg-black">Todos os Mistérios</option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- Filtro de Seção -->
-                <div class="mb-8 max-w-sm">
-                    <label for="section-filter" class="block text-sm font-medium text-gray-300 mb-2 title-font">Filtrar por Seção:</label>
-                    <select id="section-filter" class="w-full p-3 form-input">
-                        <option value="todos">Todas as Seções</option>
-                        <!-- Opções populadas pelo JS -->
-                    </select>
+                <div id="pago-section" class="hidden mb-16 relative">
+                    <div class="flex items-center justify-center gap-4 mb-8">
+                        <span class="h-[1px] w-12 bg-gold-900"></span>
+                        <h2 class="text-gold-500 font-display text-xl tracking-[0.3em] uppercase">Conhecimento Oculto</h2>
+                        <span class="h-[1px] w-12 bg-gold-900"></span>
+                    </div>
+                    <div id="posts-list-pago" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                    <p id="empty-pago" class="text-center text-gray-600 text-sm hidden italic">O silêncio reina nesta seção.</p>
                 </div>
 
-                <!-- Posts Sections -->
-                <div class="space-y-12">
-                    <!-- Seção de Conteúdo Pago -->
-                    <div id="pago-section" class="hidden">
-                        <h2 class="text-3xl font-bold text-white mb-6 title-font text-glow border-b-2 border-purple-800 pb-2">Conteúdo Pago (Assinantes)</h2>
-                        <div id="posts-list-pago" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Paid post cards will be injected here -->
-                        </div>
-                        <p id="empty-pago" class="text-gray-400 col-span-full text-center hidden">Nenhuma postagem encontrada nesta seção ou você não tem permissão.</p>
+                <div class="mb-20">
+                    <div class="flex items-center justify-center gap-4 mb-8">
+                        <span class="h-[1px] w-12 bg-white/10"></span>
+                        <h2 class="text-gray-400 font-display text-lg tracking-[0.3em] uppercase">Pergaminhos Abertos</h2>
+                        <span class="h-[1px] w-12 bg-white/10"></span>
                     </div>
-                    <!-- Seção de Conteúdo Aberto -->
-                    <div>
-                        <h2 class="text-3xl font-bold text-white mb-6 title-font text-glow border-b-2 border-purple-800 pb-2">Conteúdo Aberto</h2>
-                        <div id="posts-list-aberto" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <!-- Public post cards will be injected here -->
-                        </div>
-                        <p id="empty-aberto" class="text-gray-400 col-span-full text-center hidden">Nenhuma postagem encontrada nesta seção.</p>
-                    </div>
+                    <div id="posts-list-aberto" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+                    <p id="empty-aberto" class="text-center text-gray-600 text-sm hidden italic">Nenhum registro encontrado.</p>
                 </div>
             </div>
 
-            <!-- Calendar View (Placeholder) -->
-            <div id="calendar-view" class="view-container">
-                <div class="text-center p-8 md:p-16 bg-gray-900 bg-opacity-70 rounded-lg border border-purple-800">
-                    <h2 class="text-4xl md:text-6xl font-bold text-white mb-6 title-font text-glow">Calendário Hekatino</h2>
-                    <p class="text-lg md:text-xl text-gray-300 body-font max-w-3xl mx-auto leading-relaxed mb-8">
-                        O botão "Calendário" no menu agora leva diretamente para o site externo.
-                    </p>
-                </div>
-            </div>
-
-            <!-- SEÇÃO: Sobre Mim View -->
-            <div id="sobre-view" class="view-container">
-                 <div class="p-8 md:p-12 bg-gray-900 bg-opacity-70 rounded-lg border border-purple-800 max-w-5xl mx-auto">
-                    <h2 class="text-4xl font-bold text-white mb-10 text-center title-font text-glow">Sobre o Sacerdote Leonardo</h2>
-                    <div class="flex flex-col md:flex-row gap-8 items-center">
-                        <div class="md:w-1/3 w-full flex-shrink-0">
-                            <img src="https://i.ibb.co/0ymRCF5C/2-DACB7-CC-CE28-4383-BD50-DEB2-C7-A38721.png" alt="Sacerdote Leonardo" class="rounded-lg shadow-lg border-2 border-purple-700 w-full h-auto object-cover">
+            <div id="sobre-view" class="view-container hidden max-w-5xl mx-auto pt-10 px-4">
+                <div class="glass-dark p-8 md:p-16 border-t border-gold-900/50 relative overflow-hidden">
+                    <div class="flex flex-col md:flex-row gap-12 items-center relative z-10">
+                        <div class="w-full md:w-2/5 relative group">
+                            <div class="absolute inset-0 border border-gold-500/20 translate-x-3 translate-y-3 group-hover:translate-x-2 group-hover:translate-y-2 transition duration-500"></div>
+                            <img src="https://i.ibb.co/0ymRCF5C/2-DACB7-CC-CE28-4383-BD50-DEB2-C7-A38721.png" class="w-full grayscale hover:grayscale-0 transition duration-700 shadow-2xl relative z-10">
                         </div>
-                        <div class="md:w-2/3 w-full body-font text-lg text-gray-300 leading-relaxed space-y-5">
-                            <p>Saudações! Eu sou Leonardo, Sacerdote de Hekate e o guardião deste espaço.</p>
-                            <p>Minha jornada com a Deusa das Encruzilhadas começou há muitos anos, uma caminhada de sombras e luz, mistérios e revelações. Hekate me chamou para ser Sua tocha no mundo, para guiar aqueles que buscam Sua sabedoria e Seu poder.</p>
-                            <p>Neste santuário, "O Corvo de Hekate", eu compartilho os ensinamentos, rituais e visões que recebi ao longo da minha devoção. Este não é apenas um blog, mas um ponto de encontro para almas que, como corvos, voam entre os mundos em busca de conhecimento.</p>
-                            <p>Sinta-se em casa. Explore, questione e que as chaves de Hekate abram os portais do seu próprio poder.</p>
+                        <div class="w-full md:w-3/5 text-gray-300 font-body leading-relaxed space-y-6 text-lg text-justify">
+                            <div>
+                                <h2 class="text-4xl font-display text-white mb-1">Leonardo</h2>
+                                <p class="text-gold-500 text-xs uppercase tracking-[0.4em]">Sacerdote de Hekate</p>
+                            </div>
+                            <p>
+                                <span class="text-4xl float-left mr-2 text-gold-600 font-display">A</span>s encruzilhadas nunca são apenas caminhos; são escolhas. Minha vida foi dedicada a entender as escolhas que fazemos nas sombras, guiado pela chama da Deusa.
+                            </p>
+                            <p>
+                                O projeto <strong>O Corvo de Hekate</strong> nasce da necessidade de trazer profundidade em um mundo raso. Aqui, a magia não é teoria; é vivência. Compartilho minha devoção, meus estudos e a sabedoria que as chaves me abriram.
+                            </p>
+                            <div class="pt-6 border-t border-white/5 flex gap-4 text-2xl text-gold-400">
+                                <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="hover:text-white transition"><i class="fab fa-youtube"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
         </main>
-        
-        <!-- ===== SEÇÕES SECUNDÁRIAS (MODAIS/VIEWS) ===== -->
 
-        <!-- Login View -->
-        <div id="login-view" class="view-container fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-40">
-            <div class="w-full max-w-md bg-gray-900 bg-opacity-90 backdrop-blur-sm rounded-lg shadow-lg border border-purple-800 p-6 sm:p-8 relative">
-                 <button id="close-login-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-                <h1 class="text-3xl sm:text-4xl font-bold text-center text-purple-300 mb-2 title-font text-glow">Acesso</h1>
-                <p class="text-center text-gray-400 mb-8">Faça login para acessar o conteúdo restrito.</p>
-                <form id="login-form">
-                    <div class="mb-4">
-                        <label for="login-email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
-                        <input type="email" id="login-email" class="w-full p-3 form-input" required>
+        <footer class="bg-black py-12 text-center border-t border-white/5 relative z-10">
+            <i class="fas fa-crow text-gold-900 text-2xl mb-4"></i>
+            <p class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-2">© 2025 O Corvo de Hekate</p>
+            <p class="text-gray-800 text-[10px]">Desenvolvido nas Sombras</p>
+        </footer>
+
+        <div id="login-view" class="view-container hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="w-full max-w-sm relative bg-obsidian p-10 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+                <button id="close-login-btn" class="absolute top-4 right-4 text-gray-500 hover:text-white transition"><i class="fas fa-times"></i></button>
+                <div class="text-center mb-10">
+                    <i class="fas fa-key text-gold-500 text-2xl mb-4"></i>
+                    <h2 class="text-2xl font-display text-white tracking-widest">ACESSO</h2>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Área do Coven</p>
+                </div>
+                <form id="login-form" class="space-y-6">
+                    <div class="group">
+                        <input type="email" id="login-email" placeholder="EMAIL" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-gold-400 outline-none transition font-display tracking-wider">
                     </div>
-                    <div class="mb-6">
-                        <label for="login-password" class="block text-sm font-medium text-gray-300 mb-2">Senha</label>
-                        <input type="password" id="login-password" class="w-full p-3 form-input" required>
+                    <div class="group">
+                        <input type="password" id="login-password" placeholder="SENHA" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-gold-400 outline-none transition font-display tracking-wider">
                     </div>
-                    <button type="submit" class="w-full btn-primary title-font">Entrar</button>
+                    <button type="submit" class="w-full border border-gold-900 text-gold-400 py-4 uppercase text-xs tracking-[0.3em] hover:bg-gold-400 hover:text-black transition font-bold mt-4">Entrar</button>
                 </form>
-                <p id="login-error" class="text-red-500 text-center mt-4"></p>
+                <p id="login-error" class="text-center text-red-500 text-xs mt-6 font-display tracking-wider"></p>
             </div>
         </div>
 
-        <!-- Single Post View -->
-        <div id="post-view" class="view-container min-h-screen bg-black">
-             <header class="bg-gray-900 bg-opacity-80 backdrop-blur-sm shadow-md border-b-2 border-purple-800 p-4 flex justify-between items-center sticky top-0 z-10">
-                <button id="back-to-posts-btn" class="text-gray-300 hover:text-amber-400 transition title-font">
-                    <i class="fas fa-arrow-left mr-2"></i>Voltar para o Blog
-                </button>
-                <div class="admin-only-controls">
-                     <button id="post-view-edit-btn" class="text-gray-300 hover:text-amber-400 transition mr-4"><i class="fas fa-pencil-alt mr-1"></i> Editar</button>
-                    <button id="post-view-delete-btn" class="text-gray-300 hover:text-red-500 transition"><i class="fas fa-trash-alt mr-1"></i> Excluir</button>
-                </div>
-            </header>
-            <main class="p-4 md:p-8 lg:p-12 max-w-4xl mx-auto">
-                 <h2 id="post-view-title" class="text-3xl sm:text-4xl lg:text-5xl font-bold text-purple-300 mb-6 title-font text-glow"></h2>
-                 
-                 <!-- Audio Player Button (Gemini AI TTS) -->
-                 <div id="audio-controls" class="flex items-center gap-4 mb-6 bg-gray-800 bg-opacity-50 p-3 rounded-lg border border-purple-800 w-fit transition-all duration-300">
-                    <button id="btn-speak" class="text-amber-400 hover:text-amber-300 transition flex items-center">
-                        <i id="btn-speak-icon" class="fas fa-volume-up text-xl"></i> 
-                        <span id="btn-speak-text" class="ml-2 font-bold title-font text-sm uppercase tracking-wide">Ouvir o Chamado</span>
+        <div id="post-view" class="view-container hidden fixed inset-0 z-[60] bg-[#050505] overflow-y-auto custom-scrollbar">
+            <div class="max-w-4xl mx-auto min-h-screen bg-obsidian border-x border-white/5 relative shadow-2xl">
+                <div class="sticky top-0 z-20 bg-obsidian/95 backdrop-blur border-b border-white/5 p-4 flex justify-between items-center h-16 shadow-lg">
+                    <button id="back-to-posts-btn" class="text-gold-400 text-xs uppercase tracking-[0.2em] hover:text-white transition flex items-center gap-2 group">
+                        <i class="fas fa-arrow-left group-hover:-translate-x-1 transition"></i> Voltar
                     </button>
-                    <button id="btn-stop-speak" class="text-gray-400 hover:text-red-400 transition hidden" title="Parar Leitura">
-                        <i class="fas fa-stop"></i>
-                    </button>
-                    <!-- Elemento de áudio invisível para tocar o WAV gerado -->
-                    <audio id="gemini-audio-player" class="hidden"></audio>
+                    <div class="admin-only-controls hidden gap-4">
+                        <button id="post-view-edit-btn" class="text-gray-500 hover:text-white transition"><i class="fas fa-pen"></i></button>
+                        <button id="post-view-delete-btn" class="text-gray-500 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>
+                    </div>
                 </div>
 
-                 <!-- View count display -->
-                 <div id="post-view-meta" class="text-gray-400 mb-6 text-lg title-font">
-                     <i class="fas fa-eye mr-1"></i> <span id="post-view-count">0</span> visualizações
-                 </div>
-                 <img id="post-view-cover-image" src="" alt="Imagem de Capa" class="w-full h-64 md:h-96 object-cover rounded-lg mb-8 border border-purple-800 shadow-lg">
-                 <div id="post-view-content" class="text-gray-300 body-font leading-relaxed whitespace-pre-wrap text-lg"></div>
-                 <div id="post-view-attachment-container" class="hidden mt-10">
-                     <h3 class="font-semibold text-xl text-purple-200 mb-3 border-t border-gray-700 pt-6 title-font">Anexo:</h3>
-                     <a id="post-view-attachment" href="#" target="_blank" class="text-amber-400 hover:underline text-lg"></a>
-                 </div>
-            </main>
+                <div class="p-6 md:p-16 pb-32">
+                    <h1 id="post-view-title" class="text-3xl md:text-5xl font-display text-white text-center mb-6 leading-tight"></h1>
+                    
+                    <div class="flex justify-center items-center gap-6 text-[10px] text-gray-500 uppercase tracking-widest mb-12 border-b border-white/5 pb-6">
+                        <span><i class="fas fa-eye text-gold-900 mr-2"></i><span id="post-view-count">0</span> Leituras</span>
+                        <i class="fas fa-circle text-[3px] text-gold-500"></i>
+                        <span>O Corvo de Hekate</span>
+                    </div>
+
+                    <div class="flex justify-center mb-12">
+                         <div id="audio-controls" class="inline-flex items-center gap-4 px-6 py-2 border border-gold-900/30 rounded-full cursor-pointer hover:border-gold-400/50 transition group bg-black/50">
+                            <button id="btn-speak" class="flex items-center gap-3 text-gold-500 group-hover:text-gold-300 text-xs uppercase font-bold tracking-widest">
+                                <i id="btn-speak-icon" class="fas fa-play text-[10px]"></i> <span id="btn-speak-text">Ouvir o Chamado</span>
+                            </button>
+                            <button id="btn-stop-speak" class="hidden text-red-800 hover:text-red-500 transition"><i class="fas fa-stop"></i></button>
+                            <audio id="gemini-audio-player" class="hidden"></audio>
+                        </div>
+                    </div>
+
+                    <div class="relative group mb-12">
+                        <div class="absolute inset-0 bg-gold-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+                        <img id="post-view-cover-image" class="w-full h-auto max-h-[600px] object-cover border-y border-white/10 grayscale group-hover:grayscale-0 transition duration-1000 relative z-10">
+                    </div>
+
+                    <div id="post-view-content" class="prose prose-invert prose-lg max-w-none font-body text-gray-300 leading-loose text-justify"></div>
+
+                    <div id="post-view-attachment-container" class="hidden mt-20 pt-10 border-t border-gold-900/30 text-center">
+                        <p class="text-[10px] text-gold-600 uppercase tracking-widest mb-4">Conteúdo Adicional</p>
+                        <a id="post-view-attachment" href="#" target="_blank" class="inline-flex items-center gap-3 border border-gold-900 text-gold-400 px-8 py-3 text-xs uppercase tracking-widest hover:bg-gold-400 hover:text-black transition">
+                            <i class="fas fa-download"></i> Baixar Material
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        
-        <!-- Edit Post View -->
-        <div id="edit-post-view" class="view-container min-h-screen bg-black">
-             <header class="bg-gray-900 bg-opacity-80 backdrop-blur-sm shadow-md border-b-2 border-purple-800 p-4 flex justify-between items-center sticky top-0 z-10">
-                <h2 class="text-2xl font-bold text-purple-300 title-font text-glow">Editando Postagem</h2>
-             </header>
-             <main class="p-4 md:p-8 max-w-3xl mx-auto">
-                 <form id="edit-post-form">
+
+        <div id="edit-post-view" class="view-container hidden fixed inset-0 z-[70] bg-black p-4 overflow-y-auto">
+             <div class="max-w-2xl mx-auto mt-20 bg-obsidian p-8 border border-white/10 shadow-2xl">
+                <h2 class="text-xl font-display text-white mb-8 border-b border-white/10 pb-4">Editar Pergaminho</h2>
+                <form id="edit-post-form" class="space-y-6">
                     <input type="hidden" id="edit-post-id">
-                    <div class="mb-4">
-                        <label for="edit-post-title" class="block text-sm font-medium text-gray-300 mb-2">Título</label>
-                        <input type="text" id="edit-post-title" class="w-full p-3 form-input" required>
+                    <input type="text" id="edit-post-title" class="input-luxe w-full p-3 font-display" required>
+                    <input type="url" id="edit-post-cover-image" class="input-luxe w-full p-3" required>
+                    <div class="relative">
+                        <textarea id="edit-post-content" rows="10" class="input-luxe w-full p-3" required></textarea>
+                        <button type="button" id="format-edit-btn" class="absolute bottom-3 right-3 text-gold-400 text-[10px] uppercase border border-gold-900 px-2 py-1 bg-black">IA</button>
                     </div>
-                     <div class="mb-4">
-                        <label for="edit-post-cover-image" class="block text-sm font-medium text-gray-300 mb-2">Imagem de Capa (Link)</label>
-                        <input type="url" id="edit-post-cover-image" placeholder="https://i.ibb.co/..." class="w-full p-3 form-input" required>
+                     <div class="grid grid-cols-2 gap-6">
+                        <input type="text" id="edit-post-attachment-name" class="input-luxe w-full p-3">
+                        <input type="url" id="edit-post-attachment-link" class="input-luxe w-full p-3">
                     </div>
-                    <div class="mb-4">
-                        <label for="edit-post-content" class="block text-sm font-medium text-gray-300 mb-2">Conteúdo</label>
-                        <textarea id="edit-post-content" rows="12" class="w-full p-3 form-input" required></textarea>
-                         <p class="text-xs text-gray-400 mt-1">Use `**` para negrito, `*` para destaque, `##` para termo místico, ou `![legenda](link-imagem)` para imagens no texto.</p>
+                    <div class="grid grid-cols-2 gap-6">
+                        <select id="edit-post-access" class="input-luxe w-full p-3 bg-black"><option value="pago">Pago</option><option value="aberto">Aberto</option></select>
+                        <select id="edit-post-section" class="input-luxe w-full p-3 bg-black"></select>
                     </div>
-                    <div class="mb-4">
-                        <label for="edit-post-attachment-name" class="block text-sm font-medium text-gray-300 mb-2">Nome do Link (Opcional)</label>
-                        <input type="text" id="edit-post-attachment-name" class="w-full p-3 form-input">
+                    <div class="flex gap-4 mt-8">
+                        <button type="submit" class="flex-1 bg-gold-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-gold-600 transition">Salvar</button>
+                        <button type="button" id="cancel-edit-btn" class="flex-1 bg-gray-800 text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-700 transition">Cancelar</button>
                     </div>
-                     <div class="mb-6">
-                        <label for="edit-post-attachment-link" class="block text-sm font-medium text-gray-300 mb-2">Link do Anexo (Opcional)</label>
-                        <input type="url" id="edit-post-attachment-link" class="w-full p-3 form-input">
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <label for="edit-post-access" class="block text-sm font-medium text-gray-300 mb-2">Acesso</label>
-                            <select id="edit-post-access" class="w-full p-3 form-input">
-                                <option value="pago">Acesso Pago (Assinantes)</option>
-                                <option value="aberto">Acesso Aberto (Público)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="edit-post-section" class="block text-sm font-medium text-gray-300 mb-2">Seção (Módulo)</label>
-                            <select id="edit-post-section" class="w-full p-3 form-input" required>
-                                <option value="">Carregando seções...</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <button type="submit" class="btn-primary">Salvar Alterações</button>
-                        <button type="button" id="format-edit-btn" class="btn-accent"><i class="fas fa-magic mr-2"></i>Formatar com IA</button>
-                        <button type="button" id="cancel-edit-btn" class="bg-gray-600 text-white font-semibold py-3 px-6 rounded-md hover:bg-gray-500 transition">Cancelar</button>
-                    </div>
-                    <p id="edit-post-status" class="mt-4"></p>
+                    <p id="edit-post-status" class="text-center mt-4 text-xs text-gold-500"></p>
                 </form>
-             </main>
+             </div>
         </div>
-    </div>
-    
-    <!-- Modal de Gerenciar Aluno -->
-    <div id="manage-student-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-900 bg-opacity-95 backdrop-blur-sm border border-purple-800 rounded-lg max-w-lg w-full p-8 relative">
-            <button id="close-student-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-white transition">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            <h2 class="text-2xl font-bold text-white mb-2 title-font">Gerenciar Acessos</h2>
-            <p class="text-purple-300 mb-6 text-lg">Aluno: <span id="student-modal-email"></span></p>
-            
-            <input type="hidden" id="student-modal-id">
-            
-            <label class="block text-sm font-medium text-gray-300 mb-2">Liberar acesso às seções (módulos):</label>
-            <div id="student-modal-sections-list" class="max-h-64 overflow-y-auto bg-gray-800 p-4 rounded-lg border border-gray-700 mb-6">
-                <!-- Checkboxes das seções serão populadas pelo JS -->
-                <p class="text-gray-400">Carregando seções...</p>
-            </div>
-            
-            <div class="flex justify-end gap-4">
-                <button id="cancel-student-modal-btn" class="btn-secondary">Cancelar</button>
-                <button id="save-student-sections-btn" class="btn-primary">Salvar Permissões</button>
-            </div>
-            <p id="student-modal-status" class="text-green-500 mt-4 text-center"></p>
-        </div>
-    </div>
-    
-    
-    <!-- Delete Confirmation Modal -->
-    <div id="delete-confirm-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-50">
-        <div class="bg-gray-900 bg-opacity-95 backdrop-blur-sm border border-purple-800 rounded-lg max-w-sm w-full p-8 text-center">
-            <h2 id="delete-modal-title" class="text-xl font-bold text-white mb-4 title-font">Confirmar Exclusão</h2>
-            <p id="delete-modal-text" class="text-gray-400 mb-8">Você tem certeza que deseja excluir? Esta ação não pode ser desfeita.</p>
-            <div class="flex justify-center gap-4">
-                <button id="confirm-delete-btn" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-red-500 transition">Excluir</button>
-                <button id="cancel-delete-btn" class="bg-gray-600 text-white font-semibold py-2 px-6 rounded-md hover:bg-gray-500 transition">Cancelar</button>
-            </div>
-        </div>
-    </div>
 
+        <div id="manage-student-modal" class="hidden fixed inset-0 z-[80] bg-black/90 flex items-center justify-center p-4">
+            <div class="bg-obsidian border border-white/10 p-8 w-full max-w-md shadow-2xl">
+                <div class="flex justify-between mb-6">
+                    <div>
+                        <span class="text-[10px] text-gray-500 uppercase tracking-widest block">Gerenciando</span>
+                        <span id="student-modal-email" class="text-gold-400 font-display text-lg"></span>
+                    </div>
+                    <button id="close-student-modal-btn"><i class="fas fa-times text-gray-500 hover:text-white transition"></i></button>
+                </div>
+                <input type="hidden" id="student-modal-id">
+                <div id="student-modal-sections-list" class="space-y-3 mb-8 max-h-60 overflow-y-auto custom-scrollbar bg-black/50 p-4 border border-white/5"></div>
+                <button id="save-student-sections-btn" class="w-full bg-gold-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-gold-500 hover:text-black transition font-bold">Salvar Permissões</button>
+                <p id="student-modal-status" class="text-center text-xs mt-4 h-4"></p>
+            </div>
+        </div>
 
-    <!-- MUDANÇA: Script do player do Vimeo adicionado -->
-    <script src="https://player.vimeo.com/api/player.js"></script>
-    
-    <!-- Firebase SDKs -->
+        <div id="delete-confirm-modal" class="hidden fixed inset-0 z-[90] bg-black/95 flex items-center justify-center">
+            <div class="text-center p-10 border border-red-900/30 bg-obsidian shadow-[0_0_50px_rgba(255,0,0,0.1)]">
+                <i class="fas fa-exclamation-triangle text-red-900 text-4xl mb-6"></i>
+                <h2 id="delete-modal-title" class="text-xl font-display text-white mb-2">Tem certeza?</h2>
+                <p class="text-gray-500 text-xs uppercase tracking-widest mb-8">O conhecimento será perdido para sempre.</p>
+                <div class="flex justify-center gap-6">
+                    <button id="confirm-delete-btn" class="bg-red-900/50 text-red-100 border border-red-900 px-8 py-3 text-xs uppercase hover:bg-red-900 transition">Excluir</button>
+                    <button id="cancel-delete-btn" class="bg-gray-800 text-white px-8 py-3 text-xs uppercase hover:bg-gray-700 transition">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+    </div> <script src="https://player.vimeo.com/api/player.js"></script>
     <script type="module">
-        // Import Firebase modules
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ------------------------------------------------------------
-        // ✨ LOCAL PARA A CHAVE API (HARDCODED) ✨
-        // ------------------------------------------------------------
-        // Se você quiser pular a etapa de colar a chave no site toda vez,
-        // cole sua chave API do Google AI Studio dentro das aspas abaixo.
-        // Exemplo: const HARDCODED_API_KEY = "AIzaSyB...";
-        // ------------------------------------------------------------
-        const HARDCODED_API_KEY = "AIzaSyA2m-CD-RJOiac90q7p4iql7fYyhlnW1xY"; 
-        // ------------------------------------------------------------
-
-        // SUA NOVA CONFIGURAÇÃO DO FIREBASE
+        // === CONFIG FIREBASE ===
         const firebaseConfig = {
           apiKey: "AIzaSyBQXn_dPUivGjfGrWvMwysa-IDX8eXNbCA",
           authDomain: "corvo-4f7e7.firebaseapp.com",
@@ -619,1175 +625,500 @@
           appId: "1:793120208869:web:378c37a33c729ff1a6e10c",
           measurementId: "G-V8LBRHPNKT"
         };
-        
-        // =========================================================================
-        // === IMPORTANTE! AÇÃO NECESSÁRIA! ========================================
-        // =========================================================================
-        // 1. Vá para o seu console do Firebase -> Authentication.
-        // 2. Crie um usuário (ex: admin@corvo.hekate) com uma senha forte.
-        // 3. Após criar, clique nele para ver o "UID do usuário".
-        // 4. COLE ESSE UID AQUI ABAIXO:
-        //
-        const ADMIN_UID = "9yeLL3aKVXVHKiBNKI3yFiCPMIE3"; // <-- TROQUE ISSO
-        //
-        // =========================================================================
+        const ADMIN_UID = "9yeLL3aKVXVHKiBNKI3yFiCPMIE3"; 
+        const HARDCODED_API_KEY = "AIzaSyA2m-CD-RJOiac90q7p4iql7fYyhlnW1xY"; 
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        setLogLevel('debug'); // Para vermos logs detalhados no console
 
-        // State variables
-        let currentUser = null;
-        let currentUserPermissions = []; // Guarda as permissões do aluno logado
-        let itemToDelete = { id: null, type: null }; // { id: 'xyz', type: 'post' | 'section' }
-        let allPosts = [];
-        let allSections = [];
-        let allStudents = []; // Guarda a lista de alunos para o admin
+        // === VARIÁVEIS ===
+        let currentUser = null; 
+        let currentUserPermissions = []; 
+        let itemToDelete = { id: null, type: null }; 
+        let allPosts = []; 
+        let allSections = []; 
+        let allStudents = []; 
 
-        // DOM Elements
-        const introSection = document.getElementById('intro-sequence');
+        // === REFERÊNCIAS ===
         const appRoot = document.getElementById('app-root');
-        const allViews = document.querySelectorAll('.view-container');
+        const introSection = document.getElementById('intro-sequence');
         const loadingSpinner = document.getElementById('loading-spinner');
-        const userInfo = document.getElementById('user-info');
-        const userEmailSpan = document.getElementById('user-email');
-        const logoutBtn = document.getElementById('logout-btn');
-        const loginBtn = document.getElementById('login-btn');
-        const adminPanel = document.getElementById('admin-panel');
-        const pagoSection = document.getElementById('pago-section');
-        const geminiApiKeyInput = document.getElementById('gemini-api-key');
-        const apiKeySection = document.getElementById('api-key-section'); // Nova referência
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const allViews = document.querySelectorAll('.view-container');
         
-        // Forms
-        const loginForm = document.getElementById('login-form');
-        const createPostForm = document.getElementById('create-post-form');
-        const createAccountForm = document.getElementById('create-account-form');
-        const editPostForm = document.getElementById('edit-post-form');
-        const createSectionForm = document.getElementById('create-section-form');
-
-        // Lists & Statuses
-        const postsListPago = document.getElementById('posts-list-pago');
-        const postsListAberto = document.getElementById('posts-list-aberto');
-        const emptyPago = document.getElementById('empty-pago');
-        const emptyAberto = document.getElementById('empty-aberto');
-        const loginError = document.getElementById('login-error');
-        const postStatus = document.getElementById('post-status');
-        const accountStatus = document.getElementById('account-status');
-        const editPostStatus = document.getElementById('edit-post-status');
-        const sectionStatus = document.getElementById('section-status');
-        const sectionsListAdmin = document.getElementById('sections-list-admin');
-        const studentsListAdmin = document.getElementById('students-list-admin'); 
-
-        // Selects & Filters
-        const sectionFilter = document.getElementById('section-filter');
-        const postSectionSelect = document.getElementById('post-section');
-        const editPostSectionSelect = document.getElementById('edit-post-section');
-
-        // Buttons
-        const backToPostsBtn = document.getElementById('back-to-posts-btn');
-        const closeLoginBtn = document.getElementById('close-login-btn');
-        const postViewEditBtn = document.getElementById('post-view-edit-btn');
-        const postViewDeleteBtn = document.getElementById('post-view-delete-btn');
-        const cancelEditBtn = document.getElementById('cancel-edit-btn');
-        const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
-        const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
-        const formatCreateBtn = document.getElementById('format-create-btn');
-        const formatEditBtn = document.getElementById('format-edit-btn');
-        
-        // Single Post View Elements
-        const postViewTitle = document.getElementById('post-view-title');
-        const postViewCoverImage = document.getElementById('post-view-cover-image');
-        const postViewContent = document.getElementById('post-view-content');
-        const postViewAttachmentContainer = document.getElementById('post-view-attachment-container');
-        const postViewAttachment = document.getElementById('post-view-attachment');
-        const postViewCountSpan = document.getElementById('post-view-count');
-
-        // TTS Elements
-        const btnSpeak = document.getElementById('btn-speak');
-        const btnSpeakText = document.getElementById('btn-speak-text');
-        const btnSpeakIcon = document.getElementById('btn-speak-icon');
-        const btnStopSpeak = document.getElementById('btn-stop-speak');
-        const audioContainer = document.getElementById('audio-controls');
-        const geminiAudioPlayer = document.getElementById('gemini-audio-player');
-
-
-        // Modals
-        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
-        const deleteModalTitle = document.getElementById('delete-modal-title');
-        const deleteModalText = document.getElementById('delete-modal-text');
-        
-        // Elementos do Modal de Aluno
-        const manageStudentModal = document.getElementById('manage-student-modal');
-        const closeStudentModalBtn = document.getElementById('close-student-modal-btn');
-        const cancelStudentModalBtn = document.getElementById('cancel-student-modal-btn');
-        const saveStudentSectionsBtn = document.getElementById('save-student-sections-btn');
-        const studentModalEmail = document.getElementById('student-modal-email');
-        const studentModalIdInput = document.getElementById('student-modal-id');
-        const studentModalSectionsList = document.getElementById('student-modal-sections-list');
-        const studentModalStatus = document.getElementById('student-modal-status');
-        
-
-        // --- MUDANÇA: INTRO ANIMATION ---
-        function runIntroAnimation() {
-            const introSection = document.getElementById('intro-sequence');
-            const appRoot = document.getElementById('app-root');
-            
-            // A duração do seu vídeo em milissegundos
-            const VIDEO_DURATION_MS = 10000; 
-
-            const onIntroComplete = () => {
-                gsap.to(introSection, 0.8, { 
-                    opacity: 0,
-                    ease: 'power2.inOut',
-                    onComplete: () => {
-                        introSection.style.display = 'none';
-                        appRoot.style.display = 'block';
-                        document.body.style.overflow = 'auto';
-                    }
-                });
-            };
-
-            setTimeout(onIntroComplete, VIDEO_DURATION_MS);
-        }
-
-        // --- CORE APP LOGIC ---
-        
-        window.onload = () => {
-            runIntroAnimation(); // Inicia a nova intro de vídeo
-            showView('home-view'); // Começa na Home
-            
-            // Verifica se a chave foi hardcoded
-            if (HARDCODED_API_KEY && HARDCODED_API_KEY.length > 10) {
-                console.log("Chave API Hardcoded detectada.");
-                if(apiKeySection) apiKeySection.style.display = 'none'; // Esconde o input
-            }
+        // --- INTRO SAFETY ---
+        window.forceOpenSite = function() {
+            gsap.to(introSection, { opacity: 0, duration: 1, onComplete: () => {
+                introSection.style.display = 'none';
+                appRoot.style.display = 'block';
+                gsap.to(appRoot, { opacity: 1, duration: 1 });
+            }});
         };
 
-        if (localStorage.getItem('geminiApiKey') && !HARDCODED_API_KEY) {
-            geminiApiKeyInput.value = localStorage.getItem('geminiApiKey');
-        }
-        geminiApiKeyInput.addEventListener('input', () => {
-            localStorage.setItem('geminiApiKey', geminiApiKeyInput.value);
-        });
+        window.onload = function() {
+            setTimeout(() => { if(introSection.style.display !== 'none') window.forceOpenSite(); }, 8000); 
+            setTimeout(() => { window.forceOpenSite(); }, 7500);
+        };
 
-        // --- NAVIGATION ---
+        // === NAVEGAÇÃO ===
         function showView(viewId) {
             allViews.forEach(view => {
-                // Mantém os modais como overlays (login e os novos)
                 if (view.classList.contains('fixed')) {
-                    if (view.id === viewId) {
-                        view.style.display = 'flex';
-                    } else if (view.id !== 'manage-student-modal' && view.id !== 'delete-confirm-modal') {
-                         // Não esconde os modais de gerenciamento se estiver trocando de view principal
-                        view.style.display = 'none';
-                    }
-                } 
-                // Esconde/mostra outras views principais
-                else {
+                    if(view.id === viewId) view.style.display = 'flex';
+                    else if(!viewId.includes('modal') && !['manage-student-modal','delete-confirm-modal'].includes(view.id)) view.style.display = 'none';
+                } else {
                     view.style.display = view.id === viewId ? 'block' : 'none';
                 }
             });
-            if (viewId !== 'login-view' && viewId !== 'manage-student-modal' && viewId !== 'delete-confirm-modal') {
-                window.scrollTo(0, 0);
-            }
-            mobileMenu.classList.add('hidden'); // Esconde menu mobile ao trocar de view
+            if(!viewId.includes('modal') && viewId !== 'login-view') window.scrollTo(0,0);
+            document.getElementById('mobile-menu').classList.add('hidden');
         }
 
-        // Apenas botões com a classe 'internal-link' trocam de view
-        document.querySelectorAll('.internal-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const viewId = e.currentTarget.dataset.view;
-                if (viewId) {
-                    showView(viewId);
-                    // IMPORTANTE: Parar o áudio ao trocar de tela
-                    stopSpeaking();
-                }
+        document.querySelectorAll('.internal-link').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const target = e.currentTarget.dataset.view;
+                if(target) showView(target);
+                stopSpeaking();
             });
         });
 
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.remove('hidden');
         });
 
+        // === AUTH ===
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userInfo = document.getElementById('user-info');
+        const userEmailSpan = document.getElementById('user-email');
+        const adminPanel = document.getElementById('admin-panel');
+        const pagoSection = document.getElementById('pago-section');
+        const adminControls = document.querySelectorAll('.admin-only-controls');
+
         onAuthStateChanged(auth, async (user) => {
-            currentUserPermissions = []; // Reseta permissões a cada mudança
-            if (user) { // USER IS LOGGED IN
-                console.log("Usuário logado:", user.uid);
-                const userDocRef = doc(db, "users", user.uid);
-                const userDocSnap = await getDoc(userDocRef);
+            currentUserPermissions = [];
+            if (user) {
                 const isAdmin = user.uid === ADMIN_UID;
-
-                // Verifica validade da conta (exceto para admin)
-                if (!isAdmin && userDocSnap.exists()) {
-                    const expiresAt = userDocSnap.data().expiresAt.toDate();
-                    if (new Date() > expiresAt) {
-                        console.log("Conta expirada. Fazendo logout.");
-                        await signOut(auth); // Isso irá re-trigger onAuthStateChanged
-                        return;
-                    }
-                    // Carrega as permissões do aluno
-                    currentUserPermissions = userDocSnap.data().accessibleSections || [];
-                    console.log("Permissões do aluno carregadas:", currentUserPermissions);
-
-                } else if (!isAdmin && !userDocSnap.exists()) {
-                    // Se não tem documento E não é admin, é um usuário inválido.
-                    console.log("Usuário sem registro. Fazendo logout.");
-                    await signOut(auth); // Isso irá re-trigger onAuthStateChanged
-                    return;
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (!isAdmin) {
+                    if (userDoc.exists()) {
+                        const expires = userDoc.data().expiresAt.toDate();
+                        if (new Date() > expires) { await signOut(auth); return; }
+                        currentUserPermissions = userDoc.data().accessibleSections || [];
+                    } else { await signOut(auth); return; }
                 }
-                
                 currentUser = user;
-                // Configure UI for LOGGED-IN user
-                userEmailSpan.textContent = user.email;
                 userInfo.style.display = 'flex';
+                userEmailSpan.textContent = user.email;
                 loginBtn.style.display = 'none';
-                pagoSection.style.display = 'block'; // Mostra seção paga
-                
-                console.log("É admin?", isAdmin);
-                adminPanel.style.display = isAdmin ? 'block' : 'none';
-                document.querySelectorAll('.admin-only-controls').forEach(el => el.style.display = isAdmin ? 'flex' : 'none');
-                
-                // Se for admin, carrega a lista de alunos
+                pagoSection.style.display = 'block';
                 if (isAdmin) {
-                    fetchAndRenderStudents();
+                    adminPanel.style.display = 'block';
+                    adminControls.forEach(el => { el.style.display = 'flex'; el.classList.remove('hidden'); });
+                    fetchStudents();
+                } else {
+                    adminPanel.style.display = 'none';
+                    adminControls.forEach(el => el.style.display = 'none');
                 }
-
-                // Se estava na tela de login, manda para o blog
-                if (document.getElementById('login-view').style.display === 'flex') {
-                    showView('blog-view');
-                }
-
-            } else { // USER IS LOGGED OUT (GUEST)
-                console.log("Usuário deslogado.");
+                if(document.getElementById('login-view').style.display === 'flex') showView('blog-view');
+            } else {
                 currentUser = null;
-                // Configure UI for GUEST user
                 userInfo.style.display = 'none';
                 loginBtn.style.display = 'block';
                 adminPanel.style.display = 'none';
-                pagoSection.style.display = 'none'; // Esconde seção paga
-                document.querySelectorAll('.admin-only-controls').forEach(el => el.style.display = 'none');
+                pagoSection.style.display = 'none';
+                adminControls.forEach(el => el.style.display = 'none');
             }
-            fetchPosts(); // Fetch posts (abertos) para todos
-            fetchAndRenderSections(); // Puxa as seções
-            loadingSpinner.style.display = 'none';
+            fetchSections();
+            fetchPosts();
         });
 
-        // --- AUTHENTICATION ---
-        loginForm.addEventListener('submit', (e) => {
+        document.getElementById('login-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            loginError.textContent = "";
-            loadingSpinner.style.display = 'flex';
-            const email = loginForm['login-email'].value;
-            const password = loginForm['login-password'].value;
-            signInWithEmailAndPassword(auth, email, password)
-                .catch(error => {
-                    console.error("Erro de login:", error.code);
-                    loginError.textContent = "Email ou senha inválidos.";
-                    loadingSpinner.style.display = 'none';
-                });
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-password').value;
+            signInWithEmailAndPassword(auth, email, pass).catch(err => {
+                document.getElementById('login-error').textContent = "Credenciais incorretas.";
+            });
         });
         logoutBtn.addEventListener('click', () => signOut(auth));
         loginBtn.addEventListener('click', () => showView('login-view'));
-        closeLoginBtn.addEventListener('click', () => {
-            // Volta para a view que estava aberta antes, ou home
-            const currentView = [...allViews].find(v => v.style.display === 'block' && v.id !== 'login-view');
-            showView(currentView ? currentView.id : 'home-view');
+        document.getElementById('close-login-btn').addEventListener('click', () => showView('home-view'));
+
+        // === ADMIN FUNCTIONS ===
+        const sectionFilter = document.getElementById('section-filter');
+        const postSectionSelect = document.getElementById('post-section');
+        const editPostSectionSelect = document.getElementById('edit-post-section');
+        const sectionsListAdmin = document.getElementById('sections-list-admin');
+
+        function fetchSections() {
+            const q = query(collection(db, "sections"), orderBy("name"));
+            onSnapshot(q, (snap) => {
+                allSections = [];
+                sectionFilter.innerHTML = '<option value="todos" class="bg-black">Todos os Mistérios</option>';
+                postSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
+                editPostSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
+                sectionsListAdmin.innerHTML = '';
+                snap.forEach(d => {
+                    const sec = { id: d.id, ...d.data() };
+                    allSections.push(sec);
+                    sectionFilter.add(new Option(sec.name, sec.id));
+                    postSectionSelect.add(new Option(sec.name, sec.id));
+                    editPostSectionSelect.add(new Option(sec.name, sec.id));
+                    const div = document.createElement('div');
+                    div.className = "flex justify-between items-center p-2 hover:bg-white/5 rounded border-b border-white/5";
+                    div.innerHTML = `<span>${sec.name}</span> <button class="delete-sec-btn text-red-500 hover:text-red-300" data-id="${sec.id}"><i class="fas fa-times"></i></button>`;
+                    sectionsListAdmin.appendChild(div);
+                });
+            });
+        }
+        
+        document.getElementById('create-section-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('section-name').value;
+            if(name) { await addDoc(collection(db, "sections"), {name, createdAt: new Date()}); document.getElementById('create-section-form').reset(); }
         });
 
-        // --- ADMIN: ACCOUNT CREATION ---
-        createAccountForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = createAccountForm['new-email'].value;
-            const password = createAccountForm['new-password'].value;
-            const validityMonths = parseInt(createAccountForm['account-validity'].value);
-            accountStatus.textContent = "Criando conta...";
-            accountStatus.className = 'text-yellow-500 mt-2';
-            
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-                const now = new Date();
-                const expiresAt = new Date(now.setMonth(now.getMonth() + validityMonths));
-                
-                // Adiciona a lista de seções acessíveis (vazia)
-                await setDoc(doc(db, "users", user.uid), {
-                    email: user.email,
-                    createdAt: new Date(),
-                    expiresAt: expiresAt,
-                    accessibleSections: [] // Começa sem acesso a nenhum módulo
-                });
-                accountStatus.textContent = `Conta criada para ${email} com sucesso!`;
-                accountStatus.className = 'text-green-500 mt-2';
-                createAccountForm.reset();
-                console.warn("Conta de usuário criada. A sessão do admin pode ter sido deslogada. Re-login pode ser necessário.");
-            } catch (error) {
-                console.error("Erro ao criar conta:", error.code);
-                if (error.code === 'auth/email-already-in-use') {
-                    accountStatus.textContent = "Este email já está em uso.";
-                } else if (error.code === 'auth/weak-password') {
-                    accountStatus.textContent = "A senha deve ter pelo menos 6 caracteres.";
-                } else {
-                    accountStatus.textContent = "Erro ao criar conta.";
-                }
-                accountStatus.className = 'text-red-500 mt-2';
-            }
-        });
-        
-        // --- STUDENT MANAGEMENT (Admin) ---
-        function fetchAndRenderStudents() {
-            const q = query(collection(db, "users"));
-            onSnapshot(q, (snapshot) => {
+        const studentsListAdmin = document.getElementById('students-list-admin');
+        function fetchStudents() {
+            onSnapshot(query(collection(db, "users")), (snap) => {
                 allStudents = [];
                 studentsListAdmin.innerHTML = '';
-                
-                let studentCount = 0;
-                snapshot.forEach(doc => {
-                    // Pula a conta do Admin
-                    if (doc.id === ADMIN_UID) return; 
-                    
-                    const student = { id: doc.id, ...doc.data() };
-                    allStudents.push(student);
-                    studentCount++;
-
-                    // Formata a data de expiração
-                    const expiresDate = student.expiresAt.toDate();
-                    const isExpired = new Date() > expiresDate;
-                    const dateString = expiresDate.toLocaleDateString('pt-BR');
-
-                    const studentItem = document.createElement('div');
-                    studentItem.className = `flex justify-between items-center bg-gray-700 p-3 rounded ${isExpired ? 'opacity-50' : ''}`;
-                    studentItem.innerHTML = `
-                        <div>
-                            <span class="text-gray-200">${student.email}</span>
-                            <span class="block text-xs ${isExpired ? 'text-red-400' : 'text-gray-400'}">
-                                ${isExpired ? 'Expirado em' : 'Expira em'}: ${dateString}
-                            </span>
-                        </div>
-                        <button class="manage-student-btn btn-accent text-sm py-1 px-3" data-id_student="${student.id}">
-                            <i class="fas fa-tasks mr-1"></i> Gerenciar
-                        </button>
-                    `;
-                    studentsListAdmin.appendChild(studentItem);
+                snap.forEach(d => {
+                    if(d.id === ADMIN_UID) return;
+                    const st = { id: d.id, ...d.data() };
+                    allStudents.push(st);
+                    const div = document.createElement('div');
+                    div.className = "flex justify-between p-2 border-b border-white/5 hover:bg-white/5";
+                    div.innerHTML = `<span class="truncate w-32">${st.email}</span><button class="manage-student-btn text-gold-400" data-id="${st.id}"><i class="fas fa-cog"></i></button>`;
+                    studentsListAdmin.appendChild(div);
                 });
-                
-                if (studentCount === 0) {
-                     studentsListAdmin.innerHTML = '<p class="text-gray-400">Nenhum aluno assinante encontrado.</p>';
-                }
             });
         }
         
-        function openStudentModal(studentId) {
-            const student = allStudents.find(s => s.id === studentId);
-            if (!student) {
-                console.error("Aluno não encontrado:", studentId);
-                return;
-            }
-            
-            studentModalEmail.textContent = student.email;
-            studentModalIdInput.value = student.id;
-            studentModalSectionsList.innerHTML = '';
-            studentModalStatus.textContent = '';
-            
-            if (allSections.length === 0) {
-                studentModalSectionsList.innerHTML = '<p class="text-gray-400">Nenhuma seção (módulo) foi criada ainda.</p>';
-                return;
-            }
-
-            // Popula a lista de seções (módulos) com checkboxes
-            allSections.forEach(section => {
-                const isChecked = student.accessibleSections && student.accessibleSections.includes(section.id);
-                const label = document.createElement('label');
-                label.className = 'student-section-label';
-                label.innerHTML = `
-                    <input type="checkbox" value="${section.id}" ${isChecked ? 'checked' : ''} class="w-4 h-4">
-                    ${section.name}
-                `;
-                studentModalSectionsList.appendChild(label);
-            });
-            
-            manageStudentModal.style.display = 'flex';
-        }
-        
-        async function saveStudentSections() {
-            const studentId = studentModalIdInput.value;
-            saveStudentSectionsBtn.disabled = true;
-            saveStudentSectionsBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Salvando...';
-            studentModalStatus.textContent = '';
-            
-            const checkedBoxes = studentModalSectionsList.querySelectorAll('input[type="checkbox"]:checked');
-            const newSections = Array.from(checkedBoxes).map(cb => cb.value);
-            
-            try {
-                const studentRef = doc(db, "users", studentId);
-                await updateDoc(studentRef, {
-                    accessibleSections: newSections
-                });
-                
-                // Atualiza a lista local 'allStudents' para refletir a mudança
-                const studentIndex = allStudents.findIndex(s => s.id === studentId);
-                if (studentIndex > -1) {
-                    allStudents[studentIndex].accessibleSections = newSections;
-                }
-                
-                studentModalStatus.className = 'text-green-500 mt-4 text-center';
-                studentModalStatus.textContent = 'Permissões atualizadas com sucesso!';
-                
-                setTimeout(() => {
-                    manageStudentModal.style.display = 'none';
-                    studentModalStatus.textContent = '';
-                }, 1500);
-
-            } catch (error) {
-                console.error("Erro ao salvar permissões:", error);
-                studentModalStatus.className = 'text-red-500 mt-4 text-center';
-                studentModalStatus.textContent = 'Erro ao salvar permissões.';
-            } finally {
-                saveStudentSectionsBtn.disabled = false;
-                saveStudentSectionsBtn.innerHTML = 'Salvar Permissões';
-            }
-        }
-        
-        // Listeners do Modal de Aluno
-        saveStudentSectionsBtn.addEventListener('click', saveStudentSections);
-        closeStudentModalBtn.addEventListener('click', () => manageStudentModal.style.display = 'none');
-        cancelStudentModalBtn.addEventListener('click', () => manageStudentModal.style.display = 'none');
-
-
-        // --- SECTION MANAGEMENT (CRUD) ---
-        function fetchAndRenderSections() {
-            const q = query(collection(db, "sections"), orderBy("name"));
-            onSnapshot(q, (snapshot) => {
-                allSections = [];
-                // Limpa todos os dropdowns e a lista do admin
-                sectionFilter.innerHTML = '<option value="todos">Todas as Seções</option>';
-                postSectionSelect.innerHTML = '<option value="">Selecione uma Seção</option>';
-                editPostSectionSelect.innerHTML = '<option value="">Selecione uma Seção</option>';
-                sectionsListAdmin.innerHTML = '';
-
-                snapshot.forEach(doc => {
-                    const section = { id: doc.id, ...doc.data() };
-                    allSections.push(section);
-
-                    // 1. Popula o filtro principal
-                    const filterOption = new Option(section.name, section.id);
-                    sectionFilter.add(filterOption);
-
-                    // 2. Popula o select de criar post
-                    const createOption = new Option(section.name, section.id);
-                    postSectionSelect.add(createOption);
-
-                    // 3. Popula o select de editar post
-                    const editOption = new Option(section.name, section.id);
-                    editPostSectionSelect.add(editOption);
-
-                    // 4. Popula a lista no admin panel
-                    const sectionItem = document.createElement('div');
-                    sectionItem.className = "flex justify-between items-center bg-gray-700 p-2 rounded";
-                    sectionItem.innerHTML = `
-                        <span class="text-gray-200">${section.name}</span>
-                        <button class="delete-section-btn text-gray-400 hover:text-red-500" data-id_sec="${section.id}" data-name_sec="${section.name}">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    `;
-                    sectionsListAdmin.appendChild(sectionItem);
-                });
-                if (allSections.length === 0) {
-                     sectionsListAdmin.innerHTML = '<p class="text-gray-400">Nenhuma seção criada.</p>';
-                }
-            });
-        }
-
-        createSectionForm.addEventListener('submit', async (e) => {
+        document.getElementById('create-account-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const sectionName = createSectionForm['section-name'].value;
-            if (!sectionName.trim()) return;
-
-            sectionStatus.textContent = "Criando...";
-            sectionStatus.className = 'text-yellow-500 mt-2';
+            const email = document.getElementById('new-email').value;
+            const pass = document.getElementById('new-password').value;
+            const months = parseInt(document.getElementById('account-validity').value);
+            const status = document.getElementById('account-status');
+            status.textContent = "Gerando...";
             try {
-                await addDoc(collection(db, "sections"), {
-                    name: sectionName,
-                    createdAt: new Date()
-                });
-                sectionStatus.textContent = "Seção criada com sucesso!";
-                sectionStatus.className = 'text-green-500 mt-2';
-                createSectionForm.reset();
-            } catch (error) {
-                console.error("Erro ao criar seção:", error);
-                sectionStatus.textContent = "Erro ao criar seção.";
-                sectionStatus.className = 'text-red-500 mt-2';
-            }
+                const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                const exp = new Date(); exp.setMonth(exp.getMonth() + months);
+                await setDoc(doc(db, "users", cred.user.uid), { email, createdAt: new Date(), expiresAt: exp, accessibleSections: [] });
+                status.textContent = "Acesso Criado!"; status.className = "text-green-400 text-xs";
+                document.getElementById('create-account-form').reset();
+            } catch(e) { status.textContent = "Erro: " + e.code; status.className = "text-red-400 text-xs"; }
         });
 
-        sectionsListAdmin.addEventListener('click', (e) => {
-            const deleteBtn = e.target.closest('.delete-section-btn');
-            if (deleteBtn) {
-                const id = deleteBtn.dataset.id_sec;
-                const name = deleteBtn.dataset.name_sec;
-                // ABRIR O MODAL DE CONFIRMAÇÃO
-                itemToDelete = { id: id, type: 'section' };
-                deleteModalTitle.textContent = "Excluir Seção";
-                deleteModalText.textContent = `Você tem certeza que deseja excluir a seção "${name}"? Isso NÃO exclui os posts dentro dela, mas eles ficarão sem seção.`;
-                deleteConfirmModal.style.display = 'flex';
-            }
-        });
+        const createPostForm = document.getElementById('create-post-form');
+        const postStatus = document.getElementById('post-status');
 
-
-        // --- POST MANAGEMENT (CRUD) ---
         createPostForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            postStatus.textContent = "Publicando...";
-            postStatus.className = 'text-yellow-500 mt-2';
-
-            const selectedIndex = createPostForm['post-section'].selectedIndex;
-            const sectionName = createPostForm['post-section'].options[selectedIndex].text;
-
+            postStatus.textContent = "Enviando ao Grimório...";
+            const secSelect = document.getElementById('post-section');
+            const secName = secSelect.options[secSelect.selectedIndex].text;
             try {
                 await addDoc(collection(db, "posts"), {
-                    title: createPostForm['post-title'].value,
-                    coverImage: createPostForm['post-cover-image'].value,
-                    content: createPostForm['post-content'].value,
-                    attachmentURL: createPostForm['post-attachment-link'].value || null,
-                    attachmentName: createPostForm['post-attachment-name'].value || null,
-                    access: createPostForm['post-access'].value, 
-                    sectionId: createPostForm['post-section'].value,
-                    sectionName: sectionName,
+                    title: document.getElementById('post-title').value,
+                    coverImage: document.getElementById('post-cover-image').value,
+                    content: document.getElementById('post-content').value,
+                    attachmentName: document.getElementById('post-attachment-name').value || null,
+                    attachmentURL: document.getElementById('post-attachment-link').value || null,
+                    access: document.getElementById('post-access').value,
+                    sectionId: secSelect.value,
+                    sectionName: secName,
                     createdAt: new Date(),
-                    viewCount: 0 // Inicializa o contador de views
+                    viewCount: 0
                 });
-                postStatus.textContent = "Publicado com sucesso!";
-                postStatus.className = 'text-green-500 mt-2';
-                createPostForm.reset();
-                postSectionSelect.selectedIndex = 0; // Reseta o dropdown de seção
-            } catch (error) {
-                postStatus.textContent = "Erro ao publicar.";
-                postStatus.className = 'text-red-500 mt-2';
-                console.error("Erro ao criar post:", error);
-            }
+                postStatus.textContent = "Publicado!"; createPostForm.reset();
+            } catch(e) { postStatus.textContent = "Falha no ritual."; }
         });
 
+        const postsListPago = document.getElementById('posts-list-pago');
+        const postsListAberto = document.getElementById('posts-list-aberto');
+
         function fetchPosts() {
-            const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-            
-            onSnapshot(q, (snapshot) => {
+            onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), (snap) => {
                 allPosts = [];
-                snapshot.forEach(doc => {
-                    allPosts.push({ id: doc.id, ...doc.data() });
-                });
-                // Re-renderiza os posts com o filtro atual
+                snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
                 renderPosts(sectionFilter.value);
             });
         }
-        
-        // ATUALIZADO com lógica de permissão
-        function renderPosts(filterSectionId) {
-            postsListPago.innerHTML = '';
-            postsListAberto.innerHTML = '';
-            
-            let pagoCount = 0;
-            let abertoCount = 0;
 
-            const filteredPosts = (filterSectionId === 'todos')
-                ? allPosts
-                : allPosts.filter(post => post.sectionId === filterSectionId);
+        function renderPosts(filterId) {
+            postsListPago.innerHTML = ''; postsListAberto.innerHTML = '';
+            let cPago = 0; let cAberto = 0;
+            const filtered = (filterId === 'todos') ? allPosts : allPosts.filter(p => p.sectionId === filterId);
 
-            filteredPosts.forEach(post => {
-                const postCard = document.createElement('div');
-                postCard.className = "bg-gray-900 bg-opacity-80 backdrop-blur-sm overflow-hidden rounded-lg border border-gray-700 hover:border-purple-600 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 cursor-pointer relative flex flex-col";
-                postCard.dataset.id = post.id;
-                
-                let adminControlsHTML = '';
-                if (currentUser && currentUser.uid === ADMIN_UID) {
-                    adminControlsHTML = `
-                        <div class="absolute top-2 right-2 flex gap-2 z-10">
-                            <button class="edit-btn bg-black bg-opacity-50 p-2 rounded-full text-gray-300 hover:text-amber-400" data-id="${post.id}"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="delete-btn bg-black bg-opacity-50 p-2 rounded-full text-gray-300 hover:text-red-500" data-id="${post.id}"><i class="fas fa-trash-alt"></i></button>
-                        </div>
-                    `;
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = "project-card bg-obsidian border border-white/5 cursor-pointer h-[420px] flex flex-col group relative overflow-hidden transition-all duration-500 hover:shadow-[0_0_20px_rgba(212,175,55,0.1)] hover:border-gold-900/50";
+                card.dataset.id = p.id;
+
+                let adminBtns = '';
+                if(currentUser && currentUser.uid === ADMIN_UID) {
+                    adminBtns = `<div class="absolute top-2 right-2 z-20 flex gap-2"><button class="edit-btn bg-black/80 p-2 rounded text-gold-400 hover:text-white" data-id="${p.id}"><i class="fas fa-pen"></i></button><button class="del-btn bg-black/80 p-2 rounded text-red-500 hover:text-red-300" data-id="${p.id}"><i class="fas fa-trash"></i></button></div>`;
                 }
 
-                const sectionTagHTML = post.sectionName 
-                    ? `<span class="absolute top-2 left-2 bg-purple-800 text-white text-xs font-semibold px-2 py-1 rounded-full z-10">${post.sectionName}</span>` 
-                    : '';
-
-                const previewText = stripMarkdown(post.content).substring(0, 100);
-
-                postCard.innerHTML = `
-                    ${adminControlsHTML}
-                    ${sectionTagHTML}
-                    <div class="post-card-content flex-grow flex flex-col">
-                        <img src="${post.coverImage}" alt="${post.title}" class="w-full h-48 object-cover" onerror="this.src='https://placehold.co/600x400/0a0a0a/4a148c?text=Corvo&font=cinzel'; this.onerror=null;">
-                        <div class="p-4 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold text-purple-300 mb-2 title-font text-glow flex-grow">${post.title}</h3>
-                            <p class="text-gray-400 mb-4 h-12 overflow-hidden text-ellipsis">${previewText}...</p>
-                            <!-- View count no card -->
-                            <span class="text-gray-400 text-sm title-font mt-auto pt-2 border-t border-gray-600">
-                                <i class="fas fa-eye mr-1"></i> ${post.viewCount || 0} visualizações
-                            </span>
-                            <div class="text-center mt-2 bg-gray-800 text-amber-400 font-semibold py-2 px-4 rounded title-font">
-                                Ler Postagem
-                            </div>
+                card.innerHTML = `
+                    ${adminBtns}
+                    <div class="h-52 overflow-hidden relative">
+                        <img src="${p.coverImage}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-700 transform group-hover:scale-110 filter grayscale group-hover:grayscale-0">
+                        <div class="absolute inset-0 bg-gradient-to-t from-obsidian to-transparent opacity-80"></div>
+                        <span class="absolute top-3 left-3 bg-black/80 text-gold-400 text-[9px] px-2 py-1 uppercase tracking-widest border border-gold-900/30">${p.sectionName || 'Geral'}</span>
+                    </div>
+                    <div class="p-6 flex flex-col flex-grow relative">
+                        <h3 class="text-white font-display text-lg leading-tight mb-3 group-hover:text-gold-400 transition line-clamp-2">${p.title}</h3>
+                        <p class="text-gray-500 text-xs line-clamp-3 mb-6 font-body font-light leading-relaxed">${p.content.replace(/[#*_]/g, '').substring(0, 100)}...</p>
+                        <div class="mt-auto flex justify-between border-t border-white/5 pt-4 items-center">
+                             <span class="text-[10px] text-gray-600 uppercase tracking-wider"><i class="fas fa-eye mr-1"></i> ${p.viewCount||0}</span>
+                             <span class="text-[10px] text-gold-500 uppercase tracking-[0.2em] group-hover:translate-x-1 transition flex items-center gap-1">Ler <i class="fas fa-chevron-right text-[8px]"></i></span>
                         </div>
                     </div>
                 `;
-                
-                if (post.access === 'aberto') {
-                    postsListAberto.appendChild(postCard);
-                    abertoCount++;
-                } else if (post.access === 'pago') { 
-                    // Lógica de Permissão
-                    let canViewPaidPost = false;
-                    if (currentUser && currentUser.uid === ADMIN_UID) {
-                        canViewPaidPost = true; // Admin vê tudo
-                    } else if (currentUser && currentUserPermissions.includes(post.sectionId)) {
-                        canViewPaidPost = true; // Aluno tem permissão para esta seção
-                    }
-                    
-                    if (canViewPaidPost) {
-                        postsListPago.appendChild(postCard);
-                        pagoCount++;
-                    }
+
+                if(p.access === 'aberto') { postsListAberto.appendChild(card); cAberto++; }
+                else if(p.access === 'pago') {
+                    const allowed = (currentUser && currentUser.uid === ADMIN_UID) || (currentUser && currentUserPermissions.includes(p.sectionId));
+                    if(allowed) { postsListPago.appendChild(card); cPago++; }
                 }
             });
-            
-            emptyAberto.style.display = (abertoCount === 0) ? 'block' : 'none';
-            // Mensagem de "vazio" para pagos considera se o usuário está logado
-            const emptyPagoText = (currentUser) 
-                ? "Nenhuma postagem encontrada para suas permissões."
-                : "Faça login para ver o conteúdo de assinante.";
-            emptyPago.textContent = emptyPagoText;
-            emptyPago.style.display = (pagoCount === 0 && pagoSection.style.display === 'block') ? 'block' : 'none';
+
+            document.getElementById('empty-aberto').style.display = cAberto === 0 ? 'block' : 'none';
+            document.getElementById('empty-pago').style.display = (cPago === 0 && document.getElementById('pago-section').style.display === 'block') ? 'block' : 'none';
         }
-        
-        sectionFilter.addEventListener('change', (e) => {
-            renderPosts(e.target.value);
-        });
 
-        // ATUALIZADO com checagem de permissão E contador de views
-        async function openPost(postId) {
-            loadingSpinner.style.display = 'flex';
-            const docRef = doc(db, "posts", postId);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const post = docSnap.data();
+        sectionFilter.addEventListener('change', (e) => renderPosts(e.target.value));
 
-                // Checagem de Segurança
-                if (post.access === 'pago') {
-                    let canView = false;
-                    if (currentUser && currentUser.uid === ADMIN_UID) {
-                        canView = true; // Admin pode ver
-                    } else if (currentUser && currentUserPermissions.includes(post.sectionId)) {
-                        canView = true; // Aluno tem permissão
-                    }
+        // === VIEW POST ===
+        const postViewTitle = document.getElementById('post-view-title');
+        const postViewContent = document.getElementById('post-view-content');
+        const postViewCover = document.getElementById('post-view-cover-image');
+        const postViewCount = document.getElementById('post-view-count');
+        const postViewAttachContainer = document.getElementById('post-view-attachment-container');
+        const postViewAttachLink = document.getElementById('post-view-attachment');
 
-                    if (!canView) {
-                        loadingSpinner.style.display = 'none';
-                        if (!currentUser) {
-                            // Se deslogado, manda pro login
-                            showView('login-view');
-                            loginError.textContent = "Você precisa fazer login para acessar este conteúdo.";
-                        } else {
-                            // Se logado mas sem permissão, só manda de volta pro blog
-                            showView('blog-view');
-                        }
-                        return; // Bloqueia a abertura do post
-                    }
+        async function openPost(id) {
+            loadingSpinner.classList.remove('hidden');
+            const ref = doc(db, "posts", id);
+            const snap = await getDoc(ref);
+            if(snap.exists()) {
+                const p = snap.data();
+                if(p.access === 'pago') {
+                    const allowed = (currentUser && currentUser.uid === ADMIN_UID) || (currentUser && currentUserPermissions.includes(p.sectionId));
+                    if(!allowed) { loadingSpinner.classList.add('hidden'); alert("Este conhecimento está selado."); return; }
                 }
-
-                // Incrementa o contador de visualizações
-                // "Fire and forget" - não precisamos esperar (await) isso
-                const postRef = doc(db, "posts", postId);
-                updateDoc(postRef, {
-                    viewCount: increment(1)
-                }).catch(err => {
-                    console.warn("Não foi possível atualizar o view count:", err.message);
-                });
-
-
-                // Se passou na checagem, abre o post
-                postViewTitle.textContent = post.title;
-                // Popula o contador de views na página do post
-                // Mostra o valor + 1 (contando a view atual)
-                postViewCountSpan.textContent = (post.viewCount || 0) + 1; 
-                postViewCoverImage.src = post.coverImage;
-                postViewCoverImage.onerror = () => {
-                    postViewCoverImage.src = 'httpsS://placehold.co/600x400/0a0a0a/4a148c?text=Corvo&font=cinzel';
-                    postViewCoverImage.onerror = null;
-                };
-                postViewContent.innerHTML = formatPostText(post.content);
-                if (post.attachmentURL && post.attachmentName) {
-                    postViewAttachment.href = post.attachmentURL;
-                    postViewAttachment.textContent = post.attachmentName;
-                    postViewAttachmentContainer.style.display = 'block';
-                } else {
-                    postViewAttachmentContainer.style.display = 'none';
-                }
-                
-                // Reinicia UI de Audio
-                stopSpeaking(); // Garante que não tem nada tocando do anterior
-                btnSpeakText.textContent = "Ouvir o Chamado";
-                btnStopSpeak.classList.add('hidden');
-
-                postViewEditBtn.dataset.id = postId;
-                postViewDeleteBtn.dataset.id = postId;
-                loadingSpinner.style.display = 'none';
+                await updateDoc(ref, { viewCount: increment(1) });
+                postViewTitle.textContent = p.title;
+                postViewCount.textContent = (p.viewCount || 0) + 1;
+                postViewCover.src = p.coverImage;
+                postViewContent.innerHTML = formatText(p.content);
+                if(p.attachmentURL) {
+                    postViewAttachLink.href = p.attachmentURL;
+                    postViewAttachContainer.classList.remove('hidden');
+                } else { postViewAttachContainer.classList.add('hidden'); }
+                document.getElementById('post-view-edit-btn').onclick = () => openEdit(id);
+                document.getElementById('post-view-delete-btn').onclick = () => confirmDel(id, 'post');
+                stopSpeaking();
                 showView('post-view');
-            } else {
-                loadingSpinner.style.display = 'none';
+            }
+            loadingSpinner.classList.add('hidden');
+        }
+
+        function formatText(txt) {
+            if(!txt) return '';
+            let t = txt.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            t = t.replace(/!\[(.*?)\]\((.*?)\)/g, `<div class="my-10"><img src="$2" class="w-full rounded-sm border border-gold-900/30 shadow-lg"><p class="text-center text-[10px] text-gray-500 mt-2 uppercase tracking-widest">$1</p></div>`);
+            t = t.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gold-400 font-bold">$1</strong>');
+            t = t.replace(/##(.*?)##/g, '<span class="text-purple-300 italic border-b border-purple-900/50">$1</span>');
+            t = t.replace(/^### (.*$)/gim, '<h3 class="text-2xl text-white font-display mt-8 mb-4 border-l-2 border-gold-500 pl-4">$1</h3>');
+            return t.replace(/\n/g, '<br>');
+        }
+
+        // === EDIT & DELETE ===
+        const editPostForm = document.getElementById('edit-post-form');
+        async function openEdit(id) {
+            const snap = await getDoc(doc(db, "posts", id));
+            if(snap.exists()) {
+                const p = snap.data();
+                document.getElementById('edit-post-id').value = id;
+                document.getElementById('edit-post-title').value = p.title;
+                document.getElementById('edit-post-cover-image').value = p.coverImage;
+                document.getElementById('edit-post-content').value = p.content;
+                document.getElementById('edit-post-attachment-name').value = p.attachmentName||'';
+                document.getElementById('edit-post-attachment-link').value = p.attachmentURL||'';
+                document.getElementById('edit-post-access').value = p.access;
+                document.getElementById('edit-post-section').value = p.sectionId;
+                showView('edit-post-view');
             }
         }
-        
-        async function openEditForm(postId) {
-             const docRef = doc(db, "posts", postId);
-             const docSnap = await getDoc(docRef);
-             if(docSnap.exists()){
-                const post = docSnap.data();
-                editPostForm['edit-post-id'].value = postId;
-                editPostForm['edit-post-title'].value = post.title;
-                editPostForm['edit-post-cover-image'].value = post.coverImage;
-                editPostForm['edit-post-content'].value = post.content;
-                editPostForm['edit-post-attachment-name'].value = post.attachmentName || '';
-                editPostForm['edit-post-attachment-link'].value = post.attachmentURL || '';
-                editPostForm['edit-post-access'].value = post.access || 'aberto';
-                editPostForm['edit-post-section'].value = post.sectionId || '';
-                showView('edit-post-view');
-             }
-        }
-        
+
         editPostForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const postId = editPostForm['edit-post-id'].value;
-            editPostStatus.textContent = 'Salvando...';
-            editPostStatus.className = 'text-yellow-500 mt-4';
-            
-            const selectedIndex = editPostForm['edit-post-section'].selectedIndex;
-            const sectionName = editPostForm['edit-post-section'].options[selectedIndex].text;
-
-            try {
-                const postRef = doc(db, "posts", postId);
-                await updateDoc(postRef, {
-                    title: editPostForm['edit-post-title'].value,
-                    coverImage: editPostForm['edit-post-cover-image'].value,
-                    content: editPostForm['edit-post-content'].value,
-                    attachmentName: editPostForm['edit-post-attachment-name'].value || null,
-                    attachmentURL: editPostForm['edit-post-attachment-link'].value || null,
-                    access: editPostForm['edit-post-access'].value, 
-                    sectionId: editPostForm['edit-post-section'].value, 
-                    sectionName: sectionName
-                });
-                editPostStatus.textContent = 'Salvo com sucesso!';
-                editPostStatus.className = 'text-green-500 mt-4';
-                setTimeout(() => openPost(postId), 1000);
-            } catch (error) {
-                 editPostStatus.textContent = 'Erro ao salvar.';
-                 editPostStatus.className = 'text-red-500 mt-4';
-                 console.error("Erro ao editar post:", error);
-            }
-        });
-        
-        function handleDeleteClick(postId) {
-            itemToDelete = { id: postId, type: 'post' };
-            deleteModalTitle.textContent = "Excluir Postagem";
-            deleteModalText.textContent = "Você tem certeza que deseja excluir esta postagem? Esta ação não pode ser desfeita.";
-            deleteConfirmModal.style.display = 'flex';
-        }
-        
-        confirmDeleteBtn.addEventListener('click', async () => {
-            if (!itemToDelete.id || !itemToDelete.type) return;
-
-            loadingSpinner.style.display = 'flex';
-            try {
-                if (itemToDelete.type === 'post') {
-                    await deleteDoc(doc(db, "posts", itemToDelete.id));
-                    if(document.getElementById('post-view').style.display === 'block'){
-                        showView('blog-view');
-                    }
-                } else if (itemToDelete.type === 'section') {
-                    await deleteDoc(doc(db, "sections", itemToDelete.id));
-                }
-            } catch (error) {
-                console.error("Erro ao excluir:", error);
-            } finally {
-                itemToDelete = { id: null, type: null };
-                deleteConfirmModal.style.display = 'none';
-                loadingSpinner.style.display = 'none';
-            }
-        });
-        
-        cancelDeleteBtn.addEventListener('click', () => {
-            itemToDelete = { id: null, type: null };
-            deleteConfirmModal.style.display = 'none';
-        });
-
-        // --- EVENT LISTENERS & NAVIGATION ---
-        document.getElementById('app-root').addEventListener('click', (e) => {
-            const postCard = e.target.closest('[data-id]');
-            // Abre o post se clicar no card, mas não nos botões de admin
-            if (postCard && !e.target.closest('.edit-btn') && !e.target.closest('.delete-btn')) {
-                openPost(postCard.dataset.id);
-            }
-            if(e.target.closest('.edit-btn')){
-                 openEditForm(e.target.closest('.edit-btn').dataset.id);
-            }
-            if(e.target.closest('.delete-btn')){
-                 handleDeleteClick(e.target.closest('.delete-btn').dataset.id);
-            }
-            // Listener para o botão de gerenciar aluno
-            if(e.target.closest('.manage-student-btn')){
-                 openStudentModal(e.target.closest('.manage-student-btn').dataset.id_student);
-            }
-        });
-        
-        backToPostsBtn.addEventListener('click', () => {
-            stopSpeaking(); // Para o áudio ao voltar
-            showView('blog-view');
-        });
-        postViewEditBtn.addEventListener('click', (e) => openEditForm(e.currentTarget.dataset.id));
-        postViewDeleteBtn.addEventListener('click', (e) => handleDeleteClick(e.currentTarget.dataset.id));
-        cancelEditBtn.addEventListener('click', () => showView('blog-view')); 
-        
-        // --- AI FORMATTING (PROMPT MELHORADO) ---
-        // Mudança: Prompt mais estrito sobre não alterar conteúdo.
-        const systemPrompt = "Você é um editor de texto mágico. Sua ÚNICA função é formatar o texto fornecido para melhor leitura, SEM alterar, adicionar ou remover nenhuma palavra. Regras CRÍTICAS:\n1. Identifique conceitos chave e coloque em negrito (**texto**).\n2. Identifique termos místicos e envolva em ##termo## para destaque.\n3. Mantenha TODA a pontuação, estrutura de parágrafos e conteúdo original. É proibido resumir.\n4. Se houver links de imagem `![legenda](url)`, mantenha-os intactos.\n5. NÃO use cabeçalhos (#) ou listas (-). Apenas use a formatação visual pedida.";
-
-        async function formatTextWithAI(text, apiKey) {
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{ parts: [{ text: text }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-            };
-            
-            // Lógica de retry (exponential backoff)
-            let response;
-            let delay = 1000;
-            for (let i = 0; i < 3; i++) {
-                try {
-                    response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (response.ok) {
-                        break; // Sucesso
-                    }
-                    if (response.status === 429) { // Throttling
-                        await new Promise(res => setTimeout(res, delay));
-                        delay *= 2;
-                        continue;
-                    }
-                    throw new Error(`API request failed with status ${response.status}`);
-                } catch (error) {
-                    if (i === 2) throw error; // Lança erro na última tentativa
-                    await new Promise(res => setTimeout(res, delay));
-                    delay *= 2;
-                }
-            }
-
-            if (!response.ok) {
-                throw new Error(`API request failed with status ${response.status}`);
-            }
-            const result = await response.json();
-            if (!result.candidates || !result.candidates[0].content) {
-                console.error("Resposta inesperada da API:", result);
-                throw new Error("Formato de resposta inesperado da API.");
-            }
-            return result.candidates[0].content.parts[0].text;
-        }
-
-        async function handleAIFormat(textareaElement, buttonElement) {
-            // Mudança: Usa a chave Hardcoded se existir, senão tenta o input
-            const apiKey = HARDCODED_API_KEY || geminiApiKeyInput.value || localStorage.getItem('geminiApiKey');
-            
-            if (!apiKey) {
-                console.error("Chave API não inserida.");
-                alert("Por favor, insira sua chave API no painel ou adicione ao código.");
-                textareaElement.placeholder = "Por favor, insira sua chave API do Google AI Studio para usar a formatação.";
-                return;
-            }
-            const originalText = textareaElement.value;
-            if (!originalText.trim()) return;
-            const originalButtonHTML = buttonElement.innerHTML;
-            buttonElement.disabled = true;
-            buttonElement.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Formatando...`;
-
-            try {
-                const formattedText = await formatTextWithAI(originalText, apiKey);
-                textareaElement.value = formattedText;
-            } catch (error) {
-                console.error("AI Formatting Error:", error);
-                const statusElement = textareaElement.id.includes('create') ? postStatus : editPostStatus;
-                if (statusElement) {
-                    statusElement.textContent = "Erro ao formatar. Verifique a chave API.";
-                    statusElement.className = "text-red-500 mt-2";
-                }
-            } finally {
-                buttonElement.disabled = false;
-                buttonElement.innerHTML = originalButtonHTML;
-            }
-        }
-
-        formatCreateBtn.addEventListener('click', () => handleAIFormat(document.getElementById('post-content'), formatCreateBtn));
-        formatEditBtn.addEventListener('click', () => handleAIFormat(document.getElementById('edit-post-content'), formatEditBtn));
-
-        // --- UTILS ---
-        function formatPostText(text) {
-            if (!text) return '';
-            // 1. Sanitização Básica
-            let processedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            
-            // 2. Imagens no texto: ![legenda](link)
-            // É importante processar imagens antes de quebrar linhas ou outras formatações
-            processedText = processedText.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, src) => {
-                return `<figure class="my-6 text-center">
-                            <img src="${src}" alt="${alt}" class="max-w-full h-auto rounded-lg border border-purple-800 shadow-lg mx-auto" onerror="this.style.display='none'">
-                            <figcaption class="text-sm text-gray-400 mt-2 italic font-serif">${alt}</figcaption>
-                        </figure>`;
+            const id = document.getElementById('edit-post-id').value;
+            const secSelect = document.getElementById('edit-post-section');
+            const secName = secSelect.options[secSelect.selectedIndex].text;
+            await updateDoc(doc(db, "posts", id), {
+                title: document.getElementById('edit-post-title').value,
+                coverImage: document.getElementById('edit-post-cover-image').value,
+                content: document.getElementById('edit-post-content').value,
+                attachmentName: document.getElementById('edit-post-attachment-name').value,
+                attachmentURL: document.getElementById('edit-post-attachment-link').value,
+                access: document.getElementById('edit-post-access').value,
+                sectionId: secSelect.value,
+                sectionName: secName
             });
+            openPost(id); 
+        });
 
-            // 3. Remove markdown indesejado (mas mantém o resto)
-            processedText = processedText.replace(/^(#+\s*|---\s*$)/gm, ''); // Headers e linhas
-            processedText = processedText.replace(/_(.*?)_/g, '$1'); // Remove underscores
+        document.getElementById('cancel-edit-btn').addEventListener('click', () => {
+             if(document.getElementById('post-view').style.display === 'block') showView('post-view');
+             else showView('blog-view');
+        });
 
-            // 4. Formatações de Texto (Negrito, Destaque, Místico)
-            const boldFormatted = processedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            const highlightFormatted = boldFormatted.replace(/\*(.*?)\*/g, '<span class="highlight">$1</span>');
-            let finalFormatted = highlightFormatted.replace(/##(.*?)##/g, '<span class="mystic-term">$1</span>');
-            
-            finalFormatted = finalFormatted.replace(/##/g, ''); // Limpeza final
-
-            // 5. Quebras de linha
-            return finalFormatted.replace(/\n/g, '<br>'); 
+        function confirmDel(id, type) {
+            itemToDelete = {id, type};
+            document.getElementById('delete-confirm-modal').style.display = 'flex';
         }
-
-        function stripMarkdown(text) {
-            if (!text) return '';
-            // Remove também a sintaxe de imagem do preview
-            return text.replace(/!\[(.*?)\]\(.*?\)/g, "[Imagem: $1]").replace(/(\*\*|##|\*|_)/g, "");
-        }
-
-
-        // --- TTS LOGIC (GEMINI AI) ---
-        
-        // Helper: Convert Base64 to ArrayBuffer
-        function base64ToArrayBuffer(base64) {
-            const binaryString = window.atob(base64);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
+        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
+            if(itemToDelete.type === 'post') {
+                await deleteDoc(doc(db, "posts", itemToDelete.id));
+                showView('blog-view');
+            } else if (itemToDelete.type === 'section') {
+                await deleteDoc(doc(db, "sections", itemToDelete.id));
             }
-            return bytes.buffer;
-        }
+            document.getElementById('delete-confirm-modal').style.display = 'none';
+        });
+        document.getElementById('cancel-delete-btn').addEventListener('click', () => {
+            document.getElementById('delete-confirm-modal').style.display = 'none';
+        });
 
-        // Helper: Create WAV Header for PCM Data
-        function createWavHeader(dataLength, sampleRate = 24000, numChannels = 1, bitsPerSample = 16) {
-            const buffer = new ArrayBuffer(44);
-            const view = new DataView(buffer);
-            
-            // RIFF chunk descriptor
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + dataLength, true);
-            writeString(view, 8, 'WAVE');
-            
-            // fmt sub-chunk
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true); // Subchunk1Size (16 for PCM)
-            view.setUint16(20, 1, true); // AudioFormat (1 for PCM)
-            view.setUint16(22, numChannels, true); // NumChannels
-            view.setUint32(24, sampleRate, true); // SampleRate
-            view.setUint32(28, sampleRate * numChannels * (bitsPerSample / 8), true); // ByteRate
-            view.setUint16(32, numChannels * (bitsPerSample / 8), true); // BlockAlign
-            view.setUint16(34, bitsPerSample, true); // BitsPerSample
-            
-            // data sub-chunk
-            writeString(view, 36, 'data');
-            view.setUint32(40, dataLength, true);
-            
-            return buffer;
-        }
-
-        function writeString(view, offset, string) {
-            for (let i = 0; i < string.length; i++) {
-                view.setUint8(offset + i, string.charCodeAt(i));
+        // === GLOBAL LISTENERS ===
+        appRoot.addEventListener('click', (e) => {
+            const card = e.target.closest('[data-id]');
+            if(card && card.parentElement.id.includes('posts-list') && !e.target.closest('button')) {
+                openPost(card.dataset.id);
             }
+            if(e.target.closest('.edit-btn')) openEdit(e.target.closest('.edit-btn').dataset.id);
+            if(e.target.closest('.del-btn')) confirmDel(e.target.closest('.del-btn').dataset.id, 'post');
+            if(e.target.closest('.delete-sec-btn')) confirmDel(e.target.closest('.delete-sec-btn').dataset.id, 'section');
+            if(e.target.closest('.manage-student-btn')) {
+                openManageStudent(e.target.closest('.manage-student-btn').dataset.id);
+            }
+        });
+
+        const manageModal = document.getElementById('manage-student-modal');
+        function openManageStudent(sid) {
+            const st = allStudents.find(s => s.id === sid);
+            if(!st) return;
+            document.getElementById('student-modal-email').textContent = st.email;
+            document.getElementById('student-modal-id').value = sid;
+            const list = document.getElementById('student-modal-sections-list');
+            list.innerHTML = '';
+            allSections.forEach(sec => {
+                const checked = st.accessibleSections && st.accessibleSections.includes(sec.id);
+                const label = document.createElement('label');
+                label.className = "flex items-center gap-3 text-gray-300 text-sm p-2 hover:bg-white/5 cursor-pointer border-b border-white/5";
+                label.innerHTML = `<input type="checkbox" value="${sec.id}" ${checked?'checked':''} class="accent-gold-400 w-4 h-4"> ${sec.name}`;
+                list.appendChild(label);
+            });
+            manageModal.style.display = 'flex';
         }
         
-        // Main Speak Function
-        async function speakText() {
-             // 1. Se já está tocando (o player está ativo), pause.
-            if (!geminiAudioPlayer.paused && geminiAudioPlayer.src) {
-                geminiAudioPlayer.pause();
-                btnSpeakText.textContent = "Continuar Leitura";
-                btnSpeakIcon.className = "fas fa-play";
-                audioContainer.classList.remove('audio-playing');
-                return;
-            }
+        document.getElementById('save-student-sections-btn').addEventListener('click', async () => {
+            const sid = document.getElementById('student-modal-id').value;
+            const checks = document.querySelectorAll('#student-modal-sections-list input:checked');
+            const newSecs = Array.from(checks).map(c => c.value);
+            await updateDoc(doc(db, "users", sid), { accessibleSections: newSecs });
+            manageModal.style.display = 'none';
+        });
+        document.getElementById('close-student-modal-btn').addEventListener('click', () => manageModal.style.display = 'none');
 
-            // 2. Se está pausado (tem src), retome.
-            if (geminiAudioPlayer.paused && geminiAudioPlayer.src && geminiAudioPlayer.currentTime > 0) {
-                geminiAudioPlayer.play();
-                btnSpeakText.textContent = "Pausar Leitura";
-                btnSpeakIcon.className = "fas fa-pause";
-                audioContainer.classList.add('audio-playing');
-                return;
-            }
-            
-            // 3. Fallback: Verifica se o navegador está falando com a voz robótica antiga (para limpar)
-             if (window.speechSynthesis.speaking) {
-                 window.speechSynthesis.cancel();
-             }
+        // === AI TEXT & AUDIO ===
+        const geminiApiKeyInput = document.getElementById('gemini-api-key');
+        if(localStorage.getItem('geminiKey')) geminiApiKeyInput.value = localStorage.getItem('geminiKey');
+        geminiApiKeyInput.addEventListener('input', () => localStorage.setItem('geminiKey', geminiApiKeyInput.value));
 
-            // 4. Nova Geração:
-            // Mudança: Usa a chave Hardcoded se existir
-            const apiKey = HARDCODED_API_KEY || geminiApiKeyInput.value || localStorage.getItem('geminiApiKey');
-            
-            // Fallback para voz do navegador se não tiver API Key
-            if (!apiKey) {
-                console.warn("Sem API Key. Usando voz do navegador.");
-                alert("Para usar a voz natural da Gemini, adicione sua chave API no Painel ou no código. Usando voz padrão...");
-                speakTextBrowserFallback();
-                return;
-            }
-
-            // UI Loading
-            const originalBtnText = btnSpeakText.textContent;
-            btnSpeakText.textContent = "Invocando a voz...";
-            btnSpeakIcon.className = "fas fa-spinner fa-spin";
-            btnSpeak.disabled = true;
-
-            // Pega o texto
-            const contentDiv = document.getElementById('post-view-content');
-            // Remove markdown extra para leitura mais limpa (opcional, mas bom)
-            const textToRead = stripMarkdown(contentDiv.innerText).substring(0, 4500); // Limite de segurança
-
+        async function runAI(el) {
+            const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
+            if(!key) return alert("Insira a API Key");
+            const txt = el.value; if(!txt) return;
             try {
-                // Configuração da API TTS
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-                const payload = {
-                    contents: [{ parts: [{ text: textToRead }] }],
-                    generationConfig: {
-                        responseModalities: ["AUDIO"],
-                        speechConfig: {
-                            voiceConfig: {
-                                prebuiltVoiceConfig: {
-                                    voiceName: "Kore" // Voz feminina, suave
-                                }
-                            }
-                        }
-                    }
-                };
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${key}`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }], systemInstruction: { parts: [{ text: "Formate este texto sobre bruxaria hekatina. Destaque termos importantes com ** e nomes de divindades com ##. Seja poético." }] } })
                 });
+                const res = await req.json();
+                el.value = res.candidates[0].content.parts[0].text;
+            } catch(e) { console.error(e); }
+        }
+        document.getElementById('format-create-btn').addEventListener('click', () => runAI(document.getElementById('post-content')));
+        document.getElementById('format-edit-btn').addEventListener('click', () => runAI(document.getElementById('edit-post-content')));
 
-                if (!response.ok) throw new Error(`Erro na API: ${response.status}`);
-                
-                const result = await response.json();
-                
-                if (result.candidates && result.candidates[0].content && result.candidates[0].content.parts[0].inlineData) {
-                    const audioData = result.candidates[0].content.parts[0].inlineData;
-                    const base64PCM = audioData.data;
-                    
-                    // Convert PCM to WAV
-                    const pcmBuffer = base64ToArrayBuffer(base64PCM);
-                    const wavHeader = createWavHeader(pcmBuffer.byteLength, 24000); // Gemini usa 24kHz por padrão
-                    
-                    const wavBlob = new Blob([wavHeader, pcmBuffer], { type: 'audio/wav' });
-                    const audioUrl = URL.createObjectURL(wavBlob);
-                    
-                    // Setup Player
-                    geminiAudioPlayer.src = audioUrl;
-                    
-                    // Listeners para UI
-                    geminiAudioPlayer.onplay = () => {
-                         btnSpeakText.textContent = "Pausar Leitura";
-                         btnSpeakIcon.className = "fas fa-pause";
-                         btnStopSpeak.classList.remove('hidden');
-                         audioContainer.classList.add('audio-playing');
-                    };
-                    
-                    geminiAudioPlayer.onpause = () => {
-                        if(geminiAudioPlayer.currentTime < geminiAudioPlayer.duration && !geminiAudioPlayer.ended){
-                             btnSpeakText.textContent = "Continuar Leitura";
-                             btnSpeakIcon.className = "fas fa-play";
-                             audioContainer.classList.remove('audio-playing');
-                        }
-                    };
+        const audioPlayer = document.getElementById('gemini-audio-player');
+        const btnSpeak = document.getElementById('btn-speak');
+        const btnSpeakText = document.getElementById('btn-speak-text');
+        const btnStopSpeak = document.getElementById('btn-stop-speak');
 
-                    geminiAudioPlayer.onended = () => {
-                        stopSpeaking();
-                    };
-
-                    await geminiAudioPlayer.play();
-
-                } else {
-                    throw new Error("Formato de resposta inválido.");
-                }
-
-            } catch (error) {
-                console.error("Erro no TTS da Gemini:", error);
-                alert("Não foi possível gerar a voz mística. Usando voz padrão.");
-                speakTextBrowserFallback(); // Fallback
-            } finally {
-                btnSpeak.disabled = false;
-                if(geminiAudioPlayer.paused && !geminiAudioPlayer.src) {
-                     btnSpeakText.textContent = "Ouvir o Chamado";
-                     btnSpeakIcon.className = "fas fa-volume-up";
-                }
-            }
+        function base64ToBuffer(b64) {
+            const str = window.atob(b64);
+            const b = new Uint8Array(str.length);
+            for(let i=0; i<str.length; i++) b[i] = str.charCodeAt(i);
+            return b.buffer;
+        }
+        function makeWav(data) {
+            const b = new ArrayBuffer(44 + data.byteLength);
+            const v = new DataView(b);
+            const w = (o,s)=> { for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+            w(0,'RIFF'); v.setUint32(4, 36+data.byteLength, true); w(8,'WAVE');
+            w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true);
+            v.setUint16(22,1,true); v.setUint32(24,24000,true); v.setUint32(28,48000,true);
+            v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data');
+            v.setUint32(40,data.byteLength,true);
+            new Uint8Array(b, 44).set(new Uint8Array(data));
+            return b;
         }
 
-        // Função Antiga (Fallback)
-        function speakTextBrowserFallback() {
-             const contentDiv = document.getElementById('post-view-content');
-             if (!contentDiv) return;
-             const textToRead = contentDiv.innerText;
-             const utterance = new SpeechSynthesisUtterance(textToRead);
-             utterance.lang = 'pt-BR';
-             utterance.rate = 1.0; 
-             
-             utterance.onstart = () => {
-                btnSpeakText.textContent = "Pausar Leitura";
-                btnSpeakIcon.className = "fas fa-pause";
-                btnStopSpeak.classList.remove('hidden');
-            };
-            utterance.onend = () => {
-                btnSpeakText.textContent = "Ouvir o Chamado";
-                btnSpeakIcon.className = "fas fa-volume-up";
-                btnStopSpeak.classList.add('hidden');
-            };
-             window.speechSynthesis.speak(utterance);
+        async function speak() {
+            if(!audioPlayer.paused && audioPlayer.src) { audioPlayer.pause(); btnSpeakText.textContent = "Continuar"; return; }
+            if(audioPlayer.paused && audioPlayer.src) { audioPlayer.play(); btnSpeakText.textContent = "Pausar"; return; }
+            const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
+            if(!key) return alert("API Key necessária.");
+            btnSpeakText.textContent = "Carregando...";
+            const txt = document.getElementById('post-view-content').innerText.substring(0, 4000);
+            try {
+                const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${key}`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: txt }] }],
+                        generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } } }
+                    })
+                });
+                const res = await req.json();
+                const pcm = base64ToBuffer(res.candidates[0].content.parts[0].inlineData.data);
+                const wav = makeWav(pcm);
+                const blob = new Blob([wav], { type: 'audio/wav' });
+                audioPlayer.src = URL.createObjectURL(blob);
+                audioPlayer.onplay = () => { btnSpeakText.textContent = "Pausar"; btnStopSpeak.classList.remove('hidden'); };
+                audioPlayer.onended = stopSpeaking;
+                audioPlayer.play();
+            } catch(e) { console.error(e); btnSpeakText.textContent = "Ouvir"; }
         }
 
         function stopSpeaking() {
-            // Stop Gemini Audio
-            if(geminiAudioPlayer.src) {
-                geminiAudioPlayer.pause();
-                geminiAudioPlayer.currentTime = 0;
-                geminiAudioPlayer.src = ""; // Unload
-            }
-            
-            // Stop Browser Audio
-            if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
-                window.speechSynthesis.cancel();
-            }
-            
-            // Reset UI
-            if(btnSpeakText) btnSpeakText.textContent = "Ouvir o Chamado";
-            if(btnSpeakIcon) btnSpeakIcon.className = "fas fa-volume-up";
-            if(btnStopSpeak) btnStopSpeak.classList.add('hidden');
-            if(audioContainer) audioContainer.classList.remove('audio-playing');
+            if(audioPlayer.src) { audioPlayer.pause(); audioPlayer.src = ""; }
+            btnSpeakText.textContent = "Ouvir o Chamado"; btnStopSpeak.classList.add('hidden');
         }
 
-        btnSpeak.addEventListener('click', speakText);
+        btnSpeak.addEventListener('click', speak);
         btnStopSpeak.addEventListener('click', stopSpeaking);
-
+        document.getElementById('back-to-posts-btn').addEventListener('click', () => {
+            stopSpeaking();
+            showView('blog-view');
+        });
     </script>
 </body>
 </html>
