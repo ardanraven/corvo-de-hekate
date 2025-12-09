@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Corvo de Hekate | Yule Santuário</title>
+    <title>O Corvo de Hekate | Feliz Yule!</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -70,7 +70,7 @@
         }
         /* Adiciona um toque de azevinho no canto */
         .project-card::after {
-            content: '🌿'; /* Um toque sutil de natureza/Yule */
+            content: '❄️'; /* Um toque sutil de natureza/Yule */
             position: absolute; top: 10px; right: 10px; font-size: 1.5rem; opacity: 0.3; filter: grayscale(0.5) sepia(1) hue-rotate(-50deg); transition: 0.4s;
         }
         .project-card:hover::after { opacity: 0.8; filter: none; transform: rotate(15deg); }
@@ -150,7 +150,7 @@
                 <i class="fas fa-crow text-4xl text-gold-400"></i>
                 <i class="fas fa-holly-berry absolute -top-2 -right-2 text-yuleRed text-sm"></i>
             </div>
-            <p class="text-gold-400 text-xs tracking-[0.3em] uppercase animate-pulse">Invocando Yule...</p>
+            <p class="text-gold-400 text-xs tracking-[0.3em] uppercase animate-pulse">Comemorando Yule...</p>
         </div>
 
         <header class="fixed top-0 w-full z-40 bg-void/90 backdrop-blur border-b border-gold-900/30 h-20 transition-all duration-300">
@@ -158,8 +158,8 @@
                 <div class="flex items-center gap-3 cursor-pointer group" onclick="showView('home-view')">
                     <img src="https://i.ibb.co/2705r709/Black-Friday.png" alt="Logo" class="h-10 w-auto opacity-80 group-hover:opacity-100 transition filter drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]">
                     <div class="flex flex-col">
-                        <span class="text-[10px] text-gold-400 uppercase tracking-[0.3em]">O Corvo de</span>
-                        <h1 class="text-lg font-display text-white tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">HEKATE <i class="fas fa-holly-berry text-yuleRed text-xs opacity-50 group-hover:opacity-100 transition"></i></h1>
+                        <span class="text-[10px] text-gold-400 uppercase tracking-[0.3em]">O Coven do</span>
+                        <h1 class="text-lg font-display text-white tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">CORVO <i class="fas fa-holly-berry text-yuleRed text-xs opacity-50 group-hover:opacity-100 transition"></i></h1>
                     </div>
                 </div>
 
@@ -170,7 +170,7 @@
                     <div class="w-[1px] h-4 bg-white/10"></div>
                     <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-gold-400" title="Calendário"><i class="fas fa-moon"></i></a>
                     <a href="https://caminhodatocha.site" target="_blank" class="border border-gold-900/50 text-gold-400 px-5 py-2 text-[10px] uppercase tracking-widest hover:bg-gold-900 hover:text-white transition font-bold relative overflow-hidden group">
-                        <span class="relative z-10">Mentoria</span>
+                        <span class="relative z-10">Fazer Parte do Coven</span>
                         <div class="absolute inset-0 bg-gradient-to-r from-yuleRed/20 to-gold-900/20 opacity-0 group-hover:opacity-100 transition"></div>
                     </a>
                 </nav>
@@ -191,7 +191,7 @@
                 <button data-view="home-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Santuário</button>
                 <button data-view="blog-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Grimório</button>
                 <button data-view="sobre-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Sacerdote</button>
-                <a href="https://caminhodatocha.site" class="text-gold-400 text-xl font-display py-2"><i class="fas fa-gift mr-2"></i>Mentoria</a>
+                <a href="https://caminhodatocha.site" class="text-gold-400 text-xl font-display py-2"><i class="fas fa-gift mr-2"></i>Coven</a>
                 <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-gray-500 mt-8 uppercase text-xs">Fechar</button>
             </div>
         </div>
@@ -212,16 +212,16 @@
                             <span class="h-[1px] w-8 bg-gold-500"></span> Celebração de Yule <span class="h-[1px] w-8 bg-gold-500"></span>
                         </h2>
                         <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-black text-white leading-tight fade-in-up" style="animation-delay: 0.3s">
-                            O CORVO DE <br><span class="text-gold-gradient">HEKATE</span>
+                            O COVEN DO <br><span class="text-gold-gradient">CORVO</span>
                         </h1>
                         <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-yuleRed to-transparent mx-auto my-6 fade-in-up" style="animation-delay: 0.5s"></div>
                         <p class="text-gray-300 max-w-2xl mx-auto text-lg md:text-xl font-body font-light leading-relaxed fade-in-up" style="animation-delay: 0.6s">
                             Neste solstício, os caminhos se cruzam e a magia antiga sussurra. <br>
-                            Seja bem-vindo ao santuário festivo do Sacerdote Leonardo.
+                            Seja bem-vindo a nossa plataforma de Estudos.
                         </p>
                         <div class="pt-8 flex flex-col md:flex-row gap-6 justify-center items-center fade-in-up" style="animation-delay: 0.8s">
                             <button data-view="blog-view" class="internal-link px-10 py-4 bg-transparent border border-gold-400 text-gold-400 font-display text-sm font-bold tracking-[0.2em] uppercase hover:bg-gold-900/50 hover:text-white transition shadow-[0_0_20px_rgba(212,175,55,0.1)] relative group overflow-hidden">
-                                <span class="relative z-10">Abrir o Presente (Grimório)</span>
+                                <span class="relative z-10">Abrir o Grimório)</span>
                                 <div class="absolute inset-0 bg-gradient-to-r from-yuleRed/10 to-gold-500/10 opacity-0 group-hover:opacity-100 transition"></div>
                             </button>
                         </div>
@@ -322,7 +322,7 @@
                                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
                                     <i class="fas fa-fire text-7xl text-yuleRed"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition flex items-center gap-2">Caminho da Tocha <i class="fas fa-gift text-[10px] text-yuleRed opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition flex items-center gap-2">Coven do Corvo <i class="fas fa-gift text-[10px] text-yuleRed opacity-50 group-hover:opacity-100 transition"></i></h4>
                                 <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
                                     O maior presente que você pode se dar: conhecimento estruturado. Um mergulho profundo nos mistérios.
                                 </p>
@@ -467,7 +467,7 @@
                                 <span class="text-4xl float-left mr-2 text-gold-600 font-display">N</span>este período de Yule, refletimos sobre as encruzilhadas. Minha vida foi dedicada a entender as escolhas que fazemos nas sombras, guiado pela chama da Deusa que renasce.
                             </p>
                             <p>
-                                O projeto <strong>O Corvo de Hekate</strong> é meu presente para a comunidade. Aqui, a magia não é teoria; é vivência. Compartilho minha devoção e a sabedoria das chaves.
+                                O projeto <strong>O Coven do Corvo</strong> é meu presente para a comunidade. Aqui, a magia não é teoria; é vivência. Compartilho minha devoção e a sabedoria das chaves.
                             </p>
                             <div class="pt-6 border-t border-white/5 flex gap-4 text-2xl text-gold-400">
                                 <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
@@ -483,7 +483,7 @@
         <footer class="bg-black py-12 text-center border-t border-gold-900/20 relative z-10 overflow-hidden">
             <div class="absolute inset-0 bg-yuleRed/5 pointer-events-none"></div>
             <i class="fas fa-crow text-gold-900 text-2xl mb-4 animate-pulse relative z-10"></i>
-            <p class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-2 relative z-10">© 2025 O Corvo de Hekate | Feliz Yule</p>
+            <p class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-2 relative z-10">© 2025 Coven do Corvo | Feliz Yule</p>
             <p class="text-gray-800 text-[10px] relative z-10">Desenvolvido nas Sombras do Inverno</p>
         </footer>
 
@@ -493,7 +493,7 @@
                 <div class="text-center mb-10">
                     <i class="fas fa-key text-gold-500 text-2xl mb-4"></i>
                     <h2 class="text-2xl font-display text-white tracking-widest flex justify-center items-center gap-2">ACESSO <i class="fas fa-holly-berry text-yuleRed text-sm"></i></h2>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Área do Coven de Yule</p>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Área do Coven do Corvo</p>
                 </div>
                 <form id="login-form" class="space-y-6">
                     <div class="group">
@@ -526,7 +526,7 @@
                     <div class="flex justify-center items-center gap-6 text-[10px] text-gray-500 uppercase tracking-widest mb-12 border-b border-white/5 pb-6">
                         <span><i class="fas fa-eye text-gold-900 mr-2"></i><span id="post-view-count">0</span> Leituras</span>
                         <i class="fas fa-circle text-[3px] text-gold-500"></i>
-                        <span>O Corvo de Hekate</span>
+                        <span>Coven do Corvo</span>
                     </div>
 
                     <div class="flex justify-center mb-12">
