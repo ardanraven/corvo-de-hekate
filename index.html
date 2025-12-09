@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Corvo de Hekate | Solstício de Inverno</title>
+    <title>O Corvo de Hekate | Yule Santuário</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -20,27 +20,19 @@
             theme: {
                 extend: {
                     colors: {
-                        void: '#050505', // O Preto Original
+                        void: '#050505',
                         gold: {
-                            400: '#D4AF37', // Ouro Original
+                            400: '#D4AF37', // Ouro Clássico
                             500: '#C5A028',
                             900: '#3D3008',
                         },
                         obsidian: '#0f0f10',
-                        crimson: '#4a0404' // Um vermelho sangue BEM escuro para detalhes de Natal
+                        yuleRed: '#8B0000', // Vermelho Sangue de Yule
+                        pineGreen: '#0F3B25' // Verde Pinheiro Sombrio
                     },
                     fontFamily: {
                         display: ['Cinzel', 'serif'],
                         body: ['Lato', 'sans-serif'],
-                    },
-                    animation: {
-                        'float-slow': 'float 6s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-15px)' },
-                        }
                     }
                 }
             }
@@ -48,102 +40,94 @@
     </script>
 
     <style>
-        /* --- ESTÉTICA ONYX & GOLD (ORIGINAL) --- */
+        /* ESTILOS GERAIS & YULE */
         body { background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
         
+        /* Scrollbar Festiva Sombria */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #8B0000, #D4AF37); border-radius: 3px; }
 
         .glass-dark {
-            background: rgba(15, 15, 20, 0.85); /* Vidro escuro original */
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.1);
         }
 
         .text-gold-gradient {
             background: linear-gradient(to right, #AA8C2C, #F2E3BC, #D4AF37, #AA8C2C);
-            -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 6s linear infinite;
+            -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 5s linear infinite;
         }
         @keyframes shine { to { background-position: 200% center; } }
-
         .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-        
         #intro-sequence { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-
-        /* --- DECORAÇÃO DE NATAL (SUTIL) --- */
         
-        /* 1. Neve Mágica (Branca e Dourada) */
-        .snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden;}
-        .snowflake { position: absolute; top: -10px; color: rgba(255,255,255,0.2); font-size: 0.8em; opacity: 0; animation: fall linear infinite; }
-        .snowflake.gold-flake { color: rgba(212, 175, 55, 0.3); text-shadow: 0 0 5px #D4AF37; } /* Flocos dourados */
-        
-        @keyframes fall {
-            0% { opacity: 0; transform: translateY(0) rotate(0deg); }
-            20% { opacity: 0.6; }
-            100% { opacity: 0; transform: translateY(100vh) rotate(360deg); }
-        }
-
-        /* 2. Cards com toque de Azevinho */
+        /* CARDS DECORADOS DE NATAL */
         .project-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative; overflow: hidden;
         }
-        /* Icone de azevinho (holly) no canto */
+        /* Adiciona um toque de azevinho no canto */
         .project-card::after {
-            content: '\f788'; font-family: "Font Awesome 6 Free"; font-weight: 900;
-            position: absolute; top: 15px; right: 15px; font-size: 1.2rem;
-            color: #333; /* Começa discreto */
-            transition: 0.4s; opacity: 0.5;
+            content: '🌿'; /* Um toque sutil de natureza/Yule */
+            position: absolute; top: 10px; right: 10px; font-size: 1.5rem; opacity: 0.3; filter: grayscale(0.5) sepia(1) hue-rotate(-50deg); transition: 0.4s;
         }
-        .project-card:hover::after {
-            color: #8B0000; /* Fica vermelho sangue no hover */
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-            transform: rotate(20deg) scale(1.1);
-            opacity: 1;
-        }
+        .project-card:hover::after { opacity: 0.8; filter: none; transform: rotate(15deg); }
+        
         .project-card:hover {
             transform: translateY(-5px);
             border-color: #D4AF37;
-            box-shadow: 0 10px 40px -10px rgba(212, 175, 55, 0.15); /* Glow Dourado original */
+            /* Brilho misto Dourado/Vermelho Yule */
+            box-shadow: 0 10px 40px -10px rgba(212, 175, 55, 0.2), 0 0 20px rgba(139, 0, 0, 0.2);
         }
-
+        
         .input-luxe { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #fff; transition: 0.3s; }
         .input-luxe:focus { outline: none; border-color: #D4AF37; background: rgba(212, 175, 55, 0.05); }
 
-        /* --- CORVO SVG (O MESMO ANTIGO + GORRO) --- */
+        /* --- ANIMAÇÃO DO CORVO SVG (COM GORRO) --- */
         .mystic-crow-svg {
-            filter: drop-shadow(0 0 20px rgba(0,0,0,0.8));
-            animation: hoverCrow 5s ease-in-out infinite alternate;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+            animation: hoverCrow 4s ease-in-out infinite alternate;
         }
-        .crow-wing-left { transform-origin: center; animation: flapLeft 1.5s ease-in-out infinite alternate; }
-        .crow-wing-right { transform-origin: center; animation: flapRight 1.5s ease-in-out infinite alternate; }
-        /* Animação suave do gorro */
-        .santa-hat { transform-origin: top center; animation: hatSway 3s ease-in-out infinite alternate; }
+        .crow-wing-left { transform-origin: center; animation: flapLeft 1.2s ease-in-out infinite alternate; }
+        .crow-wing-right { transform-origin: center; animation: flapRight 1.2s ease-in-out infinite alternate; }
+        .santa-hat-group { transform-origin: center; animation: hatBob 1.2s ease-in-out infinite alternate; }
 
-        @keyframes hoverCrow { 0% { transform: translateY(0); } 100% { transform: translateY(-20px); } }
-        @keyframes flapLeft { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-8deg) translateY(3px); } }
-        @keyframes flapRight { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(8deg) translateY(3px); } }
-        @keyframes hatSway { 0% { transform: rotate(-2deg); } 100% { transform: rotate(2deg); } }
+        @keyframes hoverCrow { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
+        @keyframes flapLeft { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-10deg) translateY(5px); } }
+        @keyframes flapRight { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(10deg) translateY(5px); } }
+        @keyframes hatBob { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-5deg) translateY(2px); } }
 
+        /* --- EFEITO DE NEVE (CSS PURO LEVE) --- */
+        .snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+        .snowflake {
+            position: absolute; top: -10px; color: #fff; font-size: 1em; opacity: 0;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+            20% { opacity: 0.7; }
+            100% { opacity: 0; transform: translateY(100vh) rotate(360deg); }
+        }
     </style>
 </head>
 <body class="antialiased">
 
     <div class="snow-container" id="snow"></div>
     <script>
+        // Script leve para gerar flocos
         const snowContainer = document.getElementById('snow');
-        const snowflakeCount = 35; // Poucos flocos para ser sutil
+        const snowflakeCount = 50; // Quantidade de flocos
         for (let i = 0; i < snowflakeCount; i++) {
             const snowflake = document.createElement('div');
-            snowflake.className = Math.random() > 0.7 ? 'snowflake gold-flake' : 'snowflake'; // 30% de chance de ser dourado
-            snowflake.innerHTML = '❄'; 
+            snowflake.className = 'snowflake';
+            snowflake.innerHTML = '❄';
             snowflake.style.left = Math.random() * 100 + '%';
-            snowflake.style.animationDuration = Math.random() * 15 + 10 + 's';
-            snowflake.style.animationDelay = Math.random() * 10 + 's';
-            snowflake.style.fontSize = Math.random() * 8 + 4 + 'px'; // Pequenos
+            snowflake.style.animationDuration = Math.random() * 10 + 5 + 's'; // Velocidade variada
+            snowflake.style.animationDelay = Math.random() * 5 + 's';
+            snowflake.style.fontSize = Math.random() * 10 + 8 + 'px';
+            snowflake.style.color = Math.random() > 0.8 ? '#D4AF37' : '#ffffff'; // Alguns flocos dourados
             snowContainer.appendChild(snowflake);
         }
     </script>
@@ -153,27 +137,29 @@
             <div style="padding:56.25% 0 0 0;position:relative;">
                 <iframe src="https://player.vimeo.com/video/1136095667?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&controls=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Intro"></iframe>
             </div>
-            <button onclick="forceOpenSite()" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-600 text-[10px] uppercase tracking-widest hover:text-white transition z-50">Entrar</button>
+            <button onclick="forceOpenSite()" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-500 text-[10px] uppercase tracking-widest hover:text-white transition z-50">
+                Pular Intro
+            </button>
         </div>
     </div>
 
     <div id="app-root" style="display: none; opacity: 0;">
         
-        <div id="loading-spinner" class="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center hidden">
-            <div class="relative mb-4">
-                <i class="fas fa-crow text-4xl text-gold-400 animate-pulse"></i>
-                <i class="fas fa-hat-santa absolute -top-3 -right-2 text-crimson text-sm transform -rotate-12 drop-shadow-md"></i>
+        <div id="loading-spinner" class="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center hidden">
+            <div class="relative animate-bounce mb-4">
+                <i class="fas fa-crow text-4xl text-gold-400"></i>
+                <i class="fas fa-holly-berry absolute -top-2 -right-2 text-yuleRed text-sm"></i>
             </div>
-            <p class="text-gold-400 text-xs tracking-[0.3em] uppercase">Despertando Magia...</p>
+            <p class="text-gold-400 text-xs tracking-[0.3em] uppercase animate-pulse">Invocando Yule...</p>
         </div>
 
-        <header class="fixed top-0 w-full z-40 bg-void/90 backdrop-blur border-b border-white/5 h-20 transition-all duration-300">
+        <header class="fixed top-0 w-full z-40 bg-void/90 backdrop-blur border-b border-gold-900/30 h-20 transition-all duration-300">
             <div class="container mx-auto px-6 h-full flex justify-between items-center">
                 <div class="flex items-center gap-3 cursor-pointer group" onclick="showView('home-view')">
                     <img src="https://i.ibb.co/2705r709/Black-Friday.png" alt="Logo" class="h-10 w-auto opacity-80 group-hover:opacity-100 transition filter drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]">
                     <div class="flex flex-col">
                         <span class="text-[10px] text-gold-400 uppercase tracking-[0.3em]">O Corvo de</span>
-                        <h1 class="text-lg font-display text-white tracking-widest group-hover:text-gold-400 transition">HEKATE</h1>
+                        <h1 class="text-lg font-display text-white tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">HEKATE <i class="fas fa-holly-berry text-yuleRed text-xs opacity-50 group-hover:opacity-100 transition"></i></h1>
                     </div>
                 </div>
 
@@ -183,7 +169,10 @@
                     <button data-view="sobre-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Sacerdote</button>
                     <div class="w-[1px] h-4 bg-white/10"></div>
                     <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-gold-400" title="Calendário"><i class="fas fa-moon"></i></a>
-                    <a href="https://caminhodatocha.site" target="_blank" class="border border-gold-900 text-gold-400 px-5 py-2 text-[10px] uppercase tracking-widest hover:bg-gold-400 hover:text-black transition font-bold">Mentoria</a>
+                    <a href="https://caminhodatocha.site" target="_blank" class="border border-gold-900/50 text-gold-400 px-5 py-2 text-[10px] uppercase tracking-widest hover:bg-gold-900 hover:text-white transition font-bold relative overflow-hidden group">
+                        <span class="relative z-10">Mentoria</span>
+                        <div class="absolute inset-0 bg-gradient-to-r from-yuleRed/20 to-gold-900/20 opacity-0 group-hover:opacity-100 transition"></div>
+                    </a>
                 </nav>
 
                 <div class="flex items-center gap-4">
@@ -202,6 +191,7 @@
                 <button data-view="home-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Santuário</button>
                 <button data-view="blog-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Grimório</button>
                 <button data-view="sobre-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Sacerdote</button>
+                <a href="https://caminhodatocha.site" class="text-gold-400 text-xl font-display py-2"><i class="fas fa-gift mr-2"></i>Mentoria</a>
                 <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-gray-500 mt-8 uppercase text-xs">Fechar</button>
             </div>
         </div>
@@ -211,154 +201,160 @@
             <div id="home-view" class="view-container">
                 
                 <section class="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-                    <div class="absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-gray-900 via-black to-black"></div>
+                    <div class="absolute inset-0 z-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yuleRed/20 via-obsidian to-black"></div>
+                    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-gold-900/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
                     
                     <div class="relative z-10 max-w-4xl mx-auto space-y-6">
-                        
-                        <div class="flex justify-center mb-6 h-32 md:h-40">
-                            <svg class="mystic-crow-svg h-full w-auto" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                        <div class="flex justify-center mb-4 relative">
+                            <i class="fas fa-star-of-life text-2xl text-gold-500 animate-spin-slow opacity-50"></i>
+                        </div>
+                        <h2 class="text-gold-500 text-xs md:text-sm tracking-[0.6em] uppercase fade-in-up flex items-center justify-center gap-3" style="animation-delay: 0.1s">
+                            <span class="h-[1px] w-8 bg-gold-500"></span> Celebração de Yule <span class="h-[1px] w-8 bg-gold-500"></span>
+                        </h2>
+                        <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-black text-white leading-tight fade-in-up" style="animation-delay: 0.3s">
+                            O CORVO DE <br><span class="text-gold-gradient">HEKATE</span>
+                        </h1>
+                        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-yuleRed to-transparent mx-auto my-6 fade-in-up" style="animation-delay: 0.5s"></div>
+                        <p class="text-gray-300 max-w-2xl mx-auto text-lg md:text-xl font-body font-light leading-relaxed fade-in-up" style="animation-delay: 0.6s">
+                            Neste solstício, os caminhos se cruzam e a magia antiga sussurra. <br>
+                            Seja bem-vindo ao santuário festivo do Sacerdote Leonardo.
+                        </p>
+                        <div class="pt-8 flex flex-col md:flex-row gap-6 justify-center items-center fade-in-up" style="animation-delay: 0.8s">
+                            <button data-view="blog-view" class="internal-link px-10 py-4 bg-transparent border border-gold-400 text-gold-400 font-display text-sm font-bold tracking-[0.2em] uppercase hover:bg-gold-900/50 hover:text-white transition shadow-[0_0_20px_rgba(212,175,55,0.1)] relative group overflow-hidden">
+                                <span class="relative z-10">Abrir o Presente (Grimório)</span>
+                                <div class="absolute inset-0 bg-gradient-to-r from-yuleRed/10 to-gold-500/10 opacity-0 group-hover:opacity-100 transition"></div>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="about-section" class="py-24 px-6 bg-obsidian border-t border-gold-900/30 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-yuleRed/5 via-transparent to-transparent pointer-events-none"></div>
+
+                    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
+                        <div class="order-2 md:order-1 space-y-8 text-justify">
+                            <h3 class="text-3xl font-display text-white flex items-center gap-4">
+                                <i class="fas fa-gift text-yuleRed text-2xl"></i> O Mensageiro Festivo
+                            </h3>
+                            <p class="text-gray-400 font-body leading-loose text-lg">
+                                Mesmo nas noites mais longas do inverno, o <strong>Corvo</strong> vigia. Antigamente, eles eram os olhos dos deuses; hoje, trazem os presentes do conhecimento oculto.
+                            </p>
+                            <p class="text-gray-400 font-body leading-loose text-lg">
+                                Hekate, a Senhora das Encruzilhadas, segura as chaves do cosmos e abençoa este Yule. Este blog é o nosso ponto de encontro para celebrar a luz que renasce na escuridão.
+                            </p>
+                            <div class="pt-4 flex items-center gap-4">
+                                <i class="fas fa-key text-gold-500"></i>
+                                <p class="text-gold-400 font-display text-sm tracking-widest uppercase">Feliz Yule, Sacerdote Leonardo</p>
+                            </div>
+                        </div>
+                        <div class="order-1 md:order-2 flex justify-center relative h-96 items-center">
+                             <div class="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-yuleRed/10 blur-[100px] rounded-full pointer-events-none animate-pulse"></div>
+                            
+                            <svg class="mystic-crow-svg w-full h-full max-w-md" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
                                 <defs>
                                     <linearGradient id="crowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:#3a3a3a;stop-opacity:1" />
                                         <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
                                     </linearGradient>
                                     <linearGradient id="hatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#720e1e;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#3d030b;stop-opacity:1" />
+                                        <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#8B0000;stop-opacity:1" />
                                     </linearGradient>
                                     <filter id="goldGlow">
-                                        <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
-                                        <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                                        <feMerge>
+                                            <feMergeNode in="coloredBlur"/>
+                                            <feMergeNode in="SourceGraphic"/>
+                                        </feMerge>
                                     </filter>
                                 </defs>
                                 
-                                <g class="crow-body" filter="url(#goldGlow)">
-                                    <path d="M250,200 C220,250 230,350 250,400 C270,350 280,250 250,200 Z" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1.5"/>
-                                    <path d="M250,200 C230,180 230,150 250,130 C270,150 270,180 250,200 Z" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1.5"/>
+                                <g class="crow-body" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1.5" filter="url(#goldGlow)">
+                                    <path d="M250,200 C220,250 230,350 250,400 C270,350 280,250 250,200 Z" />
+                                    <path d="M250,200 C230,180 230,150 250,130 C270,150 270,180 250,200 Z" />
                                     <path d="M250,130 L240,110 L260,110 Z" fill="#D4AF37"/>
                                     
                                     <g class="crow-wing-left">
-                                        <path d="M230,220 C150,200 50,150 20,100 C80,150 180,250 230,280 Z" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1" opacity="0.9"/>
+                                        <path d="M230,220 C150,200 50,150 20,100 C80,150 180,250 230,280 Z" opacity="0.9"/>
+                                        <path d="M235,230 C160,220 70,180 40,130 C100,180 190,260 235,290 Z" opacity="0.7"/>
                                     </g>
+
                                     <g class="crow-wing-right">
-                                        <path d="M270,220 C350,200 450,150 480,100 C420,150 320,250 270,280 Z" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1" opacity="0.9"/>
+                                        <path d="M270,220 C350,200 450,150 480,100 C420,150 320,250 270,280 Z" opacity="0.9"/>
+                                         <path d="M265,230 C340,220 430,180 460,130 C400,180 310,260 265,290 Z" opacity="0.7"/>
                                     </g>
-                                    <circle cx="250" cy="165" r="4" fill="#D4AF37"/>
+                                    
+                                    <circle cx="250" cy="165" r="5" fill="#D4AF37" filter="url(#goldGlow)"/>
                                 </g>
 
-                                <g class="santa-hat">
-                                    <path d="M245,138 C230,100 210,70 255,40 C270,60 290,110 270,140 Z" fill="url(#hatGradient)" stroke="#2b0207" stroke-width="1"/>
-                                    <circle cx="255" cy="40" r="10" fill="#f7e7ce" stroke="#D4AF37" stroke-width="0.5"/>
-                                    <path d="M238,135 C248,145 267,145 277,135 L277,150 C267,160 248,160 238,150 Z" fill="#f7e7ce" stroke="#D4AF37" stroke-width="0.5"/>
+                                <g class="santa-hat-group" filter="url(#goldGlow)">
+                                    <path d="M240,140 C230,110 220,80 250,50 C260,70 280,120 265,140 Z" fill="url(#hatGradient)" stroke="#8B0000" />
+                                    <circle cx="250" cy="50" r="12" fill="#F0EAD6" stroke="#D4AF37" />
+                                    <path d="M235,135 C245,145 260,145 270,135 L270,150 C260,160 245,160 235,150 Z" fill="#F0EAD6" stroke="#D4AF37" />
                                 </g>
                             </svg>
-                        </div>
-
-                        <h2 class="text-gold-500 text-xs md:text-sm tracking-[0.6em] uppercase fade-in-up" style="animation-delay: 0.1s">Nas Asas da Noite</h2>
-                        <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-black text-white leading-tight fade-in-up" style="animation-delay: 0.3s">
-                            O CORVO DE <br><span class="text-gold-gradient">HEKATE</span>
-                        </h1>
-                        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-gold-400 to-transparent mx-auto my-6 fade-in-up" style="animation-delay: 0.5s"></div>
-                        <p class="text-gray-300 max-w-2xl mx-auto text-lg md:text-xl font-body font-light leading-relaxed fade-in-up" style="animation-delay: 0.6s">
-                            Onde os caminhos se cruzam e a magia antiga sussurra. <br>
-                            Seja bem-vindo ao santuário do Sacerdote Leonardo.
-                        </p>
-                        <div class="pt-8 flex justify-center fade-in-up" style="animation-delay: 0.8s">
-                            <button data-view="blog-view" class="internal-link px-10 py-4 bg-transparent border border-gold-400 text-gold-400 font-display text-sm font-bold tracking-[0.2em] uppercase hover:bg-gold-400 hover:text-black transition shadow-[0_0_20px_rgba(212,175,55,0.1)]">
-                                Ler o Grimório
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="about-section" class="py-24 px-6 bg-obsidian border-t border-white/5 relative">
-                    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-                        <div class="order-2 md:order-1 space-y-8 text-justify">
-                            <h3 class="text-3xl font-display text-white flex items-center gap-4">
-                                <span class="h-[1px] w-12 bg-gold-500"></span> O Mensageiro
-                            </h3>
-                            <p class="text-gray-400 font-body leading-loose text-lg">
-                                Por que o <strong>Corvo</strong>? Na antiguidade, acreditava-se que os corvos eram os olhos dos deuses. Eles voam entre os mundos, carregando mensagens do submundo para a terra dos vivos.
-                            </p>
-                            <p class="text-gray-400 font-body leading-loose text-lg">
-                                Hekate, a Senhora das Encruzilhadas, segura as chaves do cosmos. Este blog nasce dessa conexão: ser um mensageiro digital, um ponto de encontro para aqueles que buscam o conhecimento oculto.
-                            </p>
-                            <div class="pt-4 flex items-center gap-4">
-                                <i class="fas fa-key text-gold-500"></i>
-                                <p class="text-gold-400 font-display text-sm tracking-widest uppercase">Sacerdote Leonardo</p>
-                            </div>
-                        </div>
-                        <div class="order-1 md:order-2 flex justify-center relative">
-                            <div class="absolute inset-0 bg-gold-400/5 blur-3xl rounded-full"></div>
-                            <div class="relative border border-white/10 p-2 bg-void/50 rotate-3 hover:rotate-0 transition duration-700">
-                                <img src="https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=800&auto=format&fit=crop" 
-                                     onerror="this.src='https://placehold.co/600x800/1a1a1a/D4AF37?text=O+Corvo&font=playfair'"
-                                     alt="Corvo Místico" 
-                                     class="w-full h-auto max-w-sm grayscale hover:grayscale-0 transition duration-700 shadow-2xl object-cover aspect-[3/4]">
-                                <div class="absolute -bottom-4 -right-4 bg-black border border-gold-900 p-4">
-                                    <i class="fas fa-feather-alt text-2xl text-gold-500"></i>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </section>
 
                 <section class="py-24 px-6 bg-void relative overflow-hidden">
-                    <div class="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                    <div class="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-yuleRed/30 to-transparent"></div>
                     <div class="max-w-7xl mx-auto">
                         <div class="text-center mb-16 space-y-4">
-                            <i class="fas fa-star text-gold-500 text-xl animate-pulse"></i>
-                            <h3 class="text-4xl font-display text-white">Os Pilares do Templo</h3>
-                            <p class="text-gray-500 text-sm uppercase tracking-widest">Projetos e Caminhos</p>
+                            <i class="fas fa-holly-berry text-gold-500 text-2xl"></i>
+                            <h3 class="text-4xl font-display text-white">Presentes do Templo</h3>
+                            <p class="text-gray-500 text-sm uppercase tracking-widest">Projetos e Caminhos de Yule</p>
                         </div>
 
                         <div class="grid md:grid-cols-3 gap-8">
                             <div class="project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer" onclick="showView('blog-view')">
-                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition">
-                                    <i class="fas fa-book-open text-6xl text-white"></i>
+                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
+                                    <i class="fas fa-book-open text-7xl text-gold-900"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition">O Grimório</h4>
-                                <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                                    O coração deste site. Artigos profundos, rituais práticos e reflexões sobre a Bruxaria Hekatina.
+                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition flex items-center gap-2">O Grimório <i class="fas fa-star text-[10px] text-yuleRed opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
+                                    O coração deste santuário. Artigos profundos e rituais para celebrar a roda do ano.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition">Ler Agora <i class="fas fa-arrow-right ml-2"></i></span>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">Ler Agora <i class="fas fa-arrow-right"></i></span>
                             </div>
 
                             <a href="https://caminhodatocha.site" target="_blank" class="project-card bg-obsidian border border-white/5 p-8 relative group block">
-                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition">
-                                    <i class="fas fa-fire text-6xl text-white"></i>
+                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
+                                    <i class="fas fa-fire text-7xl text-yuleRed"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition">Caminho da Tocha</h4>
-                                <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                                    A Mentoria Oficial. Um mergulho estruturado e profundo nos mistérios para além da teoria.
+                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition flex items-center gap-2">Caminho da Tocha <i class="fas fa-gift text-[10px] text-yuleRed opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
+                                    O maior presente que você pode se dar: conhecimento estruturado. Um mergulho profundo nos mistérios.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition">Saber Mais <i class="fas fa-external-link-alt ml-2"></i></span>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">Saber Mais <i class="fas fa-external-link-alt"></i></span>
                             </a>
 
                             <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="project-card bg-obsidian border border-white/5 p-8 relative group block">
-                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition">
-                                    <i class="fas fa-calendar-alt text-6xl text-white"></i>
+                                <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
+                                    <i class="fas fa-calendar-alt text-7xl text-gold-900"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition">Calendário Hekatino</h4>
-                                <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                                    Sincronize-se com as luas. Mapeando os dias sagrados, as fases lunares e os rituais de Hekate.
+                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition flex items-center gap-2">Calendário Hekatino <i class="fas fa-snowflake text-[10px] text-yuleRed opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
+                                    Sincronize-se com os ciclos de inverno. Mapeie os dias sagrados e os rituais específicos.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition">Acessar <i class="fas fa-external-link-alt ml-2"></i></span>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">Acessar <i class="fas fa-external-link-alt"></i></span>
                             </a>
                         </div>
                     </div>
                 </section>
 
-                <section class="py-20 px-6 border-t border-white/5 bg-[#080808] text-center">
-                    <div class="max-w-2xl mx-auto space-y-8">
-                        <i class="fas fa-crow text-3xl text-gray-600"></i>
-                        <h3 class="text-3xl font-display text-white">Faça parte do Coven</h3>
-                        <p class="text-gray-400 font-body">
-                            Alguns segredos são sussurrados apenas para os iniciados. <br>
-                            Verifique o acesso à área de membros.
+                <section class="py-20 px-6 border-t border-gold-900/30 bg-[#080808] text-center relative overflow-hidden">
+                     <div class="absolute inset-0 bg-gradient-to-t from-yuleRed/10 to-gold-500/5 blur-[120px] pointer-events-none"></div>
+                    <div class="max-w-2xl mx-auto space-y-8 relative z-10">
+                        <i class="fas fa-key text-3xl text-gold-500 animate-pulse"></i>
+                        <h3 class="text-3xl font-display text-white">Junte-se à Celebração do Coven</h3>
+                        <p class="text-gray-400 font-body leading-relaxed">
+                            Neste Yule, alguns segredos são compartilhados apenas entre os iniciados. <br>
+                            Se você possui a chave, adentre o círculo interno.
                         </p>
-                        <button onclick="document.getElementById('login-view').style.display='flex'" class="inline-block border border-gray-700 px-8 py-3 text-gray-300 font-display text-xs font-bold tracking-[0.2em] uppercase hover:border-gold-400 hover:text-gold-400 transition">
-                            Área de Membros
+                        <button onclick="document.getElementById('login-view').style.display='flex'" class="inline-block border border-gold-900 px-10 py-4 text-gold-400 font-display text-xs font-bold tracking-[0.3em] uppercase hover:bg-yuleRed/80 hover:text-white hover:border-yuleRed transition relative group overflow-hidden">
+                            <span class="relative z-10">Área Restrita</span>
+                             <div class="absolute inset-0 bg-gold-400/10 opacity-0 group-hover:opacity-100 transition"></div>
                         </button>
                     </div>
                 </section>
@@ -366,14 +362,16 @@
 
             <div id="blog-view" class="view-container hidden max-w-7xl mx-auto pt-10 px-4">
                 
-                <div id="admin-panel" class="hidden mb-16 p-8 bg-obsidian border border-white/5 rounded-sm relative overflow-hidden">
-                    <h3 class="text-gold-400 font-display text-xl mb-6 flex items-center gap-2"><i class="fas fa-crown"></i> Painel do Sacerdote</h3>
+                <div id="admin-panel" class="hidden mb-16 p-8 bg-obsidian border border-gold-900/30 rounded-sm relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 text-9xl text-white/5 pointer-events-none"><i class="fas fa-feather"></i></div>
+                    <h3 class="text-gold-400 font-display text-xl mb-6 flex items-center gap-2 relative z-10"><i class="fas fa-crown"></i> Painel do Sacerdote (Edição de Yule)</h3>
+                    
                     <div class="grid lg:grid-cols-2 gap-10 relative z-10">
                         <form id="create-post-form" class="space-y-4">
-                            <input type="text" id="post-title" class="input-luxe w-full p-3 font-display text-lg" placeholder="Título" required>
-                            <input type="url" id="post-cover-image" class="input-luxe w-full p-3 font-body text-sm" placeholder="Imagem URL" required>
+                            <input type="text" id="post-title" class="input-luxe w-full p-3 font-display text-lg" placeholder="Título do Ritual" required>
+                            <input type="url" id="post-cover-image" class="input-luxe w-full p-3 font-body text-sm" placeholder="Link da Imagem (https://...)" required>
                             <div class="relative">
-                                <textarea id="post-content" rows="6" class="input-luxe w-full p-3 font-body text-sm" placeholder="Conteúdo..." required></textarea>
+                                <textarea id="post-content" rows="6" class="input-luxe w-full p-3 font-body text-sm" placeholder="Escreva os segredos..." required></textarea>
                                 <button type="button" id="format-create-btn" class="absolute bottom-2 right-2 text-[10px] bg-black border border-gold-900 text-gold-400 px-3 py-1 uppercase hover:bg-gold-900 transition"><i class="fas fa-magic mr-1"></i> IA</button>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
@@ -381,21 +379,21 @@
                                 <select id="post-section" class="input-luxe w-full p-2 text-sm bg-black cursor-pointer" required><option value="">Carregando...</option></select>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
-                                <input type="text" id="post-attachment-name" placeholder="Nome Anexo" class="input-luxe w-full p-2 text-sm">
-                                <input type="url" id="post-attachment-link" placeholder="Link Anexo" class="input-luxe w-full p-2 text-sm">
+                                <input type="text" id="post-attachment-name" placeholder="Nome do Anexo" class="input-luxe w-full p-2 text-sm">
+                                <input type="url" id="post-attachment-link" placeholder="Link do Anexo" class="input-luxe w-full p-2 text-sm">
                             </div>
-                            <button type="submit" class="w-full bg-gold-900/40 border border-gold-500/50 text-gold-400 py-3 font-bold uppercase text-xs tracking-widest hover:bg-gold-500 hover:text-black transition">Publicar</button>
+                            <button type="submit" class="w-full bg-gold-900/40 border border-gold-500/50 text-gold-400 py-3 font-bold uppercase text-xs tracking-widest hover:bg-gold-500 hover:text-black transition">Publicar no Grimório</button>
                             <p id="post-status" class="text-center text-xs h-4 text-gold-500"></p>
                         </form>
 
                         <div class="space-y-6">
                             <div class="bg-black/40 p-5 border border-white/5">
-                                <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3">Novo Assinante</h4>
+                                <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3"><i class="fas fa-user-plus mr-2"></i>Novo Assinante</h4>
                                 <form id="create-account-form" class="flex gap-2 flex-col">
-                                    <input type="email" id="new-email" placeholder="Email" class="input-luxe p-2 text-sm">
-                                    <input type="password" id="new-password" placeholder="Senha" class="input-luxe p-2 text-sm">
+                                    <input type="email" id="new-email" placeholder="Email do Aluno" class="input-luxe p-2 text-sm">
+                                    <input type="password" id="new-password" placeholder="Senha Provisória" class="input-luxe p-2 text-sm">
                                     <select id="account-validity" class="input-luxe p-2 text-sm bg-black"><option value="1">1 Mês</option><option value="3">3 Meses</option></select>
-                                    <button type="submit" class="border border-white/20 text-white py-2 text-xs uppercase hover:bg-white hover:text-black transition">Criar</button>
+                                    <button type="submit" class="border border-white/20 text-white py-2 text-xs uppercase hover:bg-white hover:text-black transition">Criar Acesso</button>
                                     <p id="account-status" class="text-xs h-4"></p>
                                 </form>
                             </div>
@@ -414,7 +412,7 @@
                                 </div>
                             </div>
                             <div class="bg-black/40 p-2 border border-white/5">
-                                <input type="password" id="gemini-api-key" placeholder="API Key" class="input-luxe w-full p-1 text-[10px]">
+                                <input type="password" id="gemini-api-key" placeholder="Cole a API Key do Gemini aqui" class="input-luxe w-full p-1 text-[10px]">
                             </div>
                         </div>
                     </div>
@@ -425,47 +423,51 @@
                         <select id="section-filter" class="appearance-none bg-transparent text-gold-400 border-b border-white/20 py-2 pr-8 pl-4 text-right focus:outline-none cursor-pointer text-lg font-display uppercase tracking-wider hover:border-gold-500 transition">
                             <option value="todos" class="bg-black">Todos os Mistérios</option>
                         </select>
+                        <i class="fas fa-chevron-down absolute right-0 top-3 text-gold-500 text-xs pointer-events-none"></i>
                     </div>
                 </div>
 
                 <div id="pago-section" class="hidden mb-16 relative">
                     <div class="flex items-center justify-center gap-4 mb-8">
                         <span class="h-[1px] w-12 bg-gold-900"></span>
-                        <h2 class="text-gold-500 font-display text-xl tracking-[0.3em] uppercase">Conhecimento Oculto</h2>
+                        <h2 class="text-gold-500 font-display text-xl tracking-[0.3em] uppercase flex items-center gap-2"><i class="fas fa-lock text-sm"></i>Conhecimento Oculto <i class="fas fa-holly-berry text-yuleRed text-sm opacity-70"></i></h2>
                         <span class="h-[1px] w-12 bg-gold-900"></span>
                     </div>
                     <div id="posts-list-pago" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-                    <p id="empty-pago" class="text-center text-gray-600 text-sm hidden italic">O silêncio reina nesta seção.</p>
+                    <p id="empty-pago" class="text-center text-gray-600 text-sm hidden italic">O silêncio de inverno reina nesta seção.</p>
                 </div>
 
                 <div class="mb-20">
                     <div class="flex items-center justify-center gap-4 mb-8">
                         <span class="h-[1px] w-12 bg-white/10"></span>
-                        <h2 class="text-gray-400 font-display text-lg tracking-[0.3em] uppercase">Pergaminhos Abertos</h2>
+                        <h2 class="text-gray-400 font-display text-lg tracking-[0.3em] uppercase flex items-center gap-2"><i class="fas fa-book-open text-sm"></i>Pergaminhos Abertos <i class="fas fa-snowflake text-white text-sm opacity-50"></i></h2>
                         <span class="h-[1px] w-12 bg-white/10"></span>
                     </div>
                     <div id="posts-list-aberto" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-                    <p id="empty-aberto" class="text-center text-gray-600 text-sm hidden italic">Nenhum registro encontrado.</p>
+                    <p id="empty-aberto" class="text-center text-gray-600 text-sm hidden italic">Nenhum registro encontrado nas neves do tempo.</p>
                 </div>
             </div>
 
             <div id="sobre-view" class="view-container hidden max-w-5xl mx-auto pt-10 px-4">
                 <div class="glass-dark p-8 md:p-16 border-t border-gold-900/50 relative overflow-hidden">
+                    <div class="absolute -top-20 -right-20 w-60 h-60 bg-yuleRed/10 rounded-full blur-3xl"></div>
+                    
                     <div class="flex flex-col md:flex-row gap-12 items-center relative z-10">
                         <div class="w-full md:w-2/5 relative group">
                             <div class="absolute inset-0 border border-gold-500/20 translate-x-3 translate-y-3 group-hover:translate-x-2 group-hover:translate-y-2 transition duration-500"></div>
                             <img src="https://i.ibb.co/0ymRCF5C/2-DACB7-CC-CE28-4383-BD50-DEB2-C7-A38721.png" class="w-full grayscale hover:grayscale-0 transition duration-700 shadow-2xl relative z-10">
+                            <div class="absolute -bottom-5 -left-5 text-3xl text-gold-500 opacity-50 rotate-12"><i class="fas fa-holly-berry text-yuleRed"></i></div>
                         </div>
                         <div class="w-full md:w-3/5 text-gray-300 font-body leading-relaxed space-y-6 text-lg text-justify">
                             <div>
-                                <h2 class="text-4xl font-display text-white mb-1">Leonardo</h2>
+                                <h2 class="text-4xl font-display text-white mb-1 flex items-center gap-3">Leonardo <i class="fas fa-star-of-life text-gold-500 text-xl"></i></h2>
                                 <p class="text-gold-500 text-xs uppercase tracking-[0.4em]">Sacerdote de Hekate</p>
                             </div>
                             <p>
-                                <span class="text-4xl float-left mr-2 text-gold-600 font-display">A</span>s encruzilhadas nunca são apenas caminhos; são escolhas. Minha vida foi dedicada a entender as escolhas que fazemos nas sombras, guiado pela chama da Deusa.
+                                <span class="text-4xl float-left mr-2 text-gold-600 font-display">N</span>este período de Yule, refletimos sobre as encruzilhadas. Minha vida foi dedicada a entender as escolhas que fazemos nas sombras, guiado pela chama da Deusa que renasce.
                             </p>
                             <p>
-                                O projeto <strong>O Corvo de Hekate</strong> nasce da necessidade de trazer profundidade em um mundo raso. Aqui, a magia não é teoria; é vivência. Compartilho minha devoção, meus estudos e a sabedoria que as chaves me abriram.
+                                O projeto <strong>O Corvo de Hekate</strong> é meu presente para a comunidade. Aqui, a magia não é teoria; é vivência. Compartilho minha devoção e a sabedoria das chaves.
                             </p>
                             <div class="pt-6 border-t border-white/5 flex gap-4 text-2xl text-gold-400">
                                 <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
@@ -478,19 +480,20 @@
 
         </main>
 
-        <footer class="bg-black py-12 text-center border-t border-white/5 relative z-10">
-            <i class="fas fa-crow text-gold-900 text-2xl mb-4"></i>
-            <p class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-2">© 2025 O Corvo de Hekate</p>
-            <p class="text-gray-800 text-[10px]">Desenvolvido nas Sombras</p>
+        <footer class="bg-black py-12 text-center border-t border-gold-900/20 relative z-10 overflow-hidden">
+            <div class="absolute inset-0 bg-yuleRed/5 pointer-events-none"></div>
+            <i class="fas fa-crow text-gold-900 text-2xl mb-4 animate-pulse relative z-10"></i>
+            <p class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-2 relative z-10">© 2025 O Corvo de Hekate | Feliz Yule</p>
+            <p class="text-gray-800 text-[10px] relative z-10">Desenvolvido nas Sombras do Inverno</p>
         </footer>
 
         <div id="login-view" class="view-container hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="w-full max-w-sm relative bg-obsidian p-10 border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+            <div class="w-full max-w-sm relative bg-obsidian p-10 border border-gold-900/30 shadow-[0_0_50px_rgba(139,0,0,0.2)]">
                 <button id="close-login-btn" class="absolute top-4 right-4 text-gray-500 hover:text-white transition"><i class="fas fa-times"></i></button>
                 <div class="text-center mb-10">
                     <i class="fas fa-key text-gold-500 text-2xl mb-4"></i>
-                    <h2 class="text-2xl font-display text-white tracking-widest">ACESSO</h2>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Área do Coven</p>
+                    <h2 class="text-2xl font-display text-white tracking-widest flex justify-center items-center gap-2">ACESSO <i class="fas fa-holly-berry text-yuleRed text-sm"></i></h2>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Área do Coven de Yule</p>
                 </div>
                 <form id="login-form" class="space-y-6">
                     <div class="group">
@@ -499,7 +502,7 @@
                     <div class="group">
                         <input type="password" id="login-password" placeholder="SENHA" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-gold-400 outline-none transition font-display tracking-wider">
                     </div>
-                    <button type="submit" class="w-full border border-gold-900 text-gold-400 py-4 uppercase text-xs tracking-[0.3em] hover:bg-gold-400 hover:text-black transition font-bold mt-4">Entrar</button>
+                    <button type="submit" class="w-full border border-gold-900 text-gold-400 py-4 uppercase text-xs tracking-[0.3em] hover:bg-yuleRed/80 hover:text-white hover:border-yuleRed transition font-bold mt-4">Entrar</button>
                 </form>
                 <p id="login-error" class="text-center text-red-500 text-xs mt-6 font-display tracking-wider"></p>
             </div>
@@ -615,7 +618,7 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // === CONFIG FIREBASE ===
+        // === CONFIGURAÇÃO FIREBASE ===
         const firebaseConfig = {
           apiKey: "AIzaSyBQXn_dPUivGjfGrWvMwysa-IDX8eXNbCA",
           authDomain: "corvo-4f7e7.firebaseapp.com",
@@ -656,7 +659,9 @@
         };
 
         window.onload = function() {
+            // Failsafe timer
             setTimeout(() => { if(introSection.style.display !== 'none') window.forceOpenSite(); }, 8000); 
+            // Normal timer
             setTimeout(() => { window.forceOpenSite(); }, 7500);
         };
 
@@ -700,6 +705,7 @@
             if (user) {
                 const isAdmin = user.uid === ADMIN_UID;
                 const userDoc = await getDoc(doc(db, "users", user.uid));
+                
                 if (!isAdmin) {
                     if (userDoc.exists()) {
                         const expires = userDoc.data().expiresAt.toDate();
@@ -707,11 +713,13 @@
                         currentUserPermissions = userDoc.data().accessibleSections || [];
                     } else { await signOut(auth); return; }
                 }
+
                 currentUser = user;
                 userInfo.style.display = 'flex';
                 userEmailSpan.textContent = user.email;
                 loginBtn.style.display = 'none';
                 pagoSection.style.display = 'block';
+                
                 if (isAdmin) {
                     adminPanel.style.display = 'block';
                     adminControls.forEach(el => { el.style.display = 'flex'; el.classList.remove('hidden'); });
@@ -721,6 +729,7 @@
                     adminControls.forEach(el => el.style.display = 'none');
                 }
                 if(document.getElementById('login-view').style.display === 'flex') showView('blog-view');
+
             } else {
                 currentUser = null;
                 userInfo.style.display = 'none';
@@ -746,6 +755,8 @@
         document.getElementById('close-login-btn').addEventListener('click', () => showView('home-view'));
 
         // === ADMIN FUNCTIONS ===
+        
+        // 1. Sections
         const sectionFilter = document.getElementById('section-filter');
         const postSectionSelect = document.getElementById('post-section');
         const editPostSectionSelect = document.getElementById('edit-post-section');
@@ -759,12 +770,14 @@
                 postSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
                 editPostSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
                 sectionsListAdmin.innerHTML = '';
+
                 snap.forEach(d => {
                     const sec = { id: d.id, ...d.data() };
                     allSections.push(sec);
                     sectionFilter.add(new Option(sec.name, sec.id));
                     postSectionSelect.add(new Option(sec.name, sec.id));
                     editPostSectionSelect.add(new Option(sec.name, sec.id));
+                    
                     const div = document.createElement('div');
                     div.className = "flex justify-between items-center p-2 hover:bg-white/5 rounded border-b border-white/5";
                     div.innerHTML = `<span>${sec.name}</span> <button class="delete-sec-btn text-red-500 hover:text-red-300" data-id="${sec.id}"><i class="fas fa-times"></i></button>`;
@@ -779,6 +792,7 @@
             if(name) { await addDoc(collection(db, "sections"), {name, createdAt: new Date()}); document.getElementById('create-section-form').reset(); }
         });
 
+        // 2. Students
         const studentsListAdmin = document.getElementById('students-list-admin');
         function fetchStudents() {
             onSnapshot(query(collection(db, "users")), (snap) => {
@@ -812,6 +826,7 @@
             } catch(e) { status.textContent = "Erro: " + e.code; status.className = "text-red-400 text-xs"; }
         });
 
+        // 3. Posts
         const createPostForm = document.getElementById('create-post-form');
         const postStatus = document.getElementById('post-status');
 
@@ -820,6 +835,7 @@
             postStatus.textContent = "Enviando ao Grimório...";
             const secSelect = document.getElementById('post-section');
             const secName = secSelect.options[secSelect.selectedIndex].text;
+            
             try {
                 await addDoc(collection(db, "posts"), {
                     title: document.getElementById('post-title').value,
@@ -855,7 +871,7 @@
 
             filtered.forEach(p => {
                 const card = document.createElement('div');
-                card.className = "project-card bg-obsidian border border-white/5 cursor-pointer h-[420px] flex flex-col group relative overflow-hidden transition-all duration-500 hover:shadow-[0_0_20px_rgba(212,175,55,0.1)] hover:border-gold-900/50";
+                card.className = "project-card bg-obsidian border border-white/5 cursor-pointer h-[420px] flex flex-col group relative overflow-hidden";
                 card.dataset.id = p.id;
 
                 let adminBtns = '';
@@ -905,23 +921,34 @@
             loadingSpinner.classList.remove('hidden');
             const ref = doc(db, "posts", id);
             const snap = await getDoc(ref);
+            
             if(snap.exists()) {
                 const p = snap.data();
                 if(p.access === 'pago') {
                     const allowed = (currentUser && currentUser.uid === ADMIN_UID) || (currentUser && currentUserPermissions.includes(p.sectionId));
-                    if(!allowed) { loadingSpinner.classList.add('hidden'); alert("Este conhecimento está selado."); return; }
+                    if(!allowed) { 
+                        loadingSpinner.classList.add('hidden'); 
+                        alert("Este conhecimento está selado."); return; 
+                    }
                 }
+
                 await updateDoc(ref, { viewCount: increment(1) });
+                
                 postViewTitle.textContent = p.title;
                 postViewCount.textContent = (p.viewCount || 0) + 1;
                 postViewCover.src = p.coverImage;
                 postViewContent.innerHTML = formatText(p.content);
+                
                 if(p.attachmentURL) {
                     postViewAttachLink.href = p.attachmentURL;
                     postViewAttachContainer.classList.remove('hidden');
-                } else { postViewAttachContainer.classList.add('hidden'); }
+                } else {
+                    postViewAttachContainer.classList.add('hidden');
+                }
+
                 document.getElementById('post-view-edit-btn').onclick = () => openEdit(id);
                 document.getElementById('post-view-delete-btn').onclick = () => confirmDel(id, 'post');
+
                 stopSpeaking();
                 showView('post-view');
             }
@@ -961,6 +988,7 @@
             const id = document.getElementById('edit-post-id').value;
             const secSelect = document.getElementById('edit-post-section');
             const secName = secSelect.options[secSelect.selectedIndex].text;
+            
             await updateDoc(doc(db, "posts", id), {
                 title: document.getElementById('edit-post-title').value,
                 coverImage: document.getElementById('edit-post-cover-image').value,
@@ -999,12 +1027,17 @@
         // === GLOBAL LISTENERS ===
         appRoot.addEventListener('click', (e) => {
             const card = e.target.closest('[data-id]');
+            // Open post from card
             if(card && card.parentElement.id.includes('posts-list') && !e.target.closest('button')) {
                 openPost(card.dataset.id);
             }
+            
+            // Buttons inside list
             if(e.target.closest('.edit-btn')) openEdit(e.target.closest('.edit-btn').dataset.id);
             if(e.target.closest('.del-btn')) confirmDel(e.target.closest('.del-btn').dataset.id, 'post');
             if(e.target.closest('.delete-sec-btn')) confirmDel(e.target.closest('.delete-sec-btn').dataset.id, 'section');
+            
+            // Student
             if(e.target.closest('.manage-student-btn')) {
                 openManageStudent(e.target.closest('.manage-student-btn').dataset.id);
             }
@@ -1018,6 +1051,7 @@
             document.getElementById('student-modal-id').value = sid;
             const list = document.getElementById('student-modal-sections-list');
             list.innerHTML = '';
+            
             allSections.forEach(sec => {
                 const checked = st.accessibleSections && st.accessibleSections.includes(sec.id);
                 const label = document.createElement('label');
@@ -1037,6 +1071,7 @@
         });
         document.getElementById('close-student-modal-btn').addEventListener('click', () => manageModal.style.display = 'none');
 
+
         // === AI TEXT & AUDIO ===
         const geminiApiKeyInput = document.getElementById('gemini-api-key');
         if(localStorage.getItem('geminiKey')) geminiApiKeyInput.value = localStorage.getItem('geminiKey');
@@ -1046,6 +1081,7 @@
             const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
             if(!key) return alert("Insira a API Key");
             const txt = el.value; if(!txt) return;
+            
             try {
                 const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${key}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1085,10 +1121,13 @@
         async function speak() {
             if(!audioPlayer.paused && audioPlayer.src) { audioPlayer.pause(); btnSpeakText.textContent = "Continuar"; return; }
             if(audioPlayer.paused && audioPlayer.src) { audioPlayer.play(); btnSpeakText.textContent = "Pausar"; return; }
+
             const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
             if(!key) return alert("API Key necessária.");
+
             btnSpeakText.textContent = "Carregando...";
             const txt = document.getElementById('post-view-content').innerText.substring(0, 4000);
+            
             try {
                 const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${key}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1102,6 +1141,7 @@
                 const wav = makeWav(pcm);
                 const blob = new Blob([wav], { type: 'audio/wav' });
                 audioPlayer.src = URL.createObjectURL(blob);
+                
                 audioPlayer.onplay = () => { btnSpeakText.textContent = "Pausar"; btnStopSpeak.classList.remove('hidden'); };
                 audioPlayer.onended = stopSpeaking;
                 audioPlayer.play();
@@ -1119,6 +1159,7 @@
             stopSpeaking();
             showView('blog-view');
         });
+
     </script>
 </body>
-</html>
+</html>9
