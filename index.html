@@ -3,32 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Corvo de Hekate | Feliz Yule!</title>
+    <title>O Coven do Corvo | Santuário Digital</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
     <script>
+        // 🔮 CONFIGURAÇÃO DO SACERDOTE 🔮
+        // Opções: 'Yule', 'Imbolc', 'Ostara', 'Beltane', 'Litha', 'Lammas', 'Mabon', 'Samhain'
+        // ESPECIAL: Se escolher 'Hekate', ele alterna automaticamente com 'Nyx' (Os Dois Pilares)
+        const CURRENT_THEME = 'Yule'; 
+
+        // BANCO DE DADOS DE ESTÉTICA
+        const THEMES = {
+            'Yule': {
+                name: 'Yule',
+                primary: { 400: '#D4AF37', 500: '#C5A028', 900: '#3D3008' }, // Dourado
+                accent: '#8B0000', // Vermelho Sangue
+                particle: '❄', // Neve
+                particleColor: '#FFFFFF',
+                particleDirection: 'down'
+            },
+            'Imbolc': {
+                name: 'Imbolc',
+                primary: { 400: '#A5F2F3', 500: '#7CD1D3', 900: '#1A4D4F' }, // Gelo/Ciano
+                accent: '#FFFFFF', // Branco Puro
+                particle: '✨', // Brilho
+                particleColor: '#A5F2F3',
+                particleDirection: 'up'
+            },
+            'Ostara': {
+                name: 'Ostara',
+                primary: { 400: '#90EE90', 500: '#77DD77', 900: '#1A4F1A' }, // Verde Claro
+                accent: '#FFB7C5', // Rosa Flor
+                particle: '🌸', // Flor
+                particleColor: '#FFB7C5',
+                particleDirection: 'down'
+            },
+            'Beltane': {
+                name: 'Beltane',
+                primary: { 400: '#FF2400', 500: '#DD2400', 900: '#4F0A00' }, // Vermelho Fogo
+                accent: '#50C878', // Verde Esmeralda
+                particle: '🔥', // Fogo
+                particleColor: '#FF4500',
+                particleDirection: 'up'
+            },
+            'Litha': {
+                name: 'Litha',
+                primary: { 400: '#FFD700', 500: '#FFC000', 900: '#5C4800' }, // Amarelo Sol
+                accent: '#FFA500', // Laranja
+                particle: '☀️', // Sol
+                particleColor: '#FFD700',
+                particleDirection: 'up'
+            },
+            'Lammas': {
+                name: 'Lammas',
+                primary: { 400: '#F4C430', 500: '#DAA520', 900: '#5C4000' }, // Trigo/Dourado
+                accent: '#D2691E', // Marrom/Laranja
+                particle: '🌾', // Trigo
+                particleColor: '#F4C430',
+                particleDirection: 'down'
+            },
+            'Mabon': {
+                name: 'Mabon',
+                primary: { 400: '#D2691E', 500: '#8B4513', 900: '#3D1F00' }, // Marrom
+                accent: '#800080', // Roxo
+                particle: '🍂', // Folha
+                particleColor: '#D2691E',
+                particleDirection: 'down'
+            },
+            'Samhain': {
+                name: 'Samhain',
+                primary: { 400: '#9370DB', 500: '#8A2BE2', 900: '#2E004F' }, // Roxo
+                accent: '#FF4500', // Laranja Abóbora
+                particle: '👻', // Fantasma
+                particleColor: '#FFFFFF',
+                particleDirection: 'up'
+            },
+            // PILAR 1: HEKATE (Prata e Cinza)
+            'Hekate': {
+                name: 'Hekate',
+                primary: { 400: '#C0C0C0', 500: '#A9A9A9', 900: '#2F2F2F' }, // Prata/Cinza
+                accent: '#DAA520', // Dourado Envelhecido (Tochas)
+                particle: '🔑', // Chave
+                particleColor: '#C0C0C0',
+                particleDirection: 'up'
+            },
+            // PILAR 2: NYX (Azul Noite Profunda e Estrelas)
+            'Nyx': {
+                name: 'Nyx',
+                primary: { 400: '#818CF8', 500: '#4F46E5', 900: '#1E1B4B' }, // Índigo/Midnight
+                accent: '#E0E7FF', // Brilho Estelar
+                particle: '✦', // Estrela
+                particleColor: '#FFFFFF',
+                particleDirection: 'down' // Estrelas caindo
+            }
+        };
+
+        // LÓGICA DOS PILARES (Alterna Hekate/Nyx)
+        let themeKey = CURRENT_THEME;
+        
+        if (CURRENT_THEME === 'Hekate') {
+            // Verifica quem apareceu por último
+            const lastPillar = localStorage.getItem('coven_pillar_toggle');
+            
+            if (lastPillar === 'Hekate') {
+                themeKey = 'Nyx';
+                localStorage.setItem('coven_pillar_toggle', 'Nyx');
+            } else {
+                themeKey = 'Hekate';
+                localStorage.setItem('coven_pillar_toggle', 'Hekate');
+            }
+            console.log("Os Pilares Giraram: Agora rege " + themeKey);
+        }
+
+        const activeTheme = THEMES[themeKey] || THEMES['Yule'];
+
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         void: '#050505',
-                        gold: {
-                            400: '#D4AF37', // Ouro Clássico
-                            500: '#C5A028',
-                            900: '#3D3008',
-                        },
+                        primary: activeTheme.primary,
                         obsidian: '#0f0f10',
-                        yuleRed: '#8B0000', // Vermelho Sangue de Yule
-                        pineGreen: '#0F3B25' // Verde Pinheiro Sombrio
+                        accent: activeTheme.accent,
                     },
                     fontFamily: {
                         display: ['Cinzel', 'serif'],
@@ -38,97 +135,137 @@
             }
         }
     </script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
     <style>
-        /* ESTILOS GERAIS & YULE */
+        /* ESTILOS GERAIS */
         body { background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
         
-        /* Scrollbar Festiva Sombria */
+        /* Scrollbar Dinâmica */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #8B0000, #D4AF37); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--accent-color, #8B0000), var(--primary-color, #D4AF37)); border-radius: 3px; }
 
         .glass-dark {
             background: rgba(20, 20, 20, 0.7);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .text-gold-gradient {
-            background: linear-gradient(to right, #AA8C2C, #F2E3BC, #D4AF37, #AA8C2C);
+        /* Classes Utilitárias do Tema (CSS Variables injetadas via JS depois) */
+        .text-gradient-theme {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary-light), var(--primary-main));
             -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 5s linear infinite;
         }
         @keyframes shine { to { background-position: 200% center; } }
+        
         .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
         #intro-sequence { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         
-        /* CARDS DECORADOS DE NATAL */
+        /* CARDS */
         .project-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative; overflow: hidden;
         }
-        /* Adiciona um toque de azevinho no canto */
+        /* Icone do festival no canto do card */
         .project-card::after {
-            content: '❄️'; /* Um toque sutil de natureza/Yule */
+            content: var(--theme-icon, '❄️'); 
             position: absolute; top: 10px; right: 10px; font-size: 1.5rem; opacity: 0.3; filter: grayscale(0.5) sepia(1) hue-rotate(-50deg); transition: 0.4s;
         }
         .project-card:hover::after { opacity: 0.8; filter: none; transform: rotate(15deg); }
-        
         .project-card:hover {
             transform: translateY(-5px);
-            border-color: #D4AF37;
-            /* Brilho misto Dourado/Vermelho Yule */
-            box-shadow: 0 10px 40px -10px rgba(212, 175, 55, 0.2), 0 0 20px rgba(139, 0, 0, 0.2);
+            border-color: var(--primary-main);
+            box-shadow: 0 10px 40px -10px rgba(255, 255, 255, 0.1), 0 0 20px var(--accent-color-alpha);
         }
         
         .input-luxe { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #fff; transition: 0.3s; }
-        .input-luxe:focus { outline: none; border-color: #D4AF37; background: rgba(212, 175, 55, 0.05); }
+        .input-luxe:focus { outline: none; border-color: var(--primary-main); background: rgba(255, 255, 255, 0.05); }
 
-        /* --- ANIMAÇÃO DO CORVO SVG (COM GORRO) --- */
+        /* SELEÇÃO DE AVATAR */
+        .avatar-option input[type="radio"] { display: none; }
+        .avatar-option label { 
+            display: flex; align-items: center; justify-content: center; 
+            width: 50px; height: 50px; border-radius: 50%; 
+            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s;
+            color: #666; font-size: 1.2rem;
+        }
+        .avatar-option input[type="radio"]:checked + label {
+            background: var(--primary-main); color: #000; box-shadow: 0 0 15px var(--primary-main);
+        }
+
+        /* CORVO SVG ANIMADO */
         .mystic-crow-svg {
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
             animation: hoverCrow 4s ease-in-out infinite alternate;
         }
         .crow-wing-left { transform-origin: center; animation: flapLeft 1.2s ease-in-out infinite alternate; }
         .crow-wing-right { transform-origin: center; animation: flapRight 1.2s ease-in-out infinite alternate; }
-        .santa-hat-group { transform-origin: center; animation: hatBob 1.2s ease-in-out infinite alternate; }
-
+        
         @keyframes hoverCrow { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
         @keyframes flapLeft { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-10deg) translateY(5px); } }
         @keyframes flapRight { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(10deg) translateY(5px); } }
-        @keyframes hatBob { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-5deg) translateY(2px); } }
-
-        /* --- EFEITO DE NEVE (CSS PURO LEVE) --- */
-        .snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
-        .snowflake {
-            position: absolute; top: -10px; color: #fff; font-size: 1em; opacity: 0;
-            animation: fall linear infinite;
+        
+        /* PARTICLES CONTAINER */
+        .particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
+        .particle {
+            position: absolute; opacity: 0;
+            animation: particleAnim linear infinite;
         }
-        @keyframes fall {
-            0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+        @keyframes particleAnim {
+            0% { opacity: 0; transform: translateY(var(--start-y)) rotate(0deg); }
             20% { opacity: 0.7; }
-            100% { opacity: 0; transform: translateY(100vh) rotate(360deg); }
+            100% { opacity: 0; transform: translateY(var(--end-y)) rotate(360deg); }
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <div class="snow-container" id="snow"></div>
+    <div class="particle-container" id="particles"></div>
     <script>
-        // Script leve para gerar flocos
-        const snowContainer = document.getElementById('snow');
-        const snowflakeCount = 50; // Quantidade de flocos
-        for (let i = 0; i < snowflakeCount; i++) {
-            const snowflake = document.createElement('div');
-            snowflake.className = 'snowflake';
-            snowflake.innerHTML = '❄';
-            snowflake.style.left = Math.random() * 100 + '%';
-            snowflake.style.animationDuration = Math.random() * 10 + 5 + 's'; // Velocidade variada
-            snowflake.style.animationDelay = Math.random() * 5 + 's';
-            snowflake.style.fontSize = Math.random() * 10 + 8 + 'px';
-            snowflake.style.color = Math.random() > 0.8 ? '#D4AF37' : '#ffffff'; // Alguns flocos dourados
-            snowContainer.appendChild(snowflake);
+        // CONFIGURA CSS VARIABLES BASEADO NO TEMA ESCOLHIDO
+        const root = document.documentElement;
+        root.style.setProperty('--primary-main', activeTheme.primary[400]);
+        root.style.setProperty('--primary-light', activeTheme.primary[500]);
+        root.style.setProperty('--primary-dark', activeTheme.primary[900]);
+        root.style.setProperty('--accent-color', activeTheme.accent);
+        root.style.setProperty('--theme-icon', `'${activeTheme.particle}'`);
+        
+        // Configura Partículas
+        const pContainer = document.getElementById('particles');
+        const pCount = 40; 
+        const isUp = activeTheme.particleDirection === 'up';
+
+        for (let i = 0; i < pCount; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerHTML = activeTheme.particle;
+            p.style.left = Math.random() * 100 + '%';
+            
+            // Direção da animação
+            if(isUp) {
+                p.style.bottom = '-20px';
+                p.style.setProperty('--start-y', '0');
+                p.style.setProperty('--end-y', '-100vh');
+            } else {
+                p.style.top = '-20px';
+                p.style.setProperty('--start-y', '0');
+                p.style.setProperty('--end-y', '100vh');
+            }
+
+            p.style.animationDuration = Math.random() * 10 + 5 + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            p.style.fontSize = Math.random() * 10 + 8 + 'px';
+            p.style.color = Math.random() > 0.7 ? activeTheme.primary[400] : activeTheme.particleColor;
+            
+            // Apenas mostra particulas se não for "Hekate" puro (opcional, ou deixa sempre)
+            pContainer.appendChild(p);
         }
     </script>
 
@@ -147,19 +284,19 @@
         
         <div id="loading-spinner" class="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center hidden">
             <div class="relative animate-bounce mb-4">
-                <i class="fas fa-crow text-4xl text-gold-400"></i>
-                <i class="fas fa-holly-berry absolute -top-2 -right-2 text-yuleRed text-sm"></i>
+                <i class="fas fa-crow text-4xl text-primary-400"></i>
+                <i class="fas fa-certificate absolute -top-2 -right-2 text-accent text-sm animate-spin"></i>
             </div>
-            <p class="text-gold-400 text-xs tracking-[0.3em] uppercase animate-pulse">Comemorando Yule...</p>
+            <p class="text-primary-400 text-xs tracking-[0.3em] uppercase animate-pulse">Carregando Magia...</p>
         </div>
 
-        <header class="fixed top-0 w-full z-40 bg-void/90 backdrop-blur border-b border-gold-900/30 h-20 transition-all duration-300">
+        <header class="fixed top-0 w-full z-40 bg-void/90 backdrop-blur border-b border-primary-900/30 h-20 transition-all duration-300">
             <div class="container mx-auto px-6 h-full flex justify-between items-center">
                 <div class="flex items-center gap-3 cursor-pointer group" onclick="showView('home-view')">
                     <img src="https://i.ibb.co/2705r709/Black-Friday.png" alt="Logo" class="h-10 w-auto opacity-80 group-hover:opacity-100 transition filter drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]">
                     <div class="flex flex-col">
-                        <span class="text-[10px] text-gold-400 uppercase tracking-[0.3em]">O Coven do</span>
-                        <h1 class="text-lg font-display text-white tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">CORVO <i class="fas fa-holly-berry text-yuleRed text-xs opacity-50 group-hover:opacity-100 transition"></i></h1>
+                        <span class="text-[10px] text-primary-400 uppercase tracking-[0.3em]">O Coven do</span>
+                        <h1 class="text-lg font-display text-white tracking-widest group-hover:text-primary-400 transition flex items-center gap-2">CORVO <i class="fas fa-moon text-accent text-xs opacity-50 group-hover:opacity-100 transition"></i></h1>
                     </div>
                 </div>
 
@@ -168,20 +305,24 @@
                     <button data-view="blog-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Grimório</button>
                     <button data-view="sobre-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Sacerdote</button>
                     <div class="w-[1px] h-4 bg-white/10"></div>
-                    <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-gold-400" title="Calendário"><i class="fas fa-moon"></i></a>
-                    <a href="https://caminhodatocha.site" target="_blank" class="border border-gold-900/50 text-gold-400 px-5 py-2 text-[10px] uppercase tracking-widest hover:bg-gold-900 hover:text-white transition font-bold relative overflow-hidden group">
+                    <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-primary-400" title="Calendário"><i class="fas fa-moon"></i></a>
+                    <a href="https://caminhodatocha.site" target="_blank" class="border border-primary-900/50 text-primary-400 px-5 py-2 text-[10px] uppercase tracking-widest hover:bg-primary-900 hover:text-white transition font-bold relative overflow-hidden group">
                         <span class="relative z-10">Fazer Parte do Coven</span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-yuleRed/20 to-gold-900/20 opacity-0 group-hover:opacity-100 transition"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-accent/20 to-primary-900/20 opacity-0 group-hover:opacity-100 transition"></div>
                     </a>
                 </nav>
 
                 <div class="flex items-center gap-4">
                     <div id="user-info" class="hidden items-center gap-3">
-                        <span id="user-email" class="text-[10px] text-gray-500 hidden sm:inline"></span>
-                        <button id="logout-btn" class="text-gray-400 hover:text-red-500"><i class="fas fa-power-off"></i></button>
+                        <button onclick="showView('profile-view')" class="flex items-center gap-2 text-gray-400 hover:text-primary-400 transition group">
+                            <i id="header-user-icon" class="fas fa-user-circle"></i>
+                            <span id="header-user-name" class="text-[10px] hidden sm:inline uppercase tracking-widest group-hover:underline">Iniciado</span>
+                        </button>
+                        <div class="w-[1px] h-3 bg-white/10 mx-1"></div>
+                        <button id="logout-btn" class="text-gray-400 hover:text-red-500 text-xs" title="Sair"><i class="fas fa-power-off"></i></button>
                     </div>
-                    <button id="login-btn" class="hidden text-xs font-display text-gold-400 uppercase tracking-widest hover:text-white border-b border-transparent hover:border-gold-400 pb-1">Login</button>
-                    <button id="mobile-menu-btn" class="md:hidden text-gold-400 text-xl"><i class="fas fa-bars"></i></button>
+                    <button id="login-btn" class="hidden text-xs font-display text-primary-400 uppercase tracking-widest hover:text-white border-b border-transparent hover:border-primary-400 pb-1">Login</button>
+                    <button id="mobile-menu-btn" class="md:hidden text-primary-400 text-xl"><i class="fas fa-bars"></i></button>
                 </div>
             </div>
         </header>
@@ -191,7 +332,8 @@
                 <button data-view="home-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Santuário</button>
                 <button data-view="blog-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Grimório</button>
                 <button data-view="sobre-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Sacerdote</button>
-                <a href="https://caminhodatocha.site" class="text-gold-400 text-xl font-display py-2"><i class="fas fa-gift mr-2"></i>Coven</a>
+                <button data-view="profile-view" class="internal-link text-primary-400 text-xl font-display py-2"><i class="fas fa-user mr-2"></i>Meu Perfil</button>
+                <a href="https://caminhodatocha.site" class="text-primary-400 text-xl font-display py-2"><i class="fas fa-gift mr-2"></i>Coven</a>
                 <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-gray-500 mt-8 uppercase text-xs">Fechar</button>
             </div>
         </div>
@@ -201,64 +343,60 @@
             <div id="home-view" class="view-container">
                 
                 <section class="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-                    <div class="absolute inset-0 z-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yuleRed/20 via-obsidian to-black"></div>
-                    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-gold-900/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+                    <div class="absolute inset-0 z-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent/20 via-obsidian to-black"></div>
+                    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-900/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
                     
                     <div class="relative z-10 max-w-4xl mx-auto space-y-6">
                         <div class="flex justify-center mb-4 relative">
-                            <i class="fas fa-star-of-life text-2xl text-gold-500 animate-spin-slow opacity-50"></i>
+                            <i class="fas fa-star-of-life text-2xl text-primary-500 animate-spin-slow opacity-50"></i>
                         </div>
-                        <h2 class="text-gold-500 text-xs md:text-sm tracking-[0.6em] uppercase fade-in-up flex items-center justify-center gap-3" style="animation-delay: 0.1s">
-                            <span class="h-[1px] w-8 bg-gold-500"></span> Celebração de Yule <span class="h-[1px] w-8 bg-gold-500"></span>
+                        <h2 class="text-primary-500 text-xs md:text-sm tracking-[0.6em] uppercase fade-in-up flex items-center justify-center gap-3" style="animation-delay: 0.1s">
+                            <span class="h-[1px] w-8 bg-primary-500"></span> <script>document.write(activeTheme.name)</script> <span class="h-[1px] w-8 bg-primary-500"></span>
                         </h2>
                         <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-black text-white leading-tight fade-in-up" style="animation-delay: 0.3s">
-                            O COVEN DO <br><span class="text-gold-gradient">CORVO</span>
+                            O COVEN DO <br><span class="text-gradient-theme">CORVO</span>
                         </h1>
-                        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-yuleRed to-transparent mx-auto my-6 fade-in-up" style="animation-delay: 0.5s"></div>
+                        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-accent to-transparent mx-auto my-6 fade-in-up" style="animation-delay: 0.5s"></div>
                         <p class="text-gray-300 max-w-2xl mx-auto text-lg md:text-xl font-body font-light leading-relaxed fade-in-up" style="animation-delay: 0.6s">
-                            Neste solstício, os caminhos se cruzam e a magia antiga sussurra. <br>
+                            Neste ciclo sagrado, os caminhos se cruzam e a magia antiga sussurra. <br>
                             Seja bem-vindo a nossa plataforma de Estudos.
                         </p>
                         <div class="pt-8 flex flex-col md:flex-row gap-6 justify-center items-center fade-in-up" style="animation-delay: 0.8s">
-                            <button data-view="blog-view" class="internal-link px-10 py-4 bg-transparent border border-gold-400 text-gold-400 font-display text-sm font-bold tracking-[0.2em] uppercase hover:bg-gold-900/50 hover:text-white transition shadow-[0_0_20px_rgba(212,175,55,0.1)] relative group overflow-hidden">
+                            <button data-view="blog-view" class="internal-link px-10 py-4 bg-transparent border border-primary-400 text-primary-400 font-display text-sm font-bold tracking-[0.2em] uppercase hover:bg-primary-900/50 hover:text-white transition shadow-[0_0_20px_rgba(255,255,255,0.1)] relative group overflow-hidden">
                                 <span class="relative z-10">Abrir o Grimório</span>
-                                <div class="absolute inset-0 bg-gradient-to-r from-yuleRed/10 to-gold-500/10 opacity-0 group-hover:opacity-100 transition"></div>
+                                <div class="absolute inset-0 bg-gradient-to-r from-accent/10 to-primary-500/10 opacity-0 group-hover:opacity-100 transition"></div>
                             </button>
                         </div>
                     </div>
                 </section>
 
-                <section id="about-section" class="py-24 px-6 bg-obsidian border-t border-gold-900/30 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-yuleRed/5 via-transparent to-transparent pointer-events-none"></div>
+                <section id="about-section" class="py-24 px-6 bg-obsidian border-t border-primary-900/30 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent pointer-events-none"></div>
 
                     <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
                         <div class="order-2 md:order-1 space-y-8 text-justify">
                             <h3 class="text-3xl font-display text-white flex items-center gap-4">
-                                <i class="fas fa-gift text-yuleRed text-2xl"></i> O Mensageiro Festivo
+                                <i class="fas fa-gift text-accent text-2xl"></i> O Mensageiro Festivo
                             </h3>
                             <p class="text-gray-400 font-body leading-loose text-lg">
-                                Mesmo nas noites mais longas do inverno, o <strong>Corvo</strong> vigia. Antigamente, eles eram os olhos dos deuses; hoje, trazem os presentes do conhecimento oculto.
+                                Nas sombras e na luz dos festivais, o <strong>Corvo</strong> vigia. Antigamente, eles eram os olhos dos deuses; hoje, trazem os presentes do conhecimento oculto.
                             </p>
                             <p class="text-gray-400 font-body leading-loose text-lg">
-                                Hekate, a Senhora das Encruzilhadas, segura as chaves do cosmos e abençoa este Yule. Este blog é o nosso ponto de encontro para celebrar a luz que renasce na escuridão.
+                                Hekate, a Senhora das Encruzilhadas, segura as chaves do cosmos e abençoa este ciclo. Este blog é o nosso ponto de encontro para celebrar a Roda do Ano.
                             </p>
                             <div class="pt-4 flex items-center gap-4">
-                                <i class="fas fa-key text-gold-500"></i>
-                                <p class="text-gold-400 font-display text-sm tracking-widest uppercase">Feliz Yule, Sacerdote Leonardo</p>
+                                <i class="fas fa-key text-primary-500"></i>
+                                <p class="text-primary-400 font-display text-sm tracking-widest uppercase">Bênçãos de <script>document.write(activeTheme.name)</script>, Sacerdote Leonardo</p>
                             </div>
                         </div>
                         <div class="order-1 md:order-2 flex justify-center relative h-96 items-center">
-                             <div class="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-yuleRed/10 blur-[100px] rounded-full pointer-events-none animate-pulse"></div>
+                             <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-accent/10 blur-[100px] rounded-full pointer-events-none animate-pulse"></div>
                             
                             <svg class="mystic-crow-svg w-full h-full max-w-md" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
                                 <defs>
                                     <linearGradient id="crowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                                         <stop offset="0%" style="stop-color:#3a3a3a;stop-opacity:1" />
                                         <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
-                                    </linearGradient>
-                                    <linearGradient id="hatGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#8B0000;stop-opacity:1" />
                                     </linearGradient>
                                     <filter id="goldGlow">
                                         <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
@@ -269,10 +407,10 @@
                                     </filter>
                                 </defs>
                                 
-                                <g class="crow-body" fill="url(#crowGradient)" stroke="#D4AF37" stroke-width="1.5" filter="url(#goldGlow)">
+                                <g class="crow-body" fill="url(#crowGradient)" stroke="var(--primary-main)" stroke-width="1.5" filter="url(#goldGlow)">
                                     <path d="M250,200 C220,250 230,350 250,400 C270,350 280,250 250,200 Z" />
                                     <path d="M250,200 C230,180 230,150 250,130 C270,150 270,180 250,200 Z" />
-                                    <path d="M250,130 L240,110 L260,110 Z" fill="#D4AF37"/>
+                                    <path d="M250,130 L240,110 L260,110 Z" fill="var(--primary-main)"/>
                                     
                                     <g class="crow-wing-left">
                                         <path d="M230,220 C150,200 50,150 20,100 C80,150 180,250 230,280 Z" opacity="0.9"/>
@@ -284,13 +422,7 @@
                                          <path d="M265,230 C340,220 430,180 460,130 C400,180 310,260 265,290 Z" opacity="0.7"/>
                                     </g>
                                     
-                                    <circle cx="250" cy="165" r="5" fill="#D4AF37" filter="url(#goldGlow)"/>
-                                </g>
-
-                                <g class="santa-hat-group" filter="url(#goldGlow)">
-                                    <path d="M240,140 C230,110 220,80 250,50 C260,70 280,120 265,140 Z" fill="url(#hatGradient)" stroke="#8B0000" />
-                                    <circle cx="250" cy="50" r="12" fill="#F0EAD6" stroke="#D4AF37" />
-                                    <path d="M235,135 C245,145 260,145 270,135 L270,150 C260,160 245,160 235,150 Z" fill="#F0EAD6" stroke="#D4AF37" />
+                                    <circle cx="250" cy="165" r="5" fill="var(--primary-main)" filter="url(#goldGlow)"/>
                                 </g>
                             </svg>
                         </div>
@@ -298,63 +430,63 @@
                 </section>
 
                 <section class="py-24 px-6 bg-void relative overflow-hidden">
-                    <div class="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-yuleRed/30 to-transparent"></div>
+                    <div class="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
                     <div class="max-w-7xl mx-auto">
                         <div class="text-center mb-16 space-y-4">
-                            <i class="fas fa-holly-berry text-gold-500 text-2xl"></i>
+                            <i class="fas fa-holly-berry text-primary-500 text-2xl"></i>
                             <h3 class="text-4xl font-display text-white">Presentes do Templo</h3>
-                            <p class="text-gray-500 text-sm uppercase tracking-widest">Projetos e Caminhos de Yule</p>
+                            <p class="text-gray-500 text-sm uppercase tracking-widest">Projetos e Caminhos</p>
                         </div>
 
                         <div class="grid md:grid-cols-3 gap-8">
                             <div class="project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer" onclick="showView('blog-view')">
                                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
-                                    <i class="fas fa-book-open text-7xl text-gold-900"></i>
+                                    <i class="fas fa-book-open text-7xl text-primary-900"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition flex items-center gap-2">O Grimório <i class="fas fa-star text-[10px] text-yuleRed opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <h4 class="text-xl font-display text-primary-400 mb-4 group-hover:text-white transition flex items-center gap-2">O Grimório <i class="fas fa-star text-[10px] text-accent opacity-50 group-hover:opacity-100 transition"></i></h4>
                                 <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
                                     O coração deste santuário. Artigos profundos e rituais para celebrar a roda do ano.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">Ler Agora <i class="fas fa-arrow-right"></i></span>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-primary-400 transition flex items-center gap-2">Ler Agora <i class="fas fa-arrow-right"></i></span>
                             </div>
 
                             <a href="https://caminhodatocha.site" target="_blank" class="project-card bg-obsidian border border-white/5 p-8 relative group block">
                                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
-                                    <i class="fas fa-fire text-7xl text-yuleRed"></i>
+                                    <i class="fas fa-fire text-7xl text-accent"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition flex items-center gap-2">Coven do Corvo <i class="fas fa-gift text-[10px] text-yuleRed opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <h4 class="text-xl font-display text-primary-400 mb-4 group-hover:text-white transition flex items-center gap-2">Coven do Corvo <i class="fas fa-gift text-[10px] text-accent opacity-50 group-hover:opacity-100 transition"></i></h4>
                                 <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
                                     O maior presente que você pode se dar: conhecimento estruturado. Um mergulho profundo nos mistérios.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">Saber Mais <i class="fas fa-external-link-alt"></i></span>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-primary-400 transition flex items-center gap-2">Saber Mais <i class="fas fa-external-link-alt"></i></span>
                             </a>
 
                             <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="project-card bg-obsidian border border-white/5 p-8 relative group block">
                                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
-                                    <i class="fas fa-calendar-alt text-7xl text-gold-900"></i>
+                                    <i class="fas fa-calendar-alt text-7xl text-primary-900"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-gold-400 mb-4 group-hover:text-white transition flex items-center gap-2">Calendário Hekatino <i class="fas fa-snowflake text-[10px] text-yuleRed opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <h4 class="text-xl font-display text-primary-400 mb-4 group-hover:text-white transition flex items-center gap-2">Calendário Hekatino <i class="fas fa-snowflake text-[10px] text-accent opacity-50 group-hover:opacity-100 transition"></i></h4>
                                 <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
-                                    Sincronize-se com os ciclos de inverno. Mapeie os dias sagrados e os rituais específicos.
+                                    Sincronize-se com os ciclos. Mapeie os dias sagrados e os rituais específicos.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gold-400 transition flex items-center gap-2">Acessar <i class="fas fa-external-link-alt"></i></span>
+                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-primary-400 transition flex items-center gap-2">Acessar <i class="fas fa-external-link-alt"></i></span>
                             </a>
                         </div>
                     </div>
                 </section>
 
-                <section class="py-20 px-6 border-t border-gold-900/30 bg-[#080808] text-center relative overflow-hidden">
-                     <div class="absolute inset-0 bg-gradient-to-t from-yuleRed/10 to-gold-500/5 blur-[120px] pointer-events-none"></div>
+                <section class="py-20 px-6 border-t border-primary-900/30 bg-[#080808] text-center relative overflow-hidden">
+                     <div class="absolute inset-0 bg-gradient-to-t from-accent/10 to-primary-500/5 blur-[120px] pointer-events-none"></div>
                     <div class="max-w-2xl mx-auto space-y-8 relative z-10">
-                        <i class="fas fa-key text-3xl text-gold-500 animate-pulse"></i>
+                        <i class="fas fa-key text-3xl text-primary-500 animate-pulse"></i>
                         <h3 class="text-3xl font-display text-white">Junte-se à Celebração do Coven</h3>
                         <p class="text-gray-400 font-body leading-relaxed">
-                            Neste Yule, alguns segredos são compartilhados apenas entre os iniciados. <br>
+                            Nestes dias sagrados, alguns segredos são compartilhados apenas entre os iniciados. <br>
                             Se você possui a chave, adentre o círculo interno.
                         </p>
-                        <button onclick="document.getElementById('login-view').style.display='flex'" class="inline-block border border-gold-900 px-10 py-4 text-gold-400 font-display text-xs font-bold tracking-[0.3em] uppercase hover:bg-yuleRed/80 hover:text-white hover:border-yuleRed transition relative group overflow-hidden">
+                        <button onclick="document.getElementById('login-view').style.display='flex'" class="inline-block border border-primary-900 px-10 py-4 text-primary-400 font-display text-xs font-bold tracking-[0.3em] uppercase hover:bg-accent/80 hover:text-white hover:border-accent transition relative group overflow-hidden">
                             <span class="relative z-10">Área Restrita</span>
-                             <div class="absolute inset-0 bg-gold-400/10 opacity-0 group-hover:opacity-100 transition"></div>
+                             <div class="absolute inset-0 bg-primary-400/10 opacity-0 group-hover:opacity-100 transition"></div>
                         </button>
                     </div>
                 </section>
@@ -362,9 +494,9 @@
 
             <div id="blog-view" class="view-container hidden max-w-7xl mx-auto pt-10 px-4">
                 
-                <div id="admin-panel" class="hidden mb-16 p-8 bg-obsidian border border-gold-900/30 rounded-sm relative overflow-hidden">
+                <div id="admin-panel" class="hidden mb-16 p-8 bg-obsidian border border-primary-900/30 rounded-sm relative overflow-hidden">
                     <div class="absolute -right-10 -top-10 text-9xl text-white/5 pointer-events-none"><i class="fas fa-feather"></i></div>
-                    <h3 class="text-gold-400 font-display text-xl mb-6 flex items-center gap-2 relative z-10"><i class="fas fa-crown"></i> Painel do Sacerdote (Edição de Yule)</h3>
+                    <h3 class="text-primary-400 font-display text-xl mb-6 flex items-center gap-2 relative z-10"><i class="fas fa-crown"></i> Painel do Sacerdote</h3>
                     
                     <div class="grid lg:grid-cols-2 gap-10 relative z-10">
                         <form id="create-post-form" class="space-y-4">
@@ -372,7 +504,7 @@
                             <input type="url" id="post-cover-image" class="input-luxe w-full p-3 font-body text-sm" placeholder="Link da Imagem (https://...)" required>
                             <div class="relative">
                                 <textarea id="post-content" rows="6" class="input-luxe w-full p-3 font-body text-sm" placeholder="Escreva os segredos..." required></textarea>
-                                <button type="button" id="format-create-btn" class="absolute bottom-2 right-2 text-[10px] bg-black border border-gold-900 text-gold-400 px-3 py-1 uppercase hover:bg-gold-900 transition"><i class="fas fa-magic mr-1"></i> IA</button>
+                                <button type="button" id="format-create-btn" class="absolute bottom-2 right-2 text-[10px] bg-black border border-primary-900 text-primary-400 px-3 py-1 uppercase hover:bg-primary-900 transition"><i class="fas fa-magic mr-1"></i> IA</button>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <select id="post-access" class="input-luxe w-full p-2 text-sm bg-black cursor-pointer"><option value="aberto">🔓 Público</option><option value="pago">🔐 Membros</option></select>
@@ -382,8 +514,8 @@
                                 <input type="text" id="post-attachment-name" placeholder="Nome do Anexo" class="input-luxe w-full p-2 text-sm">
                                 <input type="url" id="post-attachment-link" placeholder="Link do Anexo" class="input-luxe w-full p-2 text-sm">
                             </div>
-                            <button type="submit" class="w-full bg-gold-900/40 border border-gold-500/50 text-gold-400 py-3 font-bold uppercase text-xs tracking-widest hover:bg-gold-500 hover:text-black transition">Publicar no Grimório</button>
-                            <p id="post-status" class="text-center text-xs h-4 text-gold-500"></p>
+                            <button type="submit" class="w-full bg-primary-900/40 border border-primary-500/50 text-primary-400 py-3 font-bold uppercase text-xs tracking-widest hover:bg-primary-500 hover:text-black transition">Publicar no Grimório</button>
+                            <p id="post-status" class="text-center text-xs h-4 text-primary-500"></p>
                         </form>
 
                         <div class="space-y-6">
@@ -402,7 +534,7 @@
                                     <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3">Módulos</h4>
                                     <form id="create-section-form" class="flex gap-2 mb-2">
                                         <input type="text" id="section-name" placeholder="Nome" class="input-luxe w-full p-1 text-xs">
-                                        <button type="submit" class="text-gold-400 hover:text-white"><i class="fas fa-plus"></i></button>
+                                        <button type="submit" class="text-primary-400 hover:text-white"><i class="fas fa-plus"></i></button>
                                     </form>
                                     <div id="sections-list-admin" class="max-h-24 overflow-y-auto text-xs text-gray-500 custom-scrollbar"></div>
                                 </div>
@@ -420,21 +552,21 @@
 
                 <div class="flex justify-center md:justify-end mb-10">
                     <div class="relative">
-                        <select id="section-filter" class="appearance-none bg-transparent text-gold-400 border-b border-white/20 py-2 pr-8 pl-4 text-right focus:outline-none cursor-pointer text-lg font-display uppercase tracking-wider hover:border-gold-500 transition">
+                        <select id="section-filter" class="appearance-none bg-transparent text-primary-400 border-b border-white/20 py-2 pr-8 pl-4 text-right focus:outline-none cursor-pointer text-lg font-display uppercase tracking-wider hover:border-primary-500 transition">
                             <option value="todos" class="bg-black">Todos os Mistérios</option>
                         </select>
-                        <i class="fas fa-chevron-down absolute right-0 top-3 text-gold-500 text-xs pointer-events-none"></i>
+                        <i class="fas fa-chevron-down absolute right-0 top-3 text-primary-500 text-xs pointer-events-none"></i>
                     </div>
                 </div>
 
                 <div id="pago-section" class="hidden mb-16 relative">
                     <div class="flex items-center justify-center gap-4 mb-8">
-                        <span class="h-[1px] w-12 bg-gold-900"></span>
-                        <h2 class="text-gold-500 font-display text-xl tracking-[0.3em] uppercase flex items-center gap-2"><i class="fas fa-lock text-sm"></i>Conhecimento Oculto <i class="fas fa-holly-berry text-yuleRed text-sm opacity-70"></i></h2>
-                        <span class="h-[1px] w-12 bg-gold-900"></span>
+                        <span class="h-[1px] w-12 bg-primary-900"></span>
+                        <h2 class="text-primary-500 font-display text-xl tracking-[0.3em] uppercase flex items-center gap-2"><i class="fas fa-lock text-sm"></i>Conhecimento Oculto <i class="fas fa-holly-berry text-accent text-sm opacity-70"></i></h2>
+                        <span class="h-[1px] w-12 bg-primary-900"></span>
                     </div>
                     <div id="posts-list-pago" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-                    <p id="empty-pago" class="text-center text-gray-600 text-sm hidden italic">O silêncio de inverno reina nesta seção.</p>
+                    <p id="empty-pago" class="text-center text-gray-600 text-sm hidden italic">O silêncio reina nesta seção.</p>
                 </div>
 
                 <div class="mb-20">
@@ -448,28 +580,63 @@
                 </div>
             </div>
 
+            <div id="profile-view" class="view-container hidden max-w-2xl mx-auto pt-10 px-4">
+                 <div class="bg-obsidian border border-primary-900/30 p-8 md:p-12 relative overflow-hidden shadow-2xl">
+                     <div class="absolute -top-10 -right-10 text-9xl text-white/5 pointer-events-none"><i class="fas fa-id-card"></i></div>
+                     
+                     <h2 class="text-3xl font-display text-white mb-2 flex items-center gap-3"><i class="fas fa-hat-wizard text-primary-500"></i> Identidade Mágica</h2>
+                     <p class="text-gray-500 text-xs uppercase tracking-widest mb-10">Como você será conhecido no Coven</p>
+                     
+                     <form id="profile-form" class="space-y-8">
+                         <div>
+                             <label class="block text-primary-400 text-xs uppercase tracking-widest mb-3">Nome de Arte</label>
+                             <input type="text" id="profile-display-name" placeholder="Ex: Corvo Noturno" class="input-luxe w-full p-4 font-display text-lg text-white border-b-2 border-primary-900/50 focus:border-primary-400" maxlength="30">
+                         </div>
+
+                         <div>
+                             <label class="block text-primary-400 text-xs uppercase tracking-widest mb-4">Escolha seu Totem</label>
+                             <div class="flex flex-wrap gap-4 justify-center md:justify-start">
+                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-crow" id="av1"><label for="av1"><i class="fas fa-crow"></i></label></div>
+                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-moon" id="av2"><label for="av2"><i class="fas fa-moon"></i></label></div>
+                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-fire" id="av3"><label for="av3"><i class="fas fa-fire"></i></label></div>
+                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-key" id="av4"><label for="av4"><i class="fas fa-key"></i></label></div>
+                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-star" id="av5"><label for="av5"><i class="fas fa-star"></i></label></div>
+                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-ghost" id="av6"><label for="av6"><i class="fas fa-ghost"></i></label></div>
+                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-eye" id="av7"><label for="av7"><i class="fas fa-eye"></i></label></div>
+                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-skull" id="av8"><label for="av8"><i class="fas fa-skull"></i></label></div>
+                             </div>
+                         </div>
+
+                         <div class="pt-6 border-t border-white/5">
+                             <button type="submit" class="w-full bg-primary-900 text-white py-4 font-display font-bold uppercase tracking-[0.2em] hover:bg-primary-500 hover:text-black transition shadow-[0_0_15px_var(--primary-main)]">Salvar Identidade</button>
+                             <p id="profile-status" class="text-center text-xs mt-4 h-4"></p>
+                         </div>
+                     </form>
+                 </div>
+            </div>
+
             <div id="sobre-view" class="view-container hidden max-w-5xl mx-auto pt-10 px-4">
-                <div class="glass-dark p-8 md:p-16 border-t border-gold-900/50 relative overflow-hidden">
-                    <div class="absolute -top-20 -right-20 w-60 h-60 bg-yuleRed/10 rounded-full blur-3xl"></div>
+                <div class="glass-dark p-8 md:p-16 border-t border-primary-900/50 relative overflow-hidden">
+                    <div class="absolute -top-20 -right-20 w-60 h-60 bg-accent/10 rounded-full blur-3xl"></div>
                     
                     <div class="flex flex-col md:flex-row gap-12 items-center relative z-10">
                         <div class="w-full md:w-2/5 relative group">
-                            <div class="absolute inset-0 border border-gold-500/20 translate-x-3 translate-y-3 group-hover:translate-x-2 group-hover:translate-y-2 transition duration-500"></div>
+                            <div class="absolute inset-0 border border-primary-500/20 translate-x-3 translate-y-3 group-hover:translate-x-2 group-hover:translate-y-2 transition duration-500"></div>
                             <img src="https://i.ibb.co/0ymRCF5C/2-DACB7-CC-CE28-4383-BD50-DEB2-C7-A38721.png" class="w-full grayscale hover:grayscale-0 transition duration-700 shadow-2xl relative z-10">
-                            <div class="absolute -bottom-5 -left-5 text-3xl text-gold-500 opacity-50 rotate-12"><i class="fas fa-holly-berry text-yuleRed"></i></div>
+                            <div class="absolute -bottom-5 -left-5 text-3xl text-primary-500 opacity-50 rotate-12"><i class="fas fa-holly-berry text-accent"></i></div>
                         </div>
                         <div class="w-full md:w-3/5 text-gray-300 font-body leading-relaxed space-y-6 text-lg text-justify">
                             <div>
-                                <h2 class="text-4xl font-display text-white mb-1 flex items-center gap-3">Leonardo <i class="fas fa-star-of-life text-gold-500 text-xl"></i></h2>
-                                <p class="text-gold-500 text-xs uppercase tracking-[0.4em]">Sacerdote de Hekate</p>
+                                <h2 class="text-4xl font-display text-white mb-1 flex items-center gap-3">Leonardo <i class="fas fa-star-of-life text-primary-500 text-xl"></i></h2>
+                                <p class="text-primary-500 text-xs uppercase tracking-[0.4em]">Sacerdote de Hekate</p>
                             </div>
                             <p>
-                                <span class="text-4xl float-left mr-2 text-gold-600 font-display">N</span>este período de Yule, refletimos sobre as encruzilhadas. Minha vida foi dedicada a entender as escolhas que fazemos nas sombras, guiado pela chama da Deusa que renasce.
+                                <span class="text-4xl float-left mr-2 text-primary-600 font-display">N</span>este período sagrado, refletimos sobre as encruzilhadas. Minha vida foi dedicada a entender as escolhas que fazemos nas sombras, guiado pela chama da Deusa que renasce.
                             </p>
                             <p>
                                 O projeto <strong>O Coven do Corvo</strong> é meu presente para a comunidade. Aqui, a magia não é teoria; é vivência. Compartilho minha devoção e a sabedoria das chaves.
                             </p>
-                            <div class="pt-6 border-t border-white/5 flex gap-4 text-2xl text-gold-400">
+                            <div class="pt-6 border-t border-white/5 flex gap-4 text-2xl text-primary-400">
                                 <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
                                 <a href="#" class="hover:text-white transition"><i class="fab fa-youtube"></i></a>
                             </div>
@@ -480,29 +647,29 @@
 
         </main>
 
-        <footer class="bg-black py-12 text-center border-t border-gold-900/20 relative z-10 overflow-hidden">
-            <div class="absolute inset-0 bg-yuleRed/5 pointer-events-none"></div>
-            <i class="fas fa-crow text-gold-900 text-2xl mb-4 animate-pulse relative z-10"></i>
-            <p class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-2 relative z-10">© 2025 Coven do Corvo | Feliz Yule</p>
-            <p class="text-gray-800 text-[10px] relative z-10">Desenvolvido nas Sombras do Inverno</p>
+        <footer class="bg-black py-12 text-center border-t border-primary-900/20 relative z-10 overflow-hidden">
+            <div class="absolute inset-0 bg-accent/5 pointer-events-none"></div>
+            <i class="fas fa-crow text-primary-900 text-2xl mb-4 animate-pulse relative z-10"></i>
+            <p class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-2 relative z-10">© 2025 Coven do Corvo | <script>document.write(activeTheme.name)</script></p>
+            <p class="text-gray-800 text-[10px] relative z-10">Desenvolvido nas Sombras</p>
         </footer>
 
         <div id="login-view" class="view-container hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="w-full max-w-sm relative bg-obsidian p-10 border border-gold-900/30 shadow-[0_0_50px_rgba(139,0,0,0.2)]">
+            <div class="w-full max-w-sm relative bg-obsidian p-10 border border-primary-900/30 shadow-[0_0_50px_rgba(139,0,0,0.2)]">
                 <button id="close-login-btn" class="absolute top-4 right-4 text-gray-500 hover:text-white transition"><i class="fas fa-times"></i></button>
                 <div class="text-center mb-10">
-                    <i class="fas fa-key text-gold-500 text-2xl mb-4"></i>
-                    <h2 class="text-2xl font-display text-white tracking-widest flex justify-center items-center gap-2">ACESSO <i class="fas fa-holly-berry text-yuleRed text-sm"></i></h2>
+                    <i class="fas fa-key text-primary-500 text-2xl mb-4"></i>
+                    <h2 class="text-2xl font-display text-white tracking-widest flex justify-center items-center gap-2">ACESSO <i class="fas fa-holly-berry text-accent text-sm"></i></h2>
                     <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Área do Coven do Corvo</p>
                 </div>
                 <form id="login-form" class="space-y-6">
                     <div class="group">
-                        <input type="email" id="login-email" placeholder="EMAIL" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-gold-400 outline-none transition font-display tracking-wider">
+                        <input type="email" id="login-email" placeholder="EMAIL" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-primary-400 outline-none transition font-display tracking-wider">
                     </div>
                     <div class="group">
-                        <input type="password" id="login-password" placeholder="SENHA" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-gold-400 outline-none transition font-display tracking-wider">
+                        <input type="password" id="login-password" placeholder="SENHA" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-primary-400 outline-none transition font-display tracking-wider">
                     </div>
-                    <button type="submit" class="w-full border border-gold-900 text-gold-400 py-4 uppercase text-xs tracking-[0.3em] hover:bg-yuleRed/80 hover:text-white hover:border-yuleRed transition font-bold mt-4">Entrar</button>
+                    <button type="submit" class="w-full border border-primary-900 text-primary-400 py-4 uppercase text-xs tracking-[0.3em] hover:bg-accent/80 hover:text-white hover:border-accent transition font-bold mt-4">Entrar</button>
                 </form>
                 <p id="login-error" class="text-center text-red-500 text-xs mt-6 font-display tracking-wider"></p>
             </div>
@@ -511,7 +678,7 @@
         <div id="post-view" class="view-container hidden fixed inset-0 z-[60] bg-[#050505] overflow-y-auto custom-scrollbar">
             <div class="max-w-4xl mx-auto min-h-screen bg-obsidian border-x border-white/5 relative shadow-2xl">
                 <div class="sticky top-0 z-20 bg-obsidian/95 backdrop-blur border-b border-white/5 p-4 flex justify-between items-center h-16 shadow-lg">
-                    <button id="back-to-posts-btn" class="text-gold-400 text-xs uppercase tracking-[0.2em] hover:text-white transition flex items-center gap-2 group">
+                    <button id="back-to-posts-btn" class="text-primary-400 text-xs uppercase tracking-[0.2em] hover:text-white transition flex items-center gap-2 group">
                         <i class="fas fa-arrow-left group-hover:-translate-x-1 transition"></i> Voltar
                     </button>
                     <div class="admin-only-controls hidden gap-4">
@@ -524,14 +691,14 @@
                     <h1 id="post-view-title" class="text-3xl md:text-5xl font-display text-white text-center mb-6 leading-tight"></h1>
                     
                     <div class="flex justify-center items-center gap-6 text-[10px] text-gray-500 uppercase tracking-widest mb-12 border-b border-white/5 pb-6">
-                        <span><i class="fas fa-eye text-gold-900 mr-2"></i><span id="post-view-count">0</span> Leituras</span>
-                        <i class="fas fa-circle text-[3px] text-gold-500"></i>
+                        <span><i class="fas fa-eye text-primary-900 mr-2"></i><span id="post-view-count">0</span> Leituras</span>
+                        <i class="fas fa-circle text-[3px] text-primary-500"></i>
                         <span>Coven do Corvo</span>
                     </div>
 
                     <div class="flex justify-center mb-12">
-                         <div id="audio-controls" class="inline-flex items-center gap-4 px-6 py-2 border border-gold-900/30 rounded-full cursor-pointer hover:border-gold-400/50 transition group bg-black/50">
-                            <button id="btn-speak" class="flex items-center gap-3 text-gold-500 group-hover:text-gold-300 text-xs uppercase font-bold tracking-widest">
+                         <div id="audio-controls" class="inline-flex items-center gap-4 px-6 py-2 border border-primary-900/30 rounded-full cursor-pointer hover:border-primary-400/50 transition group bg-black/50">
+                            <button id="btn-speak" class="flex items-center gap-3 text-primary-500 group-hover:text-primary-300 text-xs uppercase font-bold tracking-widest">
                                 <i id="btn-speak-icon" class="fas fa-play text-[10px]"></i> <span id="btn-speak-text">Ouvir o Chamado</span>
                             </button>
                             <button id="btn-stop-speak" class="hidden text-red-800 hover:text-red-500 transition"><i class="fas fa-stop"></i></button>
@@ -540,28 +707,28 @@
                     </div>
 
                     <div class="relative group mb-12">
-                        <div class="absolute inset-0 bg-gold-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+                        <div class="absolute inset-0 bg-primary-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
                         <img id="post-view-cover-image" class="w-full h-auto max-h-[600px] object-cover border-y border-white/10 grayscale group-hover:grayscale-0 transition duration-1000 relative z-10">
                     </div>
 
                     <div id="post-view-content" class="prose prose-invert prose-lg max-w-none font-body text-gray-300 leading-loose text-justify"></div>
 
-                    <div id="post-view-attachment-container" class="hidden mt-20 pt-10 border-t border-gold-900/30 text-center">
-                        <p class="text-[10px] text-gold-600 uppercase tracking-widest mb-4">Conteúdo Adicional</p>
-                        <a id="post-view-attachment" href="#" target="_blank" class="inline-flex items-center gap-3 border border-gold-900 text-gold-400 px-8 py-3 text-xs uppercase tracking-widest hover:bg-gold-400 hover:text-black transition">
+                    <div id="post-view-attachment-container" class="hidden mt-20 pt-10 border-t border-primary-900/30 text-center">
+                        <p class="text-[10px] text-primary-600 uppercase tracking-widest mb-4">Conteúdo Adicional</p>
+                        <a id="post-view-attachment" href="#" target="_blank" class="inline-flex items-center gap-3 border border-primary-900 text-primary-400 px-8 py-3 text-xs uppercase tracking-widest hover:bg-primary-400 hover:text-black transition">
                             <i class="fas fa-download"></i> Baixar Material
                         </a>
                     </div>
                     
-                    <div id="comments-section" class="mt-24 border-t border-gold-900/20 pt-10">
-                         <h3 class="text-2xl font-display text-white mb-8 flex items-center gap-2"><i class="fas fa-comments text-gold-500"></i> Discussões do Coven</h3>
+                    <div id="comments-section" class="mt-24 border-t border-primary-900/20 pt-10">
+                         <h3 class="text-2xl font-display text-white mb-8 flex items-center gap-2"><i class="fas fa-comments text-primary-500"></i> Discussões do Coven</h3>
                          
                          <div id="comments-list" class="space-y-6 mb-10"></div>
                          
                          <div id="comment-form-container" class="hidden bg-black/30 p-6 border border-white/5 rounded">
-                             <h4 class="text-sm text-gold-400 font-display mb-4 uppercase tracking-widest">Deixar uma oferenda de palavras</h4>
+                             <h4 class="text-sm text-primary-400 font-display mb-4 uppercase tracking-widest">Deixar uma oferenda de palavras</h4>
                              <textarea id="comment-input" class="input-luxe w-full p-4 text-sm mb-4 bg-obsidian" rows="3" placeholder="Compartilhe sua visão..."></textarea>
-                             <button id="submit-comment-btn" class="bg-gold-900/50 border border-gold-900 text-white px-6 py-2 text-xs uppercase tracking-widest hover:bg-gold-500 hover:text-black transition">Enviar Comentário</button>
+                             <button id="submit-comment-btn" class="bg-primary-900/50 border border-primary-900 text-white px-6 py-2 text-xs uppercase tracking-widest hover:bg-primary-500 hover:text-black transition">Enviar Comentário</button>
                          </div>
                          <p id="comment-login-msg" class="text-center text-gray-600 text-xs italic mt-8">Entre no santuário para deixar sua marca.</p>
                     </div>
@@ -578,7 +745,7 @@
                     <input type="url" id="edit-post-cover-image" class="input-luxe w-full p-3" required>
                     <div class="relative">
                         <textarea id="edit-post-content" rows="10" class="input-luxe w-full p-3" required></textarea>
-                        <button type="button" id="format-edit-btn" class="absolute bottom-3 right-3 text-gold-400 text-[10px] uppercase border border-gold-900 px-2 py-1 bg-black">IA</button>
+                        <button type="button" id="format-edit-btn" class="absolute bottom-3 right-3 text-primary-400 text-[10px] uppercase border border-primary-900 px-2 py-1 bg-black">IA</button>
                     </div>
                      <div class="grid grid-cols-2 gap-6">
                         <input type="text" id="edit-post-attachment-name" class="input-luxe w-full p-3">
@@ -589,10 +756,10 @@
                         <select id="edit-post-section" class="input-luxe w-full p-3 bg-black"></select>
                     </div>
                     <div class="flex gap-4 mt-8">
-                        <button type="submit" class="flex-1 bg-gold-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-gold-600 transition">Salvar</button>
+                        <button type="submit" class="flex-1 bg-primary-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-primary-600 transition">Salvar</button>
                         <button type="button" id="cancel-edit-btn" class="flex-1 bg-gray-800 text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-700 transition">Cancelar</button>
                     </div>
-                    <p id="edit-post-status" class="text-center mt-4 text-xs text-gold-500"></p>
+                    <p id="edit-post-status" class="text-center mt-4 text-xs text-primary-500"></p>
                 </form>
              </div>
         </div>
@@ -602,13 +769,16 @@
                 <div class="flex justify-between mb-6">
                     <div>
                         <span class="text-[10px] text-gray-500 uppercase tracking-widest block">Gerenciando</span>
-                        <span id="student-modal-email" class="text-gold-400 font-display text-lg"></span>
+                        <div class="flex flex-col">
+                            <span id="student-modal-email" class="text-primary-400 font-display text-lg"></span>
+                            <span id="student-modal-display-name" class="text-gray-500 text-xs italic"></span>
+                        </div>
                     </div>
                     <button id="close-student-modal-btn"><i class="fas fa-times text-gray-500 hover:text-white transition"></i></button>
                 </div>
                 <input type="hidden" id="student-modal-id">
                 
-                <div class="mb-6 p-4 bg-black/40 border border-gold-900/20 rounded">
+                <div class="mb-6 p-4 bg-black/40 border border-primary-900/20 rounded">
                     <p class="text-[10px] text-gray-500 uppercase mb-2">Validade do Acesso</p>
                     <div class="flex items-center justify-between mb-4">
                         <span id="student-expiry-date" class="text-white font-body text-sm"></span>
@@ -623,7 +793,7 @@
 
                 <p class="text-[10px] text-gray-500 uppercase mb-2">Permissões de Módulos</p>
                 <div id="student-modal-sections-list" class="space-y-3 mb-8 max-h-40 overflow-y-auto custom-scrollbar bg-black/50 p-4 border border-white/5"></div>
-                <button id="save-student-sections-btn" class="w-full bg-gold-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-gold-500 hover:text-black transition font-bold">Salvar Permissões</button>
+                <button id="save-student-sections-btn" class="w-full bg-primary-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-primary-500 hover:text-black transition font-bold">Salvar Permissões</button>
                 <p id="student-modal-status" class="text-center text-xs mt-4 h-4"></p>
             </div>
         </div>
@@ -643,7 +813,7 @@
     </div> <script src="https://player.vimeo.com/api/player.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // === CONFIGURAÇÃO FIREBASE ===
@@ -666,6 +836,7 @@
         // === VARIÁVEIS ===
         let currentUser = null; 
         let currentUserPermissions = []; 
+        let currentProfile = { displayName: null, avatar: null };
         let itemToDelete = { id: null, type: null }; 
         let allPosts = []; 
         let allSections = []; 
@@ -720,22 +891,31 @@
             document.getElementById('mobile-menu').classList.remove('hidden');
         });
 
-        // === AUTH ===
+        // === AUTH & PROFILE ===
         const loginBtn = document.getElementById('login-btn');
         const logoutBtn = document.getElementById('logout-btn');
         const userInfo = document.getElementById('user-info');
-        const userEmailSpan = document.getElementById('user-email');
+        const headerUserName = document.getElementById('header-user-name');
+        const headerUserIcon = document.getElementById('header-user-icon');
         const adminPanel = document.getElementById('admin-panel');
         const pagoSection = document.getElementById('pago-section');
         const adminControls = document.querySelectorAll('.admin-only-controls');
         const commentFormContainer = document.getElementById('comment-form-container');
         const commentLoginMsg = document.getElementById('comment-login-msg');
 
+        // PROFILE FORM
+        const profileForm = document.getElementById('profile-form');
+        const profileDisplayNameInput = document.getElementById('profile-display-name');
+        const profileStatus = document.getElementById('profile-status');
+
         onAuthStateChanged(auth, async (user) => {
             currentUserPermissions = [];
+            currentProfile = { displayName: null, avatar: null };
+
             if (user) {
                 const isAdmin = user.uid === ADMIN_UID;
-                const userDoc = await getDoc(doc(db, "users", user.uid));
+                const userDocRef = doc(db, "users", user.uid);
+                const userDoc = await getDoc(userDocRef);
                 
                 if (!isAdmin) {
                     if (userDoc.exists()) {
@@ -745,9 +925,24 @@
                     } else { await signOut(auth); return; }
                 }
 
+                // Load Profile Data
+                if(userDoc.exists()) {
+                    const d = userDoc.data();
+                    currentProfile.displayName = d.displayName || user.email.split('@')[0];
+                    currentProfile.avatar = d.avatar || 'fa-user-circle';
+                    
+                    // UI Updates
+                    headerUserName.textContent = currentProfile.displayName;
+                    headerUserIcon.className = `fas ${currentProfile.avatar}`;
+                    profileDisplayNameInput.value = d.displayName || '';
+                    if(d.avatar) {
+                        const rb = document.querySelector(`input[name="avatar"][value="${d.avatar}"]`);
+                        if(rb) rb.checked = true;
+                    }
+                }
+
                 currentUser = user;
                 userInfo.style.display = 'flex';
-                userEmailSpan.textContent = user.email;
                 loginBtn.style.display = 'none';
                 pagoSection.style.display = 'block';
                 commentFormContainer.classList.remove('hidden');
@@ -785,6 +980,44 @@
                 document.getElementById('login-error').textContent = "Credenciais incorretas.";
             });
         });
+
+        // SAVE PROFILE LOGIC
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(!currentUser) return;
+            
+            profileStatus.textContent = "Gravando nas estrelas...";
+            const newName = profileDisplayNameInput.value.trim();
+            const checkedAvatar = document.querySelector('input[name="avatar"][value]:checked');
+            const newAvatar = checkedAvatar ? checkedAvatar.value : 'fa-user-circle';
+
+            try {
+                // Update Firestore
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    displayName: newName,
+                    avatar: newAvatar
+                });
+                
+                // Update Auth Profile (Standard)
+                await updateProfile(currentUser, { displayName: newName, photoURL: newAvatar });
+                
+                // Update Local UI
+                currentProfile.displayName = newName;
+                currentProfile.avatar = newAvatar;
+                headerUserName.textContent = newName;
+                headerUserIcon.className = `fas ${newAvatar}`;
+                
+                profileStatus.textContent = "Identidade Consagrada!";
+                profileStatus.className = "text-center text-xs mt-4 h-4 text-green-400";
+                
+                setTimeout(() => showView('home-view'), 1500);
+            } catch (err) {
+                console.error(err);
+                profileStatus.textContent = "Erro ao salvar.";
+                profileStatus.className = "text-center text-xs mt-4 h-4 text-red-400";
+            }
+        });
+
         logoutBtn.addEventListener('click', () => signOut(auth));
         loginBtn.addEventListener('click', () => showView('login-view'));
         document.getElementById('close-login-btn').addEventListener('click', () => showView('home-view'));
@@ -837,9 +1070,13 @@
                     if(d.id === ADMIN_UID) return;
                     const st = { id: d.id, ...d.data() };
                     allStudents.push(st);
+                    
+                    // Show Name if exists, else Email
+                    const displayLabel = st.displayName ? `${st.displayName} (${st.email.split('@')[0]})` : st.email;
+                    
                     const div = document.createElement('div');
                     div.className = "flex justify-between p-2 border-b border-white/5 hover:bg-white/5";
-                    div.innerHTML = `<span class="truncate w-32">${st.email}</span><button class="manage-student-btn text-gold-400" data-id="${st.id}"><i class="fas fa-cog"></i></button>`;
+                    div.innerHTML = `<span class="truncate w-32" title="${st.email}">${displayLabel}</span><button class="manage-student-btn text-primary-400" data-id="${st.id}"><i class="fas fa-cog"></i></button>`;
                     studentsListAdmin.appendChild(div);
                 });
             });
@@ -911,7 +1148,7 @@
 
                 let adminBtns = '';
                 if(currentUser && currentUser.uid === ADMIN_UID) {
-                    adminBtns = `<div class="absolute top-2 right-2 z-20 flex gap-2"><button class="edit-btn bg-black/80 p-2 rounded text-gold-400 hover:text-white" data-id="${p.id}"><i class="fas fa-pen"></i></button><button class="del-btn bg-black/80 p-2 rounded text-red-500 hover:text-red-300" data-id="${p.id}"><i class="fas fa-trash"></i></button></div>`;
+                    adminBtns = `<div class="absolute top-2 right-2 z-20 flex gap-2"><button class="edit-btn bg-black/80 p-2 rounded text-primary-400 hover:text-white" data-id="${p.id}"><i class="fas fa-pen"></i></button><button class="del-btn bg-black/80 p-2 rounded text-red-500 hover:text-red-300" data-id="${p.id}"><i class="fas fa-trash"></i></button></div>`;
                 }
 
                 card.innerHTML = `
@@ -919,14 +1156,14 @@
                     <div class="h-52 overflow-hidden relative">
                         <img src="${p.coverImage}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-700 transform group-hover:scale-110 filter grayscale group-hover:grayscale-0">
                         <div class="absolute inset-0 bg-gradient-to-t from-obsidian to-transparent opacity-80"></div>
-                        <span class="absolute top-3 left-3 bg-black/80 text-gold-400 text-[9px] px-2 py-1 uppercase tracking-widest border border-gold-900/30">${p.sectionName || 'Geral'}</span>
+                        <span class="absolute top-3 left-3 bg-black/80 text-primary-400 text-[9px] px-2 py-1 uppercase tracking-widest border border-primary-900/30">${p.sectionName || 'Geral'}</span>
                     </div>
                     <div class="p-6 flex flex-col flex-grow relative">
-                        <h3 class="text-white font-display text-lg leading-tight mb-3 group-hover:text-gold-400 transition line-clamp-2">${p.title}</h3>
+                        <h3 class="text-white font-display text-lg leading-tight mb-3 group-hover:text-primary-400 transition line-clamp-2">${p.title}</h3>
                         <p class="text-gray-500 text-xs line-clamp-3 mb-6 font-body font-light leading-relaxed">${p.content.replace(/[#*_]/g, '').substring(0, 100)}...</p>
                         <div class="mt-auto flex justify-between border-t border-white/5 pt-4 items-center">
                              <span class="text-[10px] text-gray-600 uppercase tracking-wider"><i class="fas fa-eye mr-1"></i> ${p.viewCount||0}</span>
-                             <span class="text-[10px] text-gold-500 uppercase tracking-[0.2em] group-hover:translate-x-1 transition flex items-center gap-1">Ler <i class="fas fa-chevron-right text-[8px]"></i></span>
+                             <span class="text-[10px] text-primary-500 uppercase tracking-[0.2em] group-hover:translate-x-1 transition flex items-center gap-1">Ler <i class="fas fa-chevron-right text-[8px]"></i></span>
                         </div>
                     </div>
                 `;
@@ -1013,11 +1250,16 @@
                 snap.forEach(d => {
                     const c = d.data();
                     const isOwner = currentUser && (currentUser.uid === c.userId || currentUser.uid === ADMIN_UID);
+                    
+                    // Logic to show Name/Avatar OR fallback to Email if old comment
+                    const displayName = c.userName || c.userEmail.split('@')[0];
+                    const displayIcon = c.userAvatar ? `<i class="fas ${c.userAvatar} mr-1 text-primary-500"></i>` : '';
+
                     const div = document.createElement('div');
                     div.className = "bg-black/40 border border-white/5 p-4 rounded relative";
                     div.innerHTML = `
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-gold-500 text-[10px] uppercase font-bold tracking-widest">${c.userEmail.split('@')[0]}</span>
+                            <span class="text-primary-500 text-[10px] uppercase font-bold tracking-widest flex items-center">${displayIcon} ${displayName}</span>
                             <span class="text-gray-600 text-[9px]">${c.createdAt?.toDate().toLocaleDateString() || ''}</span>
                         </div>
                         <p class="text-gray-300 text-sm font-body leading-relaxed">${c.content}</p>
@@ -1042,6 +1284,8 @@
                     postId: currentPostId,
                     userId: currentUser.uid,
                     userEmail: currentUser.email,
+                    userName: currentProfile.displayName || currentUser.email.split('@')[0], // SAVE NAME
+                    userAvatar: currentProfile.avatar || 'fa-user-circle', // SAVE AVATAR
                     content: txt,
                     createdAt: new Date()
                 });
@@ -1061,10 +1305,10 @@
         function formatText(txt) {
             if(!txt) return '';
             let t = txt.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            t = t.replace(/!\[(.*?)\]\((.*?)\)/g, `<div class="my-10"><img src="$2" class="w-full rounded-sm border border-gold-900/30 shadow-lg"><p class="text-center text-[10px] text-gray-500 mt-2 uppercase tracking-widest">$1</p></div>`);
-            t = t.replace(/\*\*(.*?)\*\*/g, '<strong class="text-gold-400 font-bold">$1</strong>');
-            t = t.replace(/##(.*?)##/g, '<span class="text-purple-300 italic border-b border-purple-900/50">$1</span>');
-            t = t.replace(/^### (.*$)/gim, '<h3 class="text-2xl text-white font-display mt-8 mb-4 border-l-2 border-gold-500 pl-4">$1</h3>');
+            t = t.replace(/!\[(.*?)\]\((.*?)\)/g, `<div class="my-10"><img src="$2" class="w-full rounded-sm border border-primary-900/30 shadow-lg"><p class="text-center text-[10px] text-gray-500 mt-2 uppercase tracking-widest">$1</p></div>`);
+            t = t.replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary-400 font-bold">$1</strong>');
+            t = t.replace(/##(.*?)##/g, '<span class="text-accent italic border-b border-accent/50">$1</span>');
+            t = t.replace(/^### (.*$)/gim, '<h3 class="text-2xl text-white font-display mt-8 mb-4 border-l-2 border-primary-500 pl-4">$1</h3>');
             return t.replace(/\n/g, '<br>');
         }
 
@@ -1160,6 +1404,7 @@
 
             document.getElementById('student-modal-email').textContent = st.email;
             document.getElementById('student-modal-id').value = sid;
+            document.getElementById('student-modal-display-name').textContent = st.displayName || 'Sem Nome Mágico';
             
             // Handle Date Display
             const expDate = st.expiresAt.toDate();
@@ -1181,7 +1426,7 @@
                 const checked = st.accessibleSections && st.accessibleSections.includes(sec.id);
                 const label = document.createElement('label');
                 label.className = "flex items-center gap-3 text-gray-300 text-sm p-2 hover:bg-white/5 cursor-pointer border-b border-white/5";
-                label.innerHTML = `<input type="checkbox" value="${sec.id}" ${checked?'checked':''} class="accent-gold-400 w-4 h-4"> ${sec.name}`;
+                label.innerHTML = `<input type="checkbox" value="${sec.id}" ${checked?'checked':''} class="accent-primary-400 w-4 h-4"> ${sec.name}`;
                 list.appendChild(label);
             });
             manageModal.style.display = 'flex';
