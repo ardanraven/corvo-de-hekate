@@ -221,7 +221,7 @@
                         </p>
                         <div class="pt-8 flex flex-col md:flex-row gap-6 justify-center items-center fade-in-up" style="animation-delay: 0.8s">
                             <button data-view="blog-view" class="internal-link px-10 py-4 bg-transparent border border-gold-400 text-gold-400 font-display text-sm font-bold tracking-[0.2em] uppercase hover:bg-gold-900/50 hover:text-white transition shadow-[0_0_20px_rgba(212,175,55,0.1)] relative group overflow-hidden">
-                                <span class="relative z-10">Abrir o Grimório)</span>
+                                <span class="relative z-10">Abrir o Grimório</span>
                                 <div class="absolute inset-0 bg-gradient-to-r from-yuleRed/10 to-gold-500/10 opacity-0 group-hover:opacity-100 transition"></div>
                             </button>
                         </div>
@@ -552,6 +552,19 @@
                             <i class="fas fa-download"></i> Baixar Material
                         </a>
                     </div>
+                    
+                    <div id="comments-section" class="mt-24 border-t border-gold-900/20 pt-10">
+                         <h3 class="text-2xl font-display text-white mb-8 flex items-center gap-2"><i class="fas fa-comments text-gold-500"></i> Discussões do Coven</h3>
+                         
+                         <div id="comments-list" class="space-y-6 mb-10"></div>
+                         
+                         <div id="comment-form-container" class="hidden bg-black/30 p-6 border border-white/5 rounded">
+                             <h4 class="text-sm text-gold-400 font-display mb-4 uppercase tracking-widest">Deixar uma oferenda de palavras</h4>
+                             <textarea id="comment-input" class="input-luxe w-full p-4 text-sm mb-4 bg-obsidian" rows="3" placeholder="Compartilhe sua visão..."></textarea>
+                             <button id="submit-comment-btn" class="bg-gold-900/50 border border-gold-900 text-white px-6 py-2 text-xs uppercase tracking-widest hover:bg-gold-500 hover:text-black transition">Enviar Comentário</button>
+                         </div>
+                         <p id="comment-login-msg" class="text-center text-gray-600 text-xs italic mt-8">Entre no santuário para deixar sua marca.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -594,7 +607,22 @@
                     <button id="close-student-modal-btn"><i class="fas fa-times text-gray-500 hover:text-white transition"></i></button>
                 </div>
                 <input type="hidden" id="student-modal-id">
-                <div id="student-modal-sections-list" class="space-y-3 mb-8 max-h-60 overflow-y-auto custom-scrollbar bg-black/50 p-4 border border-white/5"></div>
+                
+                <div class="mb-6 p-4 bg-black/40 border border-gold-900/20 rounded">
+                    <p class="text-[10px] text-gray-500 uppercase mb-2">Validade do Acesso</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <span id="student-expiry-date" class="text-white font-body text-sm"></span>
+                        <span id="student-status-badge" class="px-2 py-1 text-[9px] uppercase font-bold rounded bg-gray-800 text-gray-400">Verificando</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                         <button id="renew-30-btn" class="bg-green-900/30 text-green-400 border border-green-900/50 py-2 text-[10px] uppercase hover:bg-green-900/50 transition">Renovar +30 Dias</button>
+                         <button id="renew-90-btn" class="bg-green-900/30 text-green-400 border border-green-900/50 py-2 text-[10px] uppercase hover:bg-green-900/50 transition">Renovar +3 Meses</button>
+                         <button id="revoke-btn" class="col-span-2 bg-red-900/30 text-red-400 border border-red-900/50 py-2 text-[10px] uppercase hover:bg-red-900/50 transition font-bold">REVOGAR ACESSO</button>
+                    </div>
+                </div>
+
+                <p class="text-[10px] text-gray-500 uppercase mb-2">Permissões de Módulos</p>
+                <div id="student-modal-sections-list" class="space-y-3 mb-8 max-h-40 overflow-y-auto custom-scrollbar bg-black/50 p-4 border border-white/5"></div>
                 <button id="save-student-sections-btn" class="w-full bg-gold-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-gold-500 hover:text-black transition font-bold">Salvar Permissões</button>
                 <p id="student-modal-status" class="text-center text-xs mt-4 h-4"></p>
             </div>
@@ -616,7 +644,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // === CONFIGURAÇÃO FIREBASE ===
         const firebaseConfig = {
@@ -642,6 +670,7 @@
         let allPosts = []; 
         let allSections = []; 
         let allStudents = []; 
+        let commentsUnsubscribe = null;
 
         // === REFERÊNCIAS ===
         const appRoot = document.getElementById('app-root');
@@ -699,6 +728,8 @@
         const adminPanel = document.getElementById('admin-panel');
         const pagoSection = document.getElementById('pago-section');
         const adminControls = document.querySelectorAll('.admin-only-controls');
+        const commentFormContainer = document.getElementById('comment-form-container');
+        const commentLoginMsg = document.getElementById('comment-login-msg');
 
         onAuthStateChanged(auth, async (user) => {
             currentUserPermissions = [];
@@ -719,6 +750,8 @@
                 userEmailSpan.textContent = user.email;
                 loginBtn.style.display = 'none';
                 pagoSection.style.display = 'block';
+                commentFormContainer.classList.remove('hidden');
+                commentLoginMsg.classList.add('hidden');
                 
                 if (isAdmin) {
                     adminPanel.style.display = 'block';
@@ -737,6 +770,8 @@
                 adminPanel.style.display = 'none';
                 pagoSection.style.display = 'none';
                 adminControls.forEach(el => el.style.display = 'none');
+                commentFormContainer.classList.add('hidden');
+                commentLoginMsg.classList.remove('hidden');
             }
             fetchSections();
             fetchPosts();
@@ -909,13 +944,19 @@
 
         sectionFilter.addEventListener('change', (e) => renderPosts(e.target.value));
 
-        // === VIEW POST ===
+        // === VIEW POST & COMMENTS ===
         const postViewTitle = document.getElementById('post-view-title');
         const postViewContent = document.getElementById('post-view-content');
         const postViewCover = document.getElementById('post-view-cover-image');
         const postViewCount = document.getElementById('post-view-count');
         const postViewAttachContainer = document.getElementById('post-view-attachment-container');
         const postViewAttachLink = document.getElementById('post-view-attachment');
+
+        // COMMENTS ELEMENTS
+        const commentsList = document.getElementById('comments-list');
+        const commentInput = document.getElementById('comment-input');
+        const submitCommentBtn = document.getElementById('submit-comment-btn');
+        let currentPostId = null;
 
         async function openPost(id) {
             loadingSpinner.classList.remove('hidden');
@@ -932,6 +973,7 @@
                     }
                 }
 
+                currentPostId = id;
                 await updateDoc(ref, { viewCount: increment(1) });
                 
                 postViewTitle.textContent = p.title;
@@ -949,11 +991,72 @@
                 document.getElementById('post-view-edit-btn').onclick = () => openEdit(id);
                 document.getElementById('post-view-delete-btn').onclick = () => confirmDel(id, 'post');
 
+                loadComments(id);
                 stopSpeaking();
                 showView('post-view');
             }
             loadingSpinner.classList.add('hidden');
         }
+
+        // LOAD COMMENTS
+        function loadComments(postId) {
+            if(commentsUnsubscribe) commentsUnsubscribe();
+            
+            const q = query(collection(db, "comments"), where("postId", "==", postId), orderBy("createdAt", "desc"));
+            commentsUnsubscribe = onSnapshot(q, (snap) => {
+                commentsList.innerHTML = '';
+                if(snap.empty) {
+                    commentsList.innerHTML = '<p class="text-gray-600 text-xs italic">O silêncio reina. Seja o primeiro a falar.</p>';
+                    return;
+                }
+                
+                snap.forEach(d => {
+                    const c = d.data();
+                    const isOwner = currentUser && (currentUser.uid === c.userId || currentUser.uid === ADMIN_UID);
+                    const div = document.createElement('div');
+                    div.className = "bg-black/40 border border-white/5 p-4 rounded relative";
+                    div.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-gold-500 text-[10px] uppercase font-bold tracking-widest">${c.userEmail.split('@')[0]}</span>
+                            <span class="text-gray-600 text-[9px]">${c.createdAt?.toDate().toLocaleDateString() || ''}</span>
+                        </div>
+                        <p class="text-gray-300 text-sm font-body leading-relaxed">${c.content}</p>
+                        ${isOwner ? `<button onclick="deleteComment('${d.id}')" class="absolute bottom-2 right-2 text-red-900 hover:text-red-500 transition text-[10px]"><i class="fas fa-trash"></i></button>` : ''}
+                    `;
+                    commentsList.appendChild(div);
+                });
+            });
+        }
+
+        // ADD COMMENT
+        submitCommentBtn.addEventListener('click', async () => {
+            if(!currentUser || !currentPostId) return;
+            const txt = commentInput.value.trim();
+            if(!txt) return;
+
+            submitCommentBtn.disabled = true;
+            submitCommentBtn.textContent = "Enviando...";
+
+            try {
+                await addDoc(collection(db, "comments"), {
+                    postId: currentPostId,
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    content: txt,
+                    createdAt: new Date()
+                });
+                commentInput.value = '';
+            } catch(e) { console.error(e); alert("Erro ao comentar."); }
+            submitCommentBtn.disabled = false;
+            submitCommentBtn.textContent = "Enviar Comentário";
+        });
+
+        // DELETE COMMENT (Global scope needed for onclick)
+        window.deleteComment = async function(id) {
+            if(confirm("Deseja apagar este registro?")) {
+                await deleteDoc(doc(db, "comments", id));
+            }
+        };
 
         function formatText(txt) {
             if(!txt) return '';
@@ -965,7 +1068,7 @@
             return t.replace(/\n/g, '<br>');
         }
 
-        // === EDIT & DELETE ===
+        // === EDIT & DELETE POSTS ===
         const editPostForm = document.getElementById('edit-post-form');
         async function openEdit(id) {
             const snap = await getDoc(doc(db, "posts", id));
@@ -1044,11 +1147,33 @@
         });
 
         const manageModal = document.getElementById('manage-student-modal');
-        function openManageStudent(sid) {
-            const st = allStudents.find(s => s.id === sid);
-            if(!st) return;
+        const studentExpiryDate = document.getElementById('student-expiry-date');
+        const studentStatusBadge = document.getElementById('student-status-badge');
+        let currentManagingUser = null;
+
+        async function openManageStudent(sid) {
+            // Re-fetch latest data for accuracy
+            const docSnap = await getDoc(doc(db, "users", sid));
+            if(!docSnap.exists()) return;
+            const st = { id: docSnap.id, ...docSnap.data() };
+            currentManagingUser = st;
+
             document.getElementById('student-modal-email').textContent = st.email;
             document.getElementById('student-modal-id').value = sid;
+            
+            // Handle Date Display
+            const expDate = st.expiresAt.toDate();
+            studentExpiryDate.textContent = expDate.toLocaleDateString('pt-BR');
+            
+            if(expDate > new Date()) {
+                studentStatusBadge.textContent = "ATIVO";
+                studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-green-900/50 text-green-400";
+            } else {
+                studentStatusBadge.textContent = "EXPIRADO";
+                studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-red-900/50 text-red-400";
+            }
+
+            // Populate Sections
             const list = document.getElementById('student-modal-sections-list');
             list.innerHTML = '';
             
@@ -1062,6 +1187,37 @@
             manageModal.style.display = 'flex';
         }
         
+        // --- Access Buttons Logic ---
+        async function updateAccessTime(monthsToAdd) {
+            if(!currentManagingUser) return;
+            const ref = doc(db, "users", currentManagingUser.id);
+            
+            let newDate;
+            if (monthsToAdd === 0) {
+                 // Revoke (set to yesterday)
+                 newDate = new Date();
+                 newDate.setDate(newDate.getDate() - 1);
+            } else {
+                // If expired, start from today. If active, add to existing date.
+                const currentExp = currentManagingUser.expiresAt.toDate();
+                const baseDate = (currentExp > new Date()) ? currentExp : new Date();
+                
+                newDate = new Date(baseDate);
+                // Simple logic: treat 1 month as 30 days roughly for JS simplicity or use setMonth
+                if(monthsToAdd === 1) newDate.setDate(newDate.getDate() + 30); // Using days is safer for "months" sometimes
+                if(monthsToAdd === 3) newDate.setDate(newDate.getDate() + 90);
+            }
+            
+            await updateDoc(ref, { expiresAt: newDate });
+            openManageStudent(currentManagingUser.id); // Refresh modal
+        }
+
+        document.getElementById('renew-30-btn').addEventListener('click', () => updateAccessTime(1));
+        document.getElementById('renew-90-btn').addEventListener('click', () => updateAccessTime(3));
+        document.getElementById('revoke-btn').addEventListener('click', () => {
+            if(confirm("Tem certeza que deseja bloquear o acesso deste aluno imediatamente?")) updateAccessTime(0);
+        });
+
         document.getElementById('save-student-sections-btn').addEventListener('click', async () => {
             const sid = document.getElementById('student-modal-id').value;
             const checks = document.querySelectorAll('#student-modal-sections-list input:checked');
@@ -1162,4 +1318,4 @@
 
     </script>
 </body>
-</html>9
+</html>
