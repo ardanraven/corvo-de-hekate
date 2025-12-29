@@ -9,93 +9,89 @@
     
     <script>
         // 🔮 CONFIGURAÇÃO DO SACERDOTE 🔮
-        // Opções: 'Yule', 'Imbolc', 'Ostara', 'Beltane', 'Litha', 'Lammas', 'Mabon', 'Samhain'
-        // ESPECIAL: Se escolher 'Hekate', ele alterna automaticamente com 'Nyx' (Os Dois Pilares)
         const CURRENT_THEME = 'Imbolc'; 
 
         // BANCO DE DADOS DE ESTÉTICA
         const THEMES = {
             'Yule': {
-                name: 'Yule', // CORRIGIDO: Estava 'Ostara' aqui, por isso causava confusão!
+                name: 'Yule', 
                 primary: { 400: '#D4AF37', 500: '#C5A028', 900: '#3D3008' }, // Dourado
                 accent: '#8B0000', // Vermelho Sangue
-                particle: '❄', // Neve
+                particle: '❄', 
                 particleColor: '#FFFFFF',
                 particleDirection: 'down'
             },
             'Imbolc': {
                 name: 'Imbolc',
                 primary: { 400: '#A5F2F3', 500: '#7CD1D3', 900: '#1A4D4F' }, // Gelo/Ciano
-                accent: '#7CD1D3', // Branco Puro
-                particle: '✨', // Brilho
+                accent: '#7CD1D3', 
+                particle: '✨', 
                 particleColor: '#A5F2F3',
                 particleDirection: 'up'
             },
             'Ostara': {
                 name: 'Ostara',
-                primary: { 400: '#90EE90', 500: '#77DD77', 900: '#1A4F1A' }, // Verde Claro
-                accent: '#FFB7C5', // Rosa Flor
-                particle: '🌸', // Flor
+                primary: { 400: '#90EE90', 500: '#77DD77', 900: '#1A4F1A' }, 
+                accent: '#FFB7C5', 
+                particle: '🌸', 
                 particleColor: '#FFB7C5',
                 particleDirection: 'down'
             },
             'Beltane': {
                 name: 'Beltane',
-                primary: { 400: '#FF2400', 500: '#DD2400', 900: '#4F0A00' }, // Vermelho Fogo
-                accent: '#50C878', // Verde Esmeralda
-                particle: '🔥', // Fogo
+                primary: { 400: '#FF2400', 500: '#DD2400', 900: '#4F0A00' }, 
+                accent: '#50C878', 
+                particle: '🔥', 
                 particleColor: '#FF4500',
                 particleDirection: 'up'
             },
             'Litha': {
                 name: 'Litha',
-                primary: { 400: '#FFD700', 500: '#FFC000', 900: '#5C4800' }, // Amarelo Sol
-                accent: '#FFA500', // Laranja
-                particle: '☀️', // Sol
+                primary: { 400: '#FFD700', 500: '#FFC000', 900: '#5C4800' }, 
+                accent: '#FFA500', 
+                particle: '☀️', 
                 particleColor: '#FFD700',
                 particleDirection: 'up'
             },
             'Lammas': {
                 name: 'Lammas',
-                primary: { 400: '#F4C430', 500: '#DAA520', 900: '#5C4000' }, // Trigo/Dourado
-                accent: '#D2691E', // Marrom/Laranja
-                particle: '🌾', // Trigo
+                primary: { 400: '#F4C430', 500: '#DAA520', 900: '#5C4000' }, 
+                accent: '#D2691E', 
+                particle: '🌾', 
                 particleColor: '#F4C430',
                 particleDirection: 'down'
             },
             'Mabon': {
                 name: 'Mabon',
-                primary: { 400: '#D2691E', 500: '#8B4513', 900: '#3D1F00' }, // Marrom
-                accent: '#800080', // Roxo
-                particle: '🍂', // Folha
+                primary: { 400: '#D2691E', 500: '#8B4513', 900: '#3D1F00' }, 
+                accent: '#800080', 
+                particle: '🍂', 
                 particleColor: '#D2691E',
                 particleDirection: 'down'
             },
             'Samhain': {
                 name: 'Samhain',
-                primary: { 400: '#9370DB', 500: '#8A2BE2', 900: '#2E004F' }, // Roxo
-                accent: '#FF4500', // Laranja Abóbora
-                particle: '👻', // Fantasma
+                primary: { 400: '#9370DB', 500: '#8A2BE2', 900: '#2E004F' }, 
+                accent: '#FF4500', 
+                particle: '👻', 
                 particleColor: '#FFFFFF',
                 particleDirection: 'up'
             },
-            // PILAR 1: HEKATE (Prata e Cinza)
             'Hekate': {
                 name: 'Hekate',
-                primary: { 400: '#C0C0C0', 500: '#A9A9A9', 900: '#2F2F2F' }, // Prata/Cinza
-                accent: '#DAA520', // Dourado Envelhecido (Tochas)
-                particle: '🔑', // Chave
+                primary: { 400: '#C0C0C0', 500: '#A9A9A9', 900: '#2F2F2F' }, 
+                accent: '#DAA520', 
+                particle: '🔑', 
                 particleColor: '#C0C0C0',
                 particleDirection: 'up'
             },
-            // PILAR 2: NYX (Azul Noite Profunda e Estrelas)
             'Nyx': {
                 name: 'Nyx',
-                primary: { 400: '#818CF8', 500: '#4F46E5', 900: '#1E1B4B' }, // Índigo/Midnight
-                accent: '#E0E7FF', // Brilho Estelar
-                particle: '✦', // Estrela
+                primary: { 400: '#818CF8', 500: '#4F46E5', 900: '#1E1B4B' }, 
+                accent: '#E0E7FF', 
+                particle: '✦', 
                 particleColor: '#FFFFFF',
-                particleDirection: 'down' // Estrelas caindo
+                particleDirection: 'down' 
             }
         };
 
@@ -103,9 +99,7 @@
         let themeKey = CURRENT_THEME;
         
         if (CURRENT_THEME === 'Hekate') {
-            // Verifica quem apareceu por último
             const lastPillar = localStorage.getItem('coven_pillar_toggle');
-            
             if (lastPillar === 'Hekate') {
                 themeKey = 'Nyx';
                 localStorage.setItem('coven_pillar_toggle', 'Nyx');
@@ -113,7 +107,6 @@
                 themeKey = 'Hekate';
                 localStorage.setItem('coven_pillar_toggle', 'Hekate');
             }
-            console.log("Os Pilares Giraram: Agora rege " + themeKey);
         }
 
         const activeTheme = THEMES[themeKey] || THEMES['Yule'];
@@ -147,7 +140,6 @@
         /* ESTILOS GERAIS */
         body { background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
         
-        /* Scrollbar Dinâmica */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--accent-color, #8B0000), var(--primary-color, #D4AF37)); border-radius: 3px; }
@@ -158,7 +150,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Classes Utilitárias do Tema (CSS Variables injetadas via JS depois) */
         .text-gradient-theme {
             background: linear-gradient(to right, var(--primary-dark), var(--primary-light), var(--primary-main));
             -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 5s linear infinite;
@@ -169,12 +160,10 @@
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
         #intro-sequence { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         
-        /* CARDS */
         .project-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative; overflow: hidden;
         }
-        /* Icone do festival no canto do card */
         .project-card::after {
             content: var(--theme-icon, '❄️'); 
             position: absolute; top: 10px; right: 10px; font-size: 1.5rem; opacity: 0.3; filter: grayscale(0.5) sepia(1) hue-rotate(-50deg); transition: 0.4s;
@@ -189,7 +178,6 @@
         .input-luxe { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #fff; transition: 0.3s; }
         .input-luxe:focus { outline: none; border-color: var(--primary-main); background: rgba(255, 255, 255, 0.05); }
 
-        /* SELEÇÃO DE AVATAR */
         .avatar-option input[type="radio"] { display: none; }
         .avatar-option label { 
             display: flex; align-items: center; justify-content: center; 
@@ -201,7 +189,6 @@
             background: var(--primary-main); color: #000; box-shadow: 0 0 15px var(--primary-main);
         }
 
-        /* CORVO SVG ANIMADO */
         .mystic-crow-svg {
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
             animation: hoverCrow 4s ease-in-out infinite alternate;
@@ -213,7 +200,6 @@
         @keyframes flapLeft { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-10deg) translateY(5px); } }
         @keyframes flapRight { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(10deg) translateY(5px); } }
         
-        /* PARTICLES CONTAINER */
         .particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .particle {
             position: absolute; opacity: 0;
@@ -225,7 +211,7 @@
             100% { opacity: 0; transform: translateY(var(--end-y)) rotate(360deg); }
         }
 
-        /* --- NOVO SISTEMA DE TRILHA (PATH SYSTEM v2) --- */
+        /* --- SISTEMA DE TRILHA (PATH SYSTEM v2) --- */
         .path-container-wrapper {
             position: relative;
             width: 100%;
@@ -236,73 +222,50 @@
             padding-bottom: 100px;
         }
 
-        /* O SVG que desenha a linha */
         .path-svg-line {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
         }
 
         .path-node-wrapper {
             position: absolute;
-            transform: translate(-50%, -50%); /* Centraliza no ponto */
+            transform: translate(-50%, -50%); 
             z-index: 2;
             display: flex;
             flex-col: column;
             align-items: center;
         }
 
-        /* O Círculo do Nó */
         .game-node {
-            width: 70px;
-            height: 70px;
+            width: 70px; height: 70px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             font-size: 1.8rem;
             cursor: pointer;
             position: relative;
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            /* Estilo "Botão 3D" */
             box-shadow: 0 6px 0 rgba(0,0,0,0.5); 
         }
         
-        /* Ajuste Mobile para os Nós */
         @media (max-width: 640px) {
-            .game-node {
-                width: 60px;
-                height: 60px;
-                font-size: 1.5rem;
-                box-shadow: 0 4px 0 rgba(0,0,0,0.5); 
-            }
+            .game-node { width: 60px; height: 60px; font-size: 1.5rem; box-shadow: 0 4px 0 rgba(0,0,0,0.5); }
             .game-node:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.5); }
             .node-label { top: 70px; font-size: 0.65rem; }
             .game-node.status-active + .node-label { top: 75px; }
         }
 
-        .game-node:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 rgba(0,0,0,0.5);
-        }
+        .game-node:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.5); }
 
-        /* Estado: COMPLETO */
+        /* STATUS */
         .game-node.status-completed {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary-main));
-            border: 4px solid #FFD700;
-            color: #000;
+            border: 4px solid #FFD700; color: #000;
             box-shadow: 0 6px 0 #b8860b, 0 0 20px var(--primary-main);
         }
 
-        /* Estado: ATUAL (O Próximo a fazer) */
         .game-node.status-active {
             background: var(--accent-color);
-            border: 4px solid #fff;
-            color: #fff;
+            border: 4px solid #fff; color: #fff;
             box-shadow: 0 6px 0 #500000, 0 0 30px var(--accent-color);
             animation: pulseActive 2s infinite;
         }
@@ -312,54 +275,72 @@
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
         }
 
-        /* Estado: BLOQUEADO */
         .game-node.status-locked {
             background: #1a1a1a;
-            border: 4px solid #333;
-            color: #444;
+            border: 4px solid #333; color: #444;
             cursor: not-allowed;
             box-shadow: 0 6px 0 #000;
         }
         .game-node.status-locked:active { transform: none; box-shadow: 0 6px 0 #000; }
 
-        /* Label Flutuante (Tooltip) */
+        /* Label Tooltip Normal */
         .node-label {
-            position: absolute;
-            top: 85px;
-            background: #fff;
-            color: #000;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-family: 'Lato', sans-serif;
-            font-weight: bold;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            white-space: nowrap;
+            position: absolute; top: 85px;
+            background: #fff; color: #000;
+            padding: 5px 10px; border-radius: 8px;
+            font-family: 'Lato', sans-serif; font-weight: bold; font-size: 0.75rem;
+            text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: 0.3s;
-            pointer-events: none;
+            opacity: 0; transform: translateY(-10px); transition: 0.3s; pointer-events: none;
         }
         .node-label::before {
             content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
             border-width: 0 5px 5px 5px; border-style: solid; border-color: transparent transparent #fff transparent;
         }
-        
         .path-node-wrapper:hover .node-label { opacity: 1; transform: translateY(0); }
-        .game-node.status-active + .node-label { opacity: 1; transform: translateY(0); top: 90px; } /* Sempre mostra o label do ativo */
+        .game-node.status-active + .node-label { opacity: 1; transform: translateY(0); top: 90px; }
 
-        /* Estrelas de progresso ao redor do nó */
-        .stars-container {
-            position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;
+        /* TOOLTIP BLOQUEADO (NOVO) */
+        .locked-tooltip {
+            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-10px);
+            background: #2a0a0a; color: #ff6b6b; border: 1px solid #500;
+            padding: 8px 12px; border-radius: 4px;
+            font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; text-align: center;
+            width: 140px; pointer-events: none; opacity: 0; transition: opacity 0.3s, transform 0.3s;
+            z-index: 30; box-shadow: 0 4px 15px rgba(0,0,0,0.8);
         }
-        .crown-icon {
-            position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
-            color: #FFD700; font-size: 1.5rem; filter: drop-shadow(0 0 5px rgba(255,215,0,0.8));
-            animation: floatCrown 2s ease-in-out infinite;
+        .locked-tooltip::after {
+            content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+            border-width: 5px 5px 0 5px; border-style: solid; border-color: #500 transparent transparent transparent;
         }
-        @keyframes floatCrown { 0%,100% {transform: translateX(-50%) translateY(0);} 50% {transform: translateX(-50%) translateY(-5px);} }
+        .path-node-wrapper:hover .game-node.status-locked ~ .locked-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ESTRELAS E DECORAÇÃO */
+        .stars-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        
+        /* ANIMAÇÃO DE DESBLOQUEIO (CELEBRAÇÃO) */
+        .celebration-unlock {
+            animation: unlockFlash 1.5s ease-out forwards;
+        }
+        @keyframes unlockFlash {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); background: var(--accent-color); filter: brightness(1); }
+            50% { transform: scale(1.3); box-shadow: 0 0 50px 20px rgba(212, 175, 55, 0.8); background: #FFD700; filter: brightness(2); border-color: white; }
+            100% { transform: scale(1); box-shadow: 0 6px 0 #b8860b, 0 0 20px var(--primary-main); filter: brightness(1); }
+        }
+
+        /* ÍCONE FLUTUANTE DE AVATAR (NOVO) */
+        .path-avatar-float {
+            position: absolute; top: -55px; left: 50%; transform: translateX(-50%);
+            z-index: 20; pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(255,215,0,0.4));
+        }
+        .path-avatar-icon { font-size: 2.5rem; animation: bounceAvatar 2s infinite ease-in-out; color: var(--accent-color); }
+        .path-avatar-arrow { color: var(--accent-color); text-align: center; margin-top: -5px; animation: pulse 1s infinite; font-size: 0.8rem; }
+        
+        @keyframes bounceAvatar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
 
     </style>
 </head>
@@ -367,7 +348,6 @@
 
     <div class="particle-container" id="particles"></div>
     <script>
-        // CONFIGURA CSS VARIABLES BASEADO NO TEMA ESCOLHIDO
         const root = document.documentElement;
         root.style.setProperty('--primary-main', activeTheme.primary[400]);
         root.style.setProperty('--primary-light', activeTheme.primary[500]);
@@ -375,7 +355,6 @@
         root.style.setProperty('--accent-color', activeTheme.accent);
         root.style.setProperty('--theme-icon', `'${activeTheme.particle}'`);
         
-        // Configura Partículas
         const pContainer = document.getElementById('particles');
         const pCount = 40; 
         const isUp = activeTheme.particleDirection === 'up';
@@ -385,24 +364,15 @@
             p.className = 'particle';
             p.innerHTML = activeTheme.particle;
             p.style.left = Math.random() * 100 + '%';
-            
-            // Direção da animação
             if(isUp) {
-                p.style.bottom = '-20px';
-                p.style.setProperty('--start-y', '0');
-                p.style.setProperty('--end-y', '-100vh');
+                p.style.bottom = '-20px'; p.style.setProperty('--start-y', '0'); p.style.setProperty('--end-y', '-100vh');
             } else {
-                p.style.top = '-20px';
-                p.style.setProperty('--start-y', '0');
-                p.style.setProperty('--end-y', '100vh');
+                p.style.top = '-20px'; p.style.setProperty('--start-y', '0'); p.style.setProperty('--end-y', '100vh');
             }
-
             p.style.animationDuration = Math.random() * 10 + 5 + 's';
             p.style.animationDelay = Math.random() * 5 + 's';
             p.style.fontSize = Math.random() * 10 + 8 + 'px';
             p.style.color = Math.random() > 0.7 ? activeTheme.primary[400] : activeTheme.particleColor;
-            
-            // Apenas mostra particulas se não for "Hekate" puro (opcional, ou deixa sempre)
             pContainer.appendChild(p);
         }
     </script>
@@ -866,7 +836,7 @@
                         </a>
                     </div>
 
-                    <!-- BOTÃO DE CONCLUIR RITUAL (NOVO) -->
+                    <!-- BOTÃO DE CONCLUIR RITUAL -->
                     <div class="mt-16 flex justify-center">
                         <button id="mark-complete-btn" class="bg-primary-900 hover:bg-primary-500 hover:text-black text-white px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_20px_var(--primary-main)] transition transform hover:scale-105 flex items-center gap-3">
                             <i class="fas fa-check-circle text-xl"></i> Concluir Leitura & Avançar
@@ -989,14 +959,14 @@
         // === VARIÁVEIS ===
         let currentUser = null; 
         let currentUserPermissions = []; 
-        let completedPosts = []; // NOVO: ARRAY DE POSTS COMPLETOS PELO USER
+        let completedPosts = []; 
         let currentProfile = { displayName: null, avatar: null };
         let itemToDelete = { id: null, type: null }; 
         let allPosts = []; 
         let allSections = []; 
         let allStudents = []; 
         let commentsUnsubscribe = null;
-        let activeSectionId = null; // Para saber qual trilha estamos vendo
+        let activeSectionId = null;
 
         // === REFERÊNCIAS ===
         const appRoot = document.getElementById('app-root');
@@ -1004,7 +974,6 @@
         const loadingSpinner = document.getElementById('loading-spinner');
         const allViews = document.querySelectorAll('.view-container');
         
-        // --- INTRO SAFETY ---
         window.forceOpenSite = function() {
             gsap.to(introSection, { opacity: 0, duration: 1, onComplete: () => {
                 introSection.style.display = 'none';
@@ -1014,13 +983,10 @@
         };
 
         window.onload = function() {
-            // Failsafe timer
             setTimeout(() => { if(introSection.style.display !== 'none') window.forceOpenSite(); }, 8000); 
-            // Normal timer
             setTimeout(() => { window.forceOpenSite(); }, 7500);
         };
 
-        // === NAVEGAÇÃO ===
         function showView(viewId) {
             allViews.forEach(view => {
                 if (view.classList.contains('fixed')) {
@@ -1031,26 +997,18 @@
                 }
             });
             
-            // LÓGICA DE VISUALIZAÇÃO DO BLOG (HUB vs TRILHA)
             if(viewId === 'blog-view') {
                  if(!activeSectionId) {
-                     // MOSTRAR HUB (CARDS)
                      const hub = document.getElementById('sections-hub');
-                     hub.classList.remove('hidden');
-                     hub.style.opacity = '1'; // Garante visibilidade
+                     hub.classList.remove('hidden'); hub.style.opacity = '1';
                      document.getElementById('active-path-view').classList.add('hidden');
                  } else {
-                     // MOSTRAR TRILHA ATIVA
                      document.getElementById('sections-hub').classList.add('hidden');
                      const pathView = document.getElementById('active-path-view');
-                     pathView.classList.remove('hidden');
-                     pathView.style.opacity = '1'; // Garante visibilidade
-                     pathView.style.transform = 'translateY(0)'; // Reseta posição
-                     renderProfessionalPath(activeSectionId); // RE-RENDERIZA PARA ATUALIZAR STATUS VISUAL
+                     pathView.classList.remove('hidden'); pathView.style.opacity = '1'; pathView.style.transform = 'translateY(0)';
+                     renderProfessionalPath(activeSectionId);
                  }
             } else if (viewId !== 'post-view' && viewId !== 'edit-post-view') {
-                // Só reseta a seção se sair completamente do contexto do blog (ex: Home, Perfil)
-                // Se for para 'post-view' ou 'edit-post-view', mantém o ID.
                 activeSectionId = null; 
             }
 
@@ -1081,7 +1039,6 @@
         const commentFormContainer = document.getElementById('comment-form-container');
         const commentLoginMsg = document.getElementById('comment-login-msg');
 
-        // PROFILE FORM
         const profileForm = document.getElementById('profile-form');
         const profileDisplayNameInput = document.getElementById('profile-display-name');
         const profileStatus = document.getElementById('profile-status');
@@ -1102,17 +1059,14 @@
                         const expires = d.expiresAt.toDate();
                         if (new Date() > expires) { await signOut(auth); return; }
                         currentUserPermissions = d.accessibleSections || [];
-                        completedPosts = d.completedPosts || []; // CARREGA POSTS FEITOS
+                        completedPosts = d.completedPosts || []; 
                     } else { await signOut(auth); return; }
                 }
 
-                // Load Profile Data
                 if(userDoc.exists()) {
                     const d = userDoc.data();
                     currentProfile.displayName = d.displayName || user.email.split('@')[0];
                     currentProfile.avatar = d.avatar || 'fa-user-circle';
-                    
-                    // UI Updates
                     headerUserName.textContent = currentProfile.displayName;
                     headerUserIcon.className = `fas ${currentProfile.avatar}`;
                     profileDisplayNameInput.value = d.displayName || '';
@@ -1148,7 +1102,7 @@
                 commentLoginMsg.classList.remove('hidden');
             }
             fetchSections();
-            fetchPosts(); // Carrega os posts para estarem prontos quando abrir uma trilha
+            fetchPosts(); 
         });
 
         document.getElementById('login-form').addEventListener('submit', (e) => {
@@ -1160,38 +1114,25 @@
             });
         });
 
-        // SAVE PROFILE LOGIC
         profileForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if(!currentUser) return;
-            
             profileStatus.textContent = "Gravando nas estrelas...";
             const newName = profileDisplayNameInput.value.trim();
             const checkedAvatar = document.querySelector('input[name="avatar"][value]:checked');
             const newAvatar = checkedAvatar ? checkedAvatar.value : 'fa-user-circle';
 
             try {
-                // Update Firestore
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    displayName: newName,
-                    avatar: newAvatar
-                });
-                
-                // Update Auth Profile (Standard)
+                await updateDoc(doc(db, "users", currentUser.uid), { displayName: newName, avatar: newAvatar });
                 await updateProfile(currentUser, { displayName: newName, photoURL: newAvatar });
-                
-                // Update Local UI
                 currentProfile.displayName = newName;
                 currentProfile.avatar = newAvatar;
                 headerUserName.textContent = newName;
                 headerUserIcon.className = `fas ${newAvatar}`;
-                
                 profileStatus.textContent = "Identidade Consagrada!";
                 profileStatus.className = "text-center text-xs mt-4 h-4 text-green-400";
-                
                 setTimeout(() => showView('home-view'), 1500);
             } catch (err) {
-                console.error(err);
                 profileStatus.textContent = "Erro ao salvar.";
                 profileStatus.className = "text-center text-xs mt-4 h-4 text-red-400";
             }
@@ -1202,8 +1143,6 @@
         document.getElementById('close-login-btn').addEventListener('click', () => showView('home-view'));
 
         // === ADMIN FUNCTIONS ===
-        
-        // 1. Sections
         const postSectionSelect = document.getElementById('post-section');
         const editPostSectionSelect = document.getElementById('edit-post-section');
         const sectionsListAdmin = document.getElementById('sections-list-admin');
@@ -1213,7 +1152,6 @@
             const q = query(collection(db, "sections"), orderBy("name"));
             onSnapshot(q, (snap) => {
                 allSections = [];
-                // Admin selects
                 postSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
                 editPostSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
                 sectionsListAdmin.innerHTML = '';
@@ -1222,22 +1160,16 @@
                 snap.forEach(d => {
                     const sec = { id: d.id, ...d.data() };
                     allSections.push(sec);
-                    
-                    // Dropdowns de Admin
                     postSectionSelect.add(new Option(sec.name, sec.id));
                     editPostSectionSelect.add(new Option(sec.name, sec.id));
-                    
-                    // Lista de Admin
                     const div = document.createElement('div');
                     div.className = "flex justify-between items-center p-2 hover:bg-white/5 rounded border-b border-white/5";
                     div.innerHTML = `<span>${sec.name}</span> <button class="delete-sec-btn text-red-500 hover:text-red-300" data-id="${sec.id}"><i class="fas fa-times"></i></button>`;
                     sectionsListAdmin.appendChild(div);
 
-                    // === RENDERIZAR CARD DA SEÇÃO NO HUB ===
                     const card = document.createElement('div');
                     card.className = "project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer flex flex-col items-center justify-center text-center min-h-[250px] shadow-[0_0_20px_rgba(0,0,0,0.5)]";
                     card.onclick = () => openPath(sec.id, sec.name);
-
                     card.innerHTML = `
                          <div class="absolute inset-0 bg-gradient-to-t from-primary-900/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
                          <i class="fas fa-dungeon text-5xl text-gray-700 mb-6 group-hover:text-primary-400 transition transform group-hover:scale-110"></i>
@@ -1255,7 +1187,7 @@
             if(name) { await addDoc(collection(db, "sections"), {name, createdAt: new Date()}); document.getElementById('create-section-form').reset(); }
         });
 
-        // === LOGICA DE TRILHA PROFISSIONAL (SVG SNAKE) ===
+        // === TRILHA (PATH) ===
         const sectionsHub = document.getElementById('sections-hub');
         const activePathView = document.getElementById('active-path-view');
         const pathTitle = document.getElementById('path-title');
@@ -1264,8 +1196,6 @@
         function openPath(sectionId, sectionName) {
             activeSectionId = sectionId;
             pathTitle.textContent = sectionName;
-            
-            // Troca a view
             gsap.to(sectionsHub, { opacity: 0, duration: 0.3, onComplete: () => {
                 sectionsHub.classList.add('hidden');
                 activePathView.classList.remove('hidden');
@@ -1287,34 +1217,27 @@
             const container = document.getElementById('path-steps-container');
             container.innerHTML = '';
             
-            // Filtra e ordena
             const pathPosts = allPosts.filter(p => p.sectionId === sectionId).sort((a,b) => a.createdAt - b.createdAt);
 
             if(pathPosts.length === 0) {
                 document.getElementById('empty-path-msg').classList.remove('hidden');
-                container.style.height = 'auto'; // Reseta altura se vazio
+                container.style.height = 'auto'; 
                 return;
             }
             document.getElementById('empty-path-msg').classList.add('hidden');
 
             const icons = ['fa-scroll', 'fa-flask', 'fa-book-skull', 'fa-star', 'fa-feather-alt'];
             
-            // === AJUSTES RESPONSIVOS (MOBILE/DUOLINGO STYLE) ===
             const containerRect = container.getBoundingClientRect();
             const containerWidth = containerRect.width;
-            const isMobile = window.innerWidth < 640; // sm breakpoint
+            const isMobile = window.innerWidth < 640; 
             
-            // No mobile, a curva é menor para caber na tela, e os nós ficam um pouco mais pertos
             const spacing = isMobile ? 110 : 130; 
-            const amplitude = isMobile ? Math.min(75, containerWidth / 3.5) : 100; // Limita a largura da curva
+            const amplitude = isMobile ? Math.min(75, containerWidth / 3.5) : 100;
             const centerX = containerWidth / 2; 
-            
-            // === CÁLCULO DINÂMICO DE ALTURA ===
-            // Multiplica o nº de posts pelo espaço e adiciona uma margem segura no final
             const totalHeight = (pathPosts.length * spacing) + 250; 
-            container.style.height = totalHeight + 'px'; // Força o container a crescer
+            container.style.height = totalHeight + 'px'; 
 
-            // Cria o SVG Container
             const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("class", "path-svg-line");
             svg.style.height = totalHeight + 'px';
@@ -1324,97 +1247,109 @@
             let prevX = centerX;
             let prevY = 40;
 
+            // RECUPERA ÚLTIMO ITEM COMPLETADO PARA ANIMAÇÃO
+            const justCompletedId = sessionStorage.getItem('just_completed_post');
+            sessionStorage.removeItem('just_completed_post'); // Limpa após usar
+
             pathPosts.forEach((p, index) => {
-                // LÓGICA DE BLOQUEIO DUOLINGO
                 const isAdmin = currentUser && currentUser.uid === ADMIN_UID;
                 const hasSectionAccess = isAdmin || (currentUserPermissions && currentUserPermissions.includes(sectionId));
                 const isPaid = p.access === 'pago';
-                
                 let isCompleted = completedPosts.includes(p.id);
-                // Opcional: Se for admin, pode querer ver como completo ou não. Deixamos natural.
-
                 let isLocked = false;
                 
-                if (isPaid && !hasSectionAccess) {
-                    isLocked = true; // Sem permissão de compra
-                } else {
-                    // Lógica Sequencial:
-                    // Se estiver LOGADO, mantém a regra de que precisa completar o anterior.
-                    // Se for VISITANTE (sem login), libera tudo que for GRATIS (aberto), pois não dá pra completar.
+                if (isPaid && !hasSectionAccess) isLocked = true;
+                else {
                     if (currentUser) {
-                         if (index > 0 && !completedPosts.includes(pathPosts[index-1].id) && !isAdmin) {
-                            isLocked = true;
-                        }
-                    } else {
-                        // Visitante vendo conteúdo aberto = LIBERADO
-                        isLocked = false;
-                    }
+                         if (index > 0 && !completedPosts.includes(pathPosts[index-1].id) && !isAdmin) isLocked = true;
+                    } else isLocked = false;
                 }
 
-                // Estado Visual
                 let statusClass = "status-locked";
                 if (isCompleted) statusClass = "status-completed";
                 else if (!isLocked) statusClass = "status-active";
 
-                // Coordenadas Sinuosas (Senoide)
-                const y = 40 + (index * spacing);
-                const x = centerX + Math.sin(index * 1.5) * amplitude; // Curva matemática
+                // Se acabou de completar este, força visual de completo mas com animação
+                let animationClass = "";
+                if (p.id === justCompletedId) {
+                    animationClass = "celebration-unlock";
+                    // Garante status completed visualmente
+                    statusClass = "status-completed"; 
+                }
 
-                // Desenha a linha SVG até aqui
-                if (index === 0) {
-                    pathD += `M ${x} ${y}`;
-                } else {
-                    // Curva Bézier Suave (Quadrática)
+                // AVATAR LOGIC: Primeiro nó não-bloqueado e não-completo
+                // OU se acabamos de completar um, o avatar vai para o PRÓXIMO (index + 1) se existir
+                let showAvatar = false;
+                if (!isLocked && !isCompleted) showAvatar = true;
+                
+                // Se acabamos de completar este post, o avatar não deve estar nele, mas no próximo.
+                // Mas o loop varre sequencialmente. O próximo item cairá no `if` acima naturalmente.
+
+                const y = 40 + (index * spacing);
+                const x = centerX + Math.sin(index * 1.5) * amplitude;
+
+                if (index === 0) pathD += `M ${x} ${y}`;
+                else {
                     const cpY = (prevY + y) / 2;
                     pathD += ` Q ${prevX} ${cpY}, ${x} ${y}`; 
                 }
-                prevX = x;
-                prevY = y;
+                prevX = x; prevY = y;
 
-                // Renderiza o Nó HTML posicionado absolutamente
                 const nodeWrapper = document.createElement('div');
-                nodeWrapper.className = 'path-node-wrapper';
+                nodeWrapper.className = 'path-node-wrapper group'; // Adicionado 'group' para hover
                 nodeWrapper.style.left = x + 'px';
                 nodeWrapper.style.top = y + 'px';
 
-                // Ícone rotativo
                 const icon = icons[index % icons.length];
                 const iconHtml = isLocked ? '<i class="fas fa-lock"></i>' : (isCompleted ? '<i class="fas fa-check"></i>' : `<i class="fas ${icon}"></i>`);
-
-                // Crown for active
                 const crown = (!isLocked && !isCompleted) ? '<i class="fas fa-crown crown-icon"></i>' : '';
 
+                // AVATAR HTML
+                const avatarHtml = showAvatar ? `
+                    <div class="path-avatar-float">
+                        <div class="path-avatar-icon"><i class="fas fa-crow"></i></div>
+                        <div class="path-avatar-arrow">▼</div>
+                    </div>
+                ` : '';
+
+                // TOOLTIP HTML (Para locked)
+                const lockedTooltipHtml = isLocked ? `
+                    <div class="locked-tooltip">
+                        <i class="fas fa-key mb-1 block text-lg"></i>
+                        Selado.<br>Complete o rito anterior.
+                    </div>
+                ` : '';
+
+                // ONCLICK PARA MOBILE LOCKED
+                const clickAction = isLocked 
+                    ? "alert('Este conhecimento está selado. Complete o passo anterior para obter a chave.')" 
+                    : `openPostFromPath('${p.id}')`;
+
                 nodeWrapper.innerHTML = `
+                    ${avatarHtml}
                     ${crown}
-                    <div class="game-node ${statusClass}" onclick="${isLocked ? '' : `openPostFromPath('${p.id}')`}">
+                    <div class="game-node ${statusClass} ${animationClass}" onclick="${clickAction}">
                         ${iconHtml}
                     </div>
+                    ${lockedTooltipHtml}
                     <div class="node-label">${p.title}</div>
                     ${!isLocked && !isCompleted ? '<div class="stars-container"><div class="absolute w-full h-full animate-spin-slow opacity-30"><i class="fas fa-star absolute top-0 left-1/2 text-xs text-yellow-500"></i><i class="fas fa-star absolute bottom-0 left-1/2 text-xs text-yellow-500"></i></div></div>' : ''}
                 `;
                 container.appendChild(nodeWrapper);
             });
 
-            // Finaliza o desenho da linha SVG
             const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
             pathEl.setAttribute("d", pathD);
-            pathEl.setAttribute("stroke", "#333"); // Cor da trilha inativa
+            pathEl.setAttribute("stroke", "#333"); 
             pathEl.setAttribute("stroke-width", "8");
             pathEl.setAttribute("fill", "none");
             pathEl.setAttribute("stroke-linecap", "round");
-            
-            // (Opcional: Poderia adicionar uma segunda linha 'stroke' colorida cobrindo até o ponto atual, mas isso requer calcular o comprimento do path)
-            
             svg.appendChild(pathEl);
         }
 
-        // Wrapper global para o onclick inline funcionar com module
-        window.openPostFromPath = function(id) {
-            openPost(id);
-        };
+        window.openPostFromPath = function(id) { openPost(id); };
 
-
-        // 2. Students
+        // 2. Students & Admin Code (Mantido igual)
         const studentsListAdmin = document.getElementById('students-list-admin');
         function fetchStudents() {
             onSnapshot(query(collection(db, "users")), (snap) => {
@@ -1424,10 +1359,7 @@
                     if(d.id === ADMIN_UID) return;
                     const st = { id: d.id, ...d.data() };
                     allStudents.push(st);
-                    
-                    // Show Name if exists, else Email
                     const displayLabel = st.displayName ? `${st.displayName} (${st.email.split('@')[0]})` : st.email;
-                    
                     const div = document.createElement('div');
                     div.className = "flex justify-between p-2 border-b border-white/5 hover:bg-white/5";
                     div.innerHTML = `<span class="truncate w-32" title="${st.email}">${displayLabel}</span><button class="manage-student-btn text-primary-400" data-id="${st.id}"><i class="fas fa-cog"></i></button>`;
@@ -1483,11 +1415,7 @@
             onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "asc")), (snap) => {
                 allPosts = [];
                 snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
-                
-                // Se estivermos vendo uma trilha, atualiza ela em tempo real
-                if(activeSectionId) {
-                    renderProfessionalPath(activeSectionId);
-                }
+                if(activeSectionId) renderProfessionalPath(activeSectionId);
             });
         }
 
@@ -1499,7 +1427,6 @@
         const postViewAttachContainer = document.getElementById('post-view-attachment-container');
         const postViewAttachLink = document.getElementById('post-view-attachment');
 
-        // COMMENTS ELEMENTS
         const commentsList = document.getElementById('comments-list');
         const commentInput = document.getElementById('comment-input');
         const submitCommentBtn = document.getElementById('submit-comment-btn');
@@ -1535,10 +1462,7 @@
                     postViewAttachContainer.classList.add('hidden');
                 }
 
-                // CONFIGURA BOTÃO DE CONCLUSÃO
                 const completeBtn = document.getElementById('mark-complete-btn');
-                
-                // Mas para user normal:
                 if(completedPosts.includes(id)) {
                     completeBtn.classList.remove('bg-primary-900', 'text-white', 'hover:scale-105');
                     completeBtn.classList.add('bg-green-500/20', 'text-green-400', 'border', 'border-green-500/50', 'cursor-default');
@@ -1561,7 +1485,6 @@
             loadingSpinner.classList.add('hidden');
         }
 
-        // FUNÇÃO DE MARCAR COMO COMPLETO
         async function markPostComplete() {
             if(!currentUser || !currentPostId) return;
             const btn = document.getElementById('mark-complete-btn');
@@ -1569,23 +1492,20 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consagrando...';
             
             try {
-                // Atualiza User no Firestore
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     completedPosts: arrayUnion(currentPostId)
                 });
                 
-                // Atualiza Localmente
                 if(!completedPosts.includes(currentPostId)) completedPosts.push(currentPostId);
                 
-                // UI Feedback
+                // ARMAZENA O ID PARA A ANIMAÇÃO QUANDO VOLTAR
+                sessionStorage.setItem('just_completed_post', currentPostId);
+
                 btn.className = "bg-yellow-500 text-black px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_30px_#FFD700] transform scale-110 transition";
                 btn.innerHTML = '<i class="fas fa-star"></i> Sábio! Avançando...';
                 
-                // Efeito sonoro simples (opcional, requer arquivo)
-                // const audio = new Audio('success.mp3'); audio.play();
-
                 setTimeout(() => {
-                    showView('blog-view'); // Volta para a trilha para ver o desbloqueio
+                    showView('blog-view'); 
                 }, 1500);
 
             } catch(e) {
@@ -1595,34 +1515,23 @@
             }
         }
 
-        // LOAD COMMENTS (Client-side Sort Fix)
         function loadComments(postId) {
             if(commentsUnsubscribe) commentsUnsubscribe();
-            
             const q = query(collection(db, "comments"), where("postId", "==", postId));
-            
             commentsUnsubscribe = onSnapshot(q, (snap) => {
                 commentsList.innerHTML = '';
-                
-                if(snap.empty) {
-                    commentsList.innerHTML = '<p class="text-gray-600 text-xs italic">O silêncio reina. Seja o primeiro a falar.</p>';
-                    return;
-                }
-                
+                if(snap.empty) { commentsList.innerHTML = '<p class="text-gray-600 text-xs italic">O silêncio reina. Seja o primeiro a falar.</p>'; return; }
                 let comments = [];
                 snap.forEach(d => comments.push({ id: d.id, ...d.data() }));
-                
                 comments.sort((a, b) => {
                     const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
                     const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
                     return dateB - dateA;
                 });
-                
                 comments.forEach(c => {
                     const isOwner = currentUser && (currentUser.uid === c.userId || currentUser.uid === ADMIN_UID);
                     const displayName = c.userName || (c.userEmail ? c.userEmail.split('@')[0] : 'Anônimo');
                     const displayIcon = c.userAvatar ? `<i class="fas ${c.userAvatar} mr-1 text-primary-500"></i>` : '';
-
                     const div = document.createElement('div');
                     div.className = "bg-black/40 border border-white/5 p-4 rounded relative";
                     div.innerHTML = `
@@ -1638,37 +1547,24 @@
             });
         }
 
-        // ADD COMMENT
         submitCommentBtn.addEventListener('click', async () => {
             if(!currentUser || !currentPostId) return;
             const txt = commentInput.value.trim();
             if(!txt) return;
-
-            submitCommentBtn.disabled = true;
-            submitCommentBtn.textContent = "Enviando...";
-
+            submitCommentBtn.disabled = true; submitCommentBtn.textContent = "Enviando...";
             try {
                 await addDoc(collection(db, "comments"), {
-                    postId: currentPostId,
-                    userId: currentUser.uid,
-                    userEmail: currentUser.email,
+                    postId: currentPostId, userId: currentUser.uid, userEmail: currentUser.email,
                     userName: currentProfile.displayName || currentUser.email.split('@')[0],
                     userAvatar: currentProfile.avatar || 'fa-user-circle',
-                    content: txt,
-                    createdAt: new Date()
+                    content: txt, createdAt: new Date()
                 });
                 commentInput.value = '';
             } catch(e) { console.error(e); alert("Erro ao comentar."); }
-            submitCommentBtn.disabled = false;
-            submitCommentBtn.textContent = "Enviar Comentário";
+            submitCommentBtn.disabled = false; submitCommentBtn.textContent = "Enviar Comentário";
         });
 
-        // DELETE COMMENT
-        window.deleteComment = async function(id) {
-            if(confirm("Deseja apagar este registro?")) {
-                await deleteDoc(doc(db, "comments", id));
-            }
-        };
+        window.deleteComment = async function(id) { if(confirm("Deseja apagar este registro?")) await deleteDoc(doc(db, "comments", id)); };
 
         function formatText(txt) {
             if(!txt) return '';
@@ -1703,7 +1599,6 @@
             const id = document.getElementById('edit-post-id').value;
             const secSelect = document.getElementById('edit-post-section');
             const secName = secSelect.options[secSelect.selectedIndex].text;
-            
             await updateDoc(doc(db, "posts", id), {
                 title: document.getElementById('edit-post-title').value,
                 coverImage: document.getElementById('edit-post-cover-image').value,
@@ -1722,36 +1617,20 @@
              else showView('blog-view');
         });
 
-        function confirmDel(id, type) {
-            itemToDelete = {id, type};
-            document.getElementById('delete-confirm-modal').style.display = 'flex';
-        }
+        function confirmDel(id, type) { itemToDelete = {id, type}; document.getElementById('delete-confirm-modal').style.display = 'flex'; }
         document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
-            if(itemToDelete.type === 'post') {
-                await deleteDoc(doc(db, "posts", itemToDelete.id));
-                showView('blog-view');
-            } else if (itemToDelete.type === 'section') {
-                await deleteDoc(doc(db, "sections", itemToDelete.id));
-            }
+            if(itemToDelete.type === 'post') { await deleteDoc(doc(db, "posts", itemToDelete.id)); showView('blog-view'); } 
+            else if (itemToDelete.type === 'section') await deleteDoc(doc(db, "sections", itemToDelete.id));
             document.getElementById('delete-confirm-modal').style.display = 'none';
         });
-        document.getElementById('cancel-delete-btn').addEventListener('click', () => {
-            document.getElementById('delete-confirm-modal').style.display = 'none';
-        });
+        document.getElementById('cancel-delete-btn').addEventListener('click', () => document.getElementById('delete-confirm-modal').style.display = 'none');
 
-        // === GLOBAL LISTENERS ===
         appRoot.addEventListener('click', (e) => {
             const card = e.target.closest('[data-id]');
-            
-            // Buttons inside list
             if(e.target.closest('.edit-btn')) openEdit(e.target.closest('.edit-btn').dataset.id);
             if(e.target.closest('.del-btn')) confirmDel(e.target.closest('.del-btn').dataset.id, 'post');
             if(e.target.closest('.delete-sec-btn')) confirmDel(e.target.closest('.delete-sec-btn').dataset.id, 'section');
-            
-            // Student
-            if(e.target.closest('.manage-student-btn')) {
-                openManageStudent(e.target.closest('.manage-student-btn').dataset.id);
-            }
+            if(e.target.closest('.manage-student-btn')) openManageStudent(e.target.closest('.manage-student-btn').dataset.id);
         });
 
         const manageModal = document.getElementById('manage-student-modal');
@@ -1760,32 +1639,22 @@
         let currentManagingUser = null;
 
         async function openManageStudent(sid) {
-            // Re-fetch latest data for accuracy
             const docSnap = await getDoc(doc(db, "users", sid));
             if(!docSnap.exists()) return;
             const st = { id: docSnap.id, ...docSnap.data() };
             currentManagingUser = st;
-
             document.getElementById('student-modal-email').textContent = st.email;
             document.getElementById('student-modal-id').value = sid;
             document.getElementById('student-modal-display-name').textContent = st.displayName || 'Sem Nome Mágico';
-            
-            // Handle Date Display
             const expDate = st.expiresAt.toDate();
             studentExpiryDate.textContent = expDate.toLocaleDateString('pt-BR');
-            
             if(expDate > new Date()) {
-                studentStatusBadge.textContent = "ATIVO";
-                studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-green-900/50 text-green-400";
+                studentStatusBadge.textContent = "ATIVO"; studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-green-900/50 text-green-400";
             } else {
-                studentStatusBadge.textContent = "EXPIRADO";
-                studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-red-900/50 text-red-400";
+                studentStatusBadge.textContent = "EXPIRADO"; studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-red-900/50 text-red-400";
             }
-
-            // Populate Sections
             const list = document.getElementById('student-modal-sections-list');
             list.innerHTML = '';
-            
             allSections.forEach(sec => {
                 const checked = st.accessibleSections && st.accessibleSections.includes(sec.id);
                 const label = document.createElement('label');
@@ -1796,37 +1665,24 @@
             manageModal.style.display = 'flex';
         }
         
-        // --- Access Buttons Logic ---
         async function updateAccessTime(monthsToAdd) {
             if(!currentManagingUser) return;
             const ref = doc(db, "users", currentManagingUser.id);
-            
             let newDate;
-            if (monthsToAdd === 0) {
-                 // Revoke (set to yesterday)
-                 newDate = new Date();
-                 newDate.setDate(newDate.getDate() - 1);
-            } else {
-                // If expired, start from today. If active, add to existing date.
+            if (monthsToAdd === 0) { newDate = new Date(); newDate.setDate(newDate.getDate() - 1); } 
+            else {
                 const currentExp = currentManagingUser.expiresAt.toDate();
                 const baseDate = (currentExp > new Date()) ? currentExp : new Date();
-                
                 newDate = new Date(baseDate);
-                // Simple logic: treat 1 month as 30 days roughly for JS simplicity or use setMonth
-                if(monthsToAdd === 1) newDate.setDate(newDate.getDate() + 30); // Using days is safer for "months" sometimes
+                if(monthsToAdd === 1) newDate.setDate(newDate.getDate() + 30);
                 if(monthsToAdd === 3) newDate.setDate(newDate.getDate() + 90);
             }
-            
-            await updateDoc(ref, { expiresAt: newDate });
-            openManageStudent(currentManagingUser.id); // Refresh modal
+            await updateDoc(ref, { expiresAt: newDate }); openManageStudent(currentManagingUser.id); 
         }
 
         document.getElementById('renew-30-btn').addEventListener('click', () => updateAccessTime(1));
         document.getElementById('renew-90-btn').addEventListener('click', () => updateAccessTime(3));
-        document.getElementById('revoke-btn').addEventListener('click', () => {
-            if(confirm("Tem certeza que deseja bloquear o acesso deste aluno imediatamente?")) updateAccessTime(0);
-        });
-
+        document.getElementById('revoke-btn').addEventListener('click', () => { if(confirm("Bloquear acesso?")) updateAccessTime(0); });
         document.getElementById('save-student-sections-btn').addEventListener('click', async () => {
             const sid = document.getElementById('student-modal-id').value;
             const checks = document.querySelectorAll('#student-modal-sections-list input:checked');
@@ -1836,8 +1692,6 @@
         });
         document.getElementById('close-student-modal-btn').addEventListener('click', () => manageModal.style.display = 'none');
 
-
-        // === AI TEXT & AUDIO ===
         const geminiApiKeyInput = document.getElementById('gemini-api-key');
         if(localStorage.getItem('geminiKey')) geminiApiKeyInput.value = localStorage.getItem('geminiKey');
         geminiApiKeyInput.addEventListener('input', () => localStorage.setItem('geminiKey', geminiApiKeyInput.value));
@@ -1846,14 +1700,12 @@
             const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
             if(!key) return alert("Insira a API Key");
             const txt = el.value; if(!txt) return;
-            
             try {
                 const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${key}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }], systemInstruction: { parts: [{ text: "Formate este texto sobre bruxaria hekatina. Destaque termos importantes com ** e nomes de divindades com ##. Seja poético." }] } })
                 });
-                const res = await req.json();
-                el.value = res.candidates[0].content.parts[0].text;
+                const res = await req.json(); el.value = res.candidates[0].content.parts[0].text;
             } catch(e) { console.error(e); }
         }
         document.getElementById('format-create-btn').addEventListener('click', () => runAI(document.getElementById('post-content')));
@@ -1865,34 +1717,25 @@
         const btnStopSpeak = document.getElementById('btn-stop-speak');
 
         function base64ToBuffer(b64) {
-            const str = window.atob(b64);
-            const b = new Uint8Array(str.length);
-            for(let i=0; i<str.length; i++) b[i] = str.charCodeAt(i);
-            return b.buffer;
+            const str = window.atob(b64); const b = new Uint8Array(str.length);
+            for(let i=0; i<str.length; i++) b[i] = str.charCodeAt(i); return b.buffer;
         }
         function makeWav(data) {
-            const b = new ArrayBuffer(44 + data.byteLength);
-            const v = new DataView(b);
+            const b = new ArrayBuffer(44 + data.byteLength); const v = new DataView(b);
             const w = (o,s)=> { for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
             w(0,'RIFF'); v.setUint32(4, 36+data.byteLength, true); w(8,'WAVE');
             w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true);
             v.setUint16(22,1,true); v.setUint32(24,24000,true); v.setUint32(28,48000,true);
             v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data');
-            v.setUint32(40,data.byteLength,true);
-            new Uint8Array(b, 44).set(new Uint8Array(data));
-            return b;
+            v.setUint32(40,data.byteLength,true); new Uint8Array(b, 44).set(new Uint8Array(data)); return b;
         }
 
         async function speak() {
             if(!audioPlayer.paused && audioPlayer.src) { audioPlayer.pause(); btnSpeakText.textContent = "Continuar"; return; }
             if(audioPlayer.paused && audioPlayer.src) { audioPlayer.play(); btnSpeakText.textContent = "Pausar"; return; }
-
-            const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
-            if(!key) return alert("API Key necessária.");
-
+            const key = HARDCODED_API_KEY || geminiApiKeyInput.value; if(!key) return alert("API Key necessária.");
             btnSpeakText.textContent = "Carregando...";
             const txt = document.getElementById('post-view-content').innerText.substring(0, 4000);
-            
             try {
                 const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${key}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1904,34 +1747,15 @@
                 const res = await req.json();
                 const pcm = base64ToBuffer(res.candidates[0].content.parts[0].inlineData.data);
                 const wav = makeWav(pcm);
-                const blob = new Blob([wav], { type: 'audio/wav' });
-                audioPlayer.src = URL.createObjectURL(blob);
-                
+                audioPlayer.src = URL.createObjectURL(new Blob([wav], { type: 'audio/wav' }));
                 audioPlayer.onplay = () => { btnSpeakText.textContent = "Pausar"; btnStopSpeak.classList.remove('hidden'); };
-                audioPlayer.onended = stopSpeaking;
-                audioPlayer.play();
+                audioPlayer.onended = stopSpeaking; audioPlayer.play();
             } catch(e) { console.error(e); btnSpeakText.textContent = "Ouvir"; }
         }
-
-        function stopSpeaking() {
-            if(audioPlayer.src) { audioPlayer.pause(); audioPlayer.src = ""; }
-            btnSpeakText.textContent = "Ouvir o Chamado"; btnStopSpeak.classList.add('hidden');
-        }
-
-        btnSpeak.addEventListener('click', speak);
-        btnStopSpeak.addEventListener('click', stopSpeaking);
-        document.getElementById('back-to-posts-btn').addEventListener('click', () => {
-            stopSpeaking();
-            showView('blog-view'); // Volta para a trilha pois estamos no contexto do blog
-        });
-
-        // Adiciona listener para redimensionamento da janela para ajustar a trilha
-        window.addEventListener('resize', () => {
-            if(activeSectionId && !document.getElementById('active-path-view').classList.contains('hidden')) {
-                renderProfessionalPath(activeSectionId);
-            }
-        });
-
+        function stopSpeaking() { if(audioPlayer.src) { audioPlayer.pause(); audioPlayer.src = ""; } btnSpeakText.textContent = "Ouvir o Chamado"; btnStopSpeak.classList.add('hidden'); }
+        btnSpeak.addEventListener('click', speak); btnStopSpeak.addEventListener('click', stopSpeaking);
+        document.getElementById('back-to-posts-btn').addEventListener('click', () => { stopSpeaking(); showView('blog-view'); });
+        window.addEventListener('resize', () => { if(activeSectionId && !document.getElementById('active-path-view').classList.contains('hidden')) renderProfessionalPath(activeSectionId); });
     </script>
 </body>
 </html>
