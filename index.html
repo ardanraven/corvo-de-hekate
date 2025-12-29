@@ -9,6 +9,8 @@
     
     <script>
         // 🔮 CONFIGURAÇÃO DO SACERDOTE 🔮
+        // Opções: 'Yule', 'Imbolc', 'Ostara', 'Beltane', 'Litha', 'Lammas', 'Mabon', 'Samhain'
+        // ESPECIAL: Se escolher 'Hekate', ele alterna automaticamente com 'Nyx' (Os Dois Pilares)
         const CURRENT_THEME = 'Imbolc'; 
 
         // BANCO DE DADOS DE ESTÉTICA
@@ -17,81 +19,83 @@
                 name: 'Yule', 
                 primary: { 400: '#D4AF37', 500: '#C5A028', 900: '#3D3008' }, // Dourado
                 accent: '#8B0000', // Vermelho Sangue
-                particle: '❄', 
+                particle: '❄', // Neve
                 particleColor: '#FFFFFF',
                 particleDirection: 'down'
             },
             'Imbolc': {
                 name: 'Imbolc',
                 primary: { 400: '#A5F2F3', 500: '#7CD1D3', 900: '#1A4D4F' }, // Gelo/Ciano
-                accent: '#7CD1D3', 
-                particle: '✨', 
+                accent: '#7CD1D3', // Branco Puro
+                particle: '✨', // Brilho
                 particleColor: '#A5F2F3',
                 particleDirection: 'up'
             },
             'Ostara': {
                 name: 'Ostara',
-                primary: { 400: '#90EE90', 500: '#77DD77', 900: '#1A4F1A' }, 
-                accent: '#FFB7C5', 
-                particle: '🌸', 
+                primary: { 400: '#90EE90', 500: '#77DD77', 900: '#1A4F1A' }, // Verde Claro
+                accent: '#FFB7C5', // Rosa Flor
+                particle: '🌸', // Flor
                 particleColor: '#FFB7C5',
                 particleDirection: 'down'
             },
             'Beltane': {
                 name: 'Beltane',
-                primary: { 400: '#FF2400', 500: '#DD2400', 900: '#4F0A00' }, 
-                accent: '#50C878', 
-                particle: '🔥', 
+                primary: { 400: '#FF2400', 500: '#DD2400', 900: '#4F0A00' }, // Vermelho Fogo
+                accent: '#50C878', // Verde Esmeralda
+                particle: '🔥', // Fogo
                 particleColor: '#FF4500',
                 particleDirection: 'up'
             },
             'Litha': {
                 name: 'Litha',
-                primary: { 400: '#FFD700', 500: '#FFC000', 900: '#5C4800' }, 
-                accent: '#FFA500', 
-                particle: '☀️', 
+                primary: { 400: '#FFD700', 500: '#FFC000', 900: '#5C4800' }, // Amarelo Sol
+                accent: '#FFA500', // Laranja
+                particle: '☀️', // Sol
                 particleColor: '#FFD700',
                 particleDirection: 'up'
             },
             'Lammas': {
                 name: 'Lammas',
-                primary: { 400: '#F4C430', 500: '#DAA520', 900: '#5C4000' }, 
-                accent: '#D2691E', 
-                particle: '🌾', 
+                primary: { 400: '#F4C430', 500: '#DAA520', 900: '#5C4000' }, // Trigo/Dourado
+                accent: '#D2691E', // Marrom/Laranja
+                particle: '🌾', // Trigo
                 particleColor: '#F4C430',
                 particleDirection: 'down'
             },
             'Mabon': {
                 name: 'Mabon',
-                primary: { 400: '#D2691E', 500: '#8B4513', 900: '#3D1F00' }, 
-                accent: '#800080', 
-                particle: '🍂', 
+                primary: { 400: '#D2691E', 500: '#8B4513', 900: '#3D1F00' }, // Marrom
+                accent: '#800080', // Roxo
+                particle: '🍂', // Folha
                 particleColor: '#D2691E',
                 particleDirection: 'down'
             },
             'Samhain': {
                 name: 'Samhain',
-                primary: { 400: '#9370DB', 500: '#8A2BE2', 900: '#2E004F' }, 
-                accent: '#FF4500', 
-                particle: '👻', 
+                primary: { 400: '#9370DB', 500: '#8A2BE2', 900: '#2E004F' }, // Roxo
+                accent: '#FF4500', // Laranja Abóbora
+                particle: '👻', // Fantasma
                 particleColor: '#FFFFFF',
                 particleDirection: 'up'
             },
+            // PILAR 1: HEKATE (Prata e Cinza)
             'Hekate': {
                 name: 'Hekate',
-                primary: { 400: '#C0C0C0', 500: '#A9A9A9', 900: '#2F2F2F' }, 
-                accent: '#DAA520', 
-                particle: '🔑', 
+                primary: { 400: '#C0C0C0', 500: '#A9A9A9', 900: '#2F2F2F' }, // Prata/Cinza
+                accent: '#DAA520', // Dourado Envelhecido (Tochas)
+                particle: '🔑', // Chave
                 particleColor: '#C0C0C0',
                 particleDirection: 'up'
             },
+            // PILAR 2: NYX (Azul Noite Profunda e Estrelas)
             'Nyx': {
                 name: 'Nyx',
-                primary: { 400: '#818CF8', 500: '#4F46E5', 900: '#1E1B4B' }, 
-                accent: '#E0E7FF', 
-                particle: '✦', 
+                primary: { 400: '#818CF8', 500: '#4F46E5', 900: '#1E1B4B' }, // Índigo/Midnight
+                accent: '#E0E7FF', // Brilho Estelar
+                particle: '✦', // Estrela
                 particleColor: '#FFFFFF',
-                particleDirection: 'down' 
+                particleDirection: 'down' // Estrelas caindo
             }
         };
 
@@ -99,7 +103,9 @@
         let themeKey = CURRENT_THEME;
         
         if (CURRENT_THEME === 'Hekate') {
+            // Verifica quem apareceu por último
             const lastPillar = localStorage.getItem('coven_pillar_toggle');
+            
             if (lastPillar === 'Hekate') {
                 themeKey = 'Nyx';
                 localStorage.setItem('coven_pillar_toggle', 'Nyx');
@@ -107,6 +113,7 @@
                 themeKey = 'Hekate';
                 localStorage.setItem('coven_pillar_toggle', 'Hekate');
             }
+            console.log("Os Pilares Giraram: Agora rege " + themeKey);
         }
 
         const activeTheme = THEMES[themeKey] || THEMES['Yule'];
@@ -140,6 +147,7 @@
         /* ESTILOS GERAIS */
         body { background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
         
+        /* Scrollbar Dinâmica */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--accent-color, #8B0000), var(--primary-color, #D4AF37)); border-radius: 3px; }
@@ -150,6 +158,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* Classes Utilitárias do Tema (CSS Variables injetadas via JS depois) */
         .text-gradient-theme {
             background: linear-gradient(to right, var(--primary-dark), var(--primary-light), var(--primary-main));
             -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 5s linear infinite;
@@ -160,10 +169,12 @@
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
         #intro-sequence { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         
+        /* CARDS */
         .project-card {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative; overflow: hidden;
         }
+        /* Icone do festival no canto do card */
         .project-card::after {
             content: var(--theme-icon, '❄️'); 
             position: absolute; top: 10px; right: 10px; font-size: 1.5rem; opacity: 0.3; filter: grayscale(0.5) sepia(1) hue-rotate(-50deg); transition: 0.4s;
@@ -178,6 +189,7 @@
         .input-luxe { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #fff; transition: 0.3s; }
         .input-luxe:focus { outline: none; border-color: var(--primary-main); background: rgba(255, 255, 255, 0.05); }
 
+        /* SELEÇÃO DE AVATAR */
         .avatar-option input[type="radio"] { display: none; }
         .avatar-option label { 
             display: flex; align-items: center; justify-content: center; 
@@ -189,6 +201,7 @@
             background: var(--primary-main); color: #000; box-shadow: 0 0 15px var(--primary-main);
         }
 
+        /* CORVO SVG ANIMADO */
         .mystic-crow-svg {
             filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
             animation: hoverCrow 4s ease-in-out infinite alternate;
@@ -200,6 +213,7 @@
         @keyframes flapLeft { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-10deg) translateY(5px); } }
         @keyframes flapRight { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(10deg) translateY(5px); } }
         
+        /* PARTICLES CONTAINER */
         .particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .particle {
             position: absolute; opacity: 0;
@@ -972,7 +986,7 @@
         // === VARIÁVEIS ===
         let currentUser = null; 
         let currentUserPermissions = []; 
-        let completedPosts = []; 
+        let completedPosts = []; // NOVO: ARRAY DE POSTS COMPLETOS PELO USER
         let currentProfile = { displayName: null, avatar: null };
         let itemToDelete = { id: null, type: null }; 
         let allPosts = []; 
@@ -1037,7 +1051,13 @@
                 activeSectionId = null; 
             }
 
+            // RESET DE SCROLL GLOBAL
             if(!viewId.includes('modal') && viewId !== 'login-view') window.scrollTo(0,0);
+            
+            // RESET DE SCROLL DE CONTAINERS INTERNOS (Para post-view fixo)
+            const targetEl = document.getElementById(viewId);
+            if(targetEl) targetEl.scrollTop = 0;
+
             document.getElementById('mobile-menu').classList.add('hidden');
         }
 
@@ -1283,6 +1303,8 @@
             const icons = ['fa-scroll', 'fa-flask', 'fa-book-skull', 'fa-star', 'fa-feather-alt'];
             
             // === AJUSTES RESPONSIVOS (MOBILE/DUOLINGO STYLE) ===
+            const containerRect = container.getBoundingClientRect();
+            const containerWidth = containerRect.width;
             const isMobile = window.innerWidth < 768; // md breakpoint
             
             // Força recalculo seguro da largura disponível
@@ -1290,7 +1312,8 @@
             const availableWidth = Math.min(container.clientWidth, window.innerWidth - 32); 
             
             // No mobile, a curva deve ser muito mais suave para não sair da tela
-            const spacing = isMobile ? 110 : 130; 
+            // AUMENTANDO O ESPAÇAMENTO PARA DAR MAIS RESPIRO
+            const spacing = isMobile ? 180 : 220; 
             
             // Amplitude segura: (Largura / 2) - (Raio do Nó + Padding de segurança)
             // Nó tem 70px (raio 35), margem segura ~40
