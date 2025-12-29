@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ATUALIZADO: user-scalable=no e maximum-scale=1.0 travam o zoom e o "samba" da tela, dando sensação de App nativo -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>O Coven do Corvo | Santuário Digital</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -11,12 +12,12 @@
         // 🔮 CONFIGURAÇÃO DO SACERDOTE 🔮
         // Opções: 'Yule', 'Imbolc', 'Ostara', 'Beltane', 'Litha', 'Lammas', 'Mabon', 'Samhain'
         // ESPECIAL: Se escolher 'Hekate', ele alterna automaticamente com 'Nyx' (Os Dois Pilares)
-        const CURRENT_THEME = 'Imbolc'; 
+        const CURRENT_THEME = 'Yule'; 
 
         // BANCO DE DADOS DE ESTÉTICA
         const THEMES = {
             'Yule': {
-                name: 'Yule', // CORRIGIDO: Estava 'Ostara' aqui, por isso causava confusão!
+                name: 'Yule', // CORRIGIDO: Agora mostra o nome certo!
                 primary: { 400: '#D4AF37', 500: '#C5A028', 900: '#3D3008' }, // Dourado
                 accent: '#8B0000', // Vermelho Sangue
                 particle: '❄', // Neve
@@ -26,7 +27,7 @@
             'Imbolc': {
                 name: 'Imbolc',
                 primary: { 400: '#A5F2F3', 500: '#7CD1D3', 900: '#1A4D4F' }, // Gelo/Ciano
-                accent: '#7CD1D3', // Branco Puro
+                accent: '#FFFFFF', // Branco Puro
                 particle: '✨', // Brilho
                 particleColor: '#A5F2F3',
                 particleDirection: 'up'
@@ -145,7 +146,15 @@
 
     <style>
         /* ESTILOS GERAIS */
-        body { background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
+        /* Overflow-x hidden no body garante que nada "vaze" para os lados */
+        html, body { 
+            background-color: #050505; 
+            color: #e5e5e5; 
+            overflow-x: hidden; 
+            width: 100%;
+            position: relative;
+            touch-action: manipulation; /* Melhora a resposta ao toque */
+        }
         
         /* Scrollbar Dinâmica */
         ::-webkit-scrollbar { width: 6px; }
@@ -234,6 +243,7 @@
             justify-content: center;
             padding-top: 40px;
             padding-bottom: 100px;
+            overflow-x: hidden; /* Garante que a trilha não crie scroll lateral */
         }
 
         /* O SVG que desenha a linha */
