@@ -130,7 +130,8 @@
                     fontFamily: {
                         display: ['Cinzel', 'serif'],
                         body: ['Lato', 'sans-serif'],
-                    }
+                    },
+                    animation: { 'bounce-slow': 'bounce 3s infinite' }
                 }
             }
         }
@@ -223,6 +224,130 @@
             20% { opacity: 0.7; }
             100% { opacity: 0; transform: translateY(var(--end-y)) rotate(360deg); }
         }
+
+        /* --- NOVO SISTEMA DE TRILHA (PATH SYSTEM v2) --- */
+        .path-container-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 600px;
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+            padding-bottom: 100px;
+        }
+
+        /* O SVG que desenha a linha */
+        .path-svg-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .path-node-wrapper {
+            position: absolute;
+            transform: translate(-50%, -50%); /* Centraliza no ponto */
+            z-index: 2;
+            display: flex;
+            flex-col: column;
+            align-items: center;
+        }
+
+        /* O Círculo do Nó */
+        .game-node {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            /* Estilo "Botão 3D" */
+            box-shadow: 0 6px 0 rgba(0,0,0,0.5); 
+        }
+
+        .game-node:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.5);
+        }
+
+        /* Estado: COMPLETO */
+        .game-node.status-completed {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-main));
+            border: 4px solid #FFD700;
+            color: #000;
+            box-shadow: 0 6px 0 #b8860b, 0 0 20px var(--primary-main);
+        }
+
+        /* Estado: ATUAL (O Próximo a fazer) */
+        .game-node.status-active {
+            background: var(--accent-color);
+            border: 4px solid #fff;
+            color: #fff;
+            box-shadow: 0 6px 0 #500000, 0 0 30px var(--accent-color);
+            animation: pulseActive 2s infinite;
+        }
+        @keyframes pulseActive {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        /* Estado: BLOQUEADO */
+        .game-node.status-locked {
+            background: #1a1a1a;
+            border: 4px solid #333;
+            color: #444;
+            cursor: not-allowed;
+            box-shadow: 0 6px 0 #000;
+        }
+        .game-node.status-locked:active { transform: none; box-shadow: 0 6px 0 #000; }
+
+        /* Label Flutuante (Tooltip) */
+        .node-label {
+            position: absolute;
+            top: 85px;
+            background: #fff;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-family: 'Lato', sans-serif;
+            font-weight: bold;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: 0.3s;
+            pointer-events: none;
+        }
+        .node-label::before {
+            content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+            border-width: 0 5px 5px 5px; border-style: solid; border-color: transparent transparent #fff transparent;
+        }
+        
+        .path-node-wrapper:hover .node-label { opacity: 1; transform: translateY(0); }
+        .game-node.status-active + .node-label { opacity: 1; transform: translateY(0); top: 90px; } /* Sempre mostra o label do ativo */
+
+        /* Estrelas de progresso ao redor do nó */
+        .stars-container {
+            position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;
+        }
+        .crown-icon {
+            position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+            color: #FFD700; font-size: 1.5rem; filter: drop-shadow(0 0 5px rgba(255,215,0,0.8));
+            animation: floatCrown 2s ease-in-out infinite;
+        }
+        @keyframes floatCrown { 0%,100% {transform: translateX(-50%) translateY(0);} 50% {transform: translateX(-50%) translateY(-5px);} }
+
     </style>
 </head>
 <body class="antialiased">
@@ -494,6 +619,7 @@
 
             <div id="blog-view" class="view-container hidden max-w-7xl mx-auto pt-10 px-4">
                 
+                <!-- PAINEL DE ADMIN (VISÍVEL APENAS PARA O SACERDOTE) -->
                 <div id="admin-panel" class="hidden mb-16 p-8 bg-obsidian border border-primary-900/30 rounded-sm relative overflow-hidden">
                     <div class="absolute -right-10 -top-10 text-9xl text-white/5 pointer-events-none"><i class="fas fa-feather"></i></div>
                     <h3 class="text-primary-400 font-display text-xl mb-6 flex items-center gap-2 relative z-10"><i class="fas fa-crown"></i> Painel do Sacerdote</h3>
@@ -550,33 +676,40 @@
                     </div>
                 </div>
 
-                <div class="flex justify-center md:justify-end mb-10">
-                    <div class="relative">
-                        <select id="section-filter" class="appearance-none bg-transparent text-primary-400 border-b border-white/20 py-2 pr-8 pl-4 text-right focus:outline-none cursor-pointer text-lg font-display uppercase tracking-wider hover:border-primary-500 transition">
-                            <option value="todos" class="bg-black">Todos os Mistérios</option>
-                        </select>
-                        <i class="fas fa-chevron-down absolute right-0 top-3 text-primary-500 text-xs pointer-events-none"></i>
+                <!-- SELETOR DE TRILHAS (HUB DE SEÇÕES) -->
+                <div id="sections-hub" class="mb-20">
+                    <div class="text-center mb-12 space-y-4">
+                        <i class="fas fa-map-signs text-primary-500 text-2xl"></i>
+                        <h3 class="text-4xl font-display text-white">Trilhas de Conhecimento</h3>
+                        <p class="text-gray-500 text-sm uppercase tracking-widest">Escolha o mistério que deseja desvendar</p>
+                    </div>
+                    <div id="sections-cards-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <!-- OS CARDS DAS SEÇÕES SERÃO INJETADOS AQUI PELO JS -->
+                        <div class="col-span-full text-center py-20">
+                            <i class="fas fa-circle-notch fa-spin text-primary-900 text-4xl"></i>
+                        </div>
                     </div>
                 </div>
 
-                <div id="pago-section" class="hidden mb-16 relative">
-                    <div class="flex items-center justify-center gap-4 mb-8">
-                        <span class="h-[1px] w-12 bg-primary-900"></span>
-                        <h2 class="text-primary-500 font-display text-xl tracking-[0.3em] uppercase flex items-center gap-2"><i class="fas fa-lock text-sm"></i>Conhecimento Oculto <i class="fas fa-holly-berry text-accent text-sm opacity-70"></i></h2>
-                        <span class="h-[1px] w-12 bg-primary-900"></span>
-                    </div>
-                    <div id="posts-list-pago" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-                    <p id="empty-pago" class="text-center text-gray-600 text-sm hidden italic">O silêncio reina nesta seção.</p>
-                </div>
+                <!-- VIEW DA TRILHA ESPECÍFICA (PATH VIEW REFORMULADA) -->
+                <div id="active-path-view" class="hidden mb-20 relative">
+                    <button id="back-to-hub-btn" class="fixed top-24 left-4 z-30 text-gray-500 hover:text-primary-400 text-xs uppercase tracking-widest flex items-center gap-2 transition bg-black/50 p-2 rounded backdrop-blur border border-white/10">
+                        <i class="fas fa-arrow-left"></i> Voltar às Trilhas
+                    </button>
 
-                <div class="mb-20">
-                    <div class="flex items-center justify-center gap-4 mb-8">
-                        <span class="h-[1px] w-12 bg-white/10"></span>
-                        <h2 class="text-gray-400 font-display text-lg tracking-[0.3em] uppercase flex items-center gap-2"><i class="fas fa-book-open text-sm"></i>Pergaminhos Abertos <i class="fas fa-snowflake text-white text-sm opacity-50"></i></h2>
-                        <span class="h-[1px] w-12 bg-white/10"></span>
+                    <div class="text-center mb-16 pt-8 relative z-10">
+                        <h2 id="path-title" class="text-3xl font-display text-white mb-2"></h2>
+                        <span class="text-primary-500 text-[10px] uppercase tracking-[0.3em]">Caminho Iniciático</span>
                     </div>
-                    <div id="posts-list-aberto" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-                    <p id="empty-aberto" class="text-center text-gray-600 text-sm hidden italic">Nenhum registro encontrado nas neves do tempo.</p>
+
+                    <div class="relative w-full max-w-lg mx-auto min-h-[600px] px-4 pb-20">
+                        <!-- CONTAINER DO SVG E NÓS -->
+                        <div id="path-steps-container" class="path-container-wrapper">
+                            <!-- SVG SERÁ GERADO AQUI -->
+                        </div>
+                        
+                        <p id="empty-path-msg" class="hidden text-center text-gray-600 text-sm italic mt-10">O caminho ainda está sendo traçado pelos ventos.</p>
+                    </div>
                 </div>
             </div>
 
@@ -719,6 +852,13 @@
                             <i class="fas fa-download"></i> Baixar Material
                         </a>
                     </div>
+
+                    <!-- BOTÃO DE CONCLUIR RITUAL (NOVO) -->
+                    <div class="mt-16 flex justify-center">
+                        <button id="mark-complete-btn" class="bg-primary-900 hover:bg-primary-500 hover:text-black text-white px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_20px_var(--primary-main)] transition transform hover:scale-105 flex items-center gap-3">
+                            <i class="fas fa-check-circle text-xl"></i> Concluir Leitura & Avançar
+                        </button>
+                    </div>
                     
                     <div id="comments-section" class="mt-24 border-t border-primary-900/20 pt-10">
                          <h3 class="text-2xl font-display text-white mb-8 flex items-center gap-2"><i class="fas fa-comments text-primary-500"></i> Discussões do Coven</h3>
@@ -814,7 +954,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment, where, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // === CONFIGURAÇÃO FIREBASE ===
         const firebaseConfig = {
@@ -836,12 +976,14 @@
         // === VARIÁVEIS ===
         let currentUser = null; 
         let currentUserPermissions = []; 
+        let completedPosts = []; // NOVO: ARRAY DE POSTS COMPLETOS PELO USER
         let currentProfile = { displayName: null, avatar: null };
         let itemToDelete = { id: null, type: null }; 
         let allPosts = []; 
         let allSections = []; 
         let allStudents = []; 
         let commentsUnsubscribe = null;
+        let activeSectionId = null; // Para saber qual trilha estamos vendo
 
         // === REFERÊNCIAS ===
         const appRoot = document.getElementById('app-root');
@@ -875,6 +1017,30 @@
                     view.style.display = view.id === viewId ? 'block' : 'none';
                 }
             });
+            
+            // LÓGICA DE VISUALIZAÇÃO DO BLOG (HUB vs TRILHA)
+            if(viewId === 'blog-view') {
+                 if(!activeSectionId) {
+                     // MOSTRAR HUB (CARDS)
+                     const hub = document.getElementById('sections-hub');
+                     hub.classList.remove('hidden');
+                     hub.style.opacity = '1'; // Garante visibilidade
+                     document.getElementById('active-path-view').classList.add('hidden');
+                 } else {
+                     // MOSTRAR TRILHA ATIVA
+                     document.getElementById('sections-hub').classList.add('hidden');
+                     const pathView = document.getElementById('active-path-view');
+                     pathView.classList.remove('hidden');
+                     pathView.style.opacity = '1'; // Garante visibilidade
+                     pathView.style.transform = 'translateY(0)'; // Reseta posição
+                     renderProfessionalPath(activeSectionId); // RE-RENDERIZA PARA ATUALIZAR STATUS VISUAL
+                 }
+            } else if (viewId !== 'post-view' && viewId !== 'edit-post-view') {
+                // Só reseta a seção se sair completamente do contexto do blog (ex: Home, Perfil)
+                // Se for para 'post-view' ou 'edit-post-view', mantém o ID.
+                activeSectionId = null; 
+            }
+
             if(!viewId.includes('modal') && viewId !== 'login-view') window.scrollTo(0,0);
             document.getElementById('mobile-menu').classList.add('hidden');
         }
@@ -898,7 +1064,6 @@
         const headerUserName = document.getElementById('header-user-name');
         const headerUserIcon = document.getElementById('header-user-icon');
         const adminPanel = document.getElementById('admin-panel');
-        const pagoSection = document.getElementById('pago-section');
         const adminControls = document.querySelectorAll('.admin-only-controls');
         const commentFormContainer = document.getElementById('comment-form-container');
         const commentLoginMsg = document.getElementById('comment-login-msg');
@@ -910,6 +1075,7 @@
 
         onAuthStateChanged(auth, async (user) => {
             currentUserPermissions = [];
+            completedPosts = [];
             currentProfile = { displayName: null, avatar: null };
 
             if (user) {
@@ -919,9 +1085,11 @@
                 
                 if (!isAdmin) {
                     if (userDoc.exists()) {
-                        const expires = userDoc.data().expiresAt.toDate();
+                        const d = userDoc.data();
+                        const expires = d.expiresAt.toDate();
                         if (new Date() > expires) { await signOut(auth); return; }
-                        currentUserPermissions = userDoc.data().accessibleSections || [];
+                        currentUserPermissions = d.accessibleSections || [];
+                        completedPosts = d.completedPosts || []; // CARREGA POSTS FEITOS
                     } else { await signOut(auth); return; }
                 }
 
@@ -944,7 +1112,6 @@
                 currentUser = user;
                 userInfo.style.display = 'flex';
                 loginBtn.style.display = 'none';
-                pagoSection.style.display = 'block';
                 commentFormContainer.classList.remove('hidden');
                 commentLoginMsg.classList.add('hidden');
                 
@@ -963,13 +1130,12 @@
                 userInfo.style.display = 'none';
                 loginBtn.style.display = 'block';
                 adminPanel.style.display = 'none';
-                pagoSection.style.display = 'none';
                 adminControls.forEach(el => el.style.display = 'none');
                 commentFormContainer.classList.add('hidden');
                 commentLoginMsg.classList.remove('hidden');
             }
             fetchSections();
-            fetchPosts();
+            fetchPosts(); // Carrega os posts para estarem prontos quando abrir uma trilha
         });
 
         document.getElementById('login-form').addEventListener('submit', (e) => {
@@ -1025,31 +1191,47 @@
         // === ADMIN FUNCTIONS ===
         
         // 1. Sections
-        const sectionFilter = document.getElementById('section-filter');
         const postSectionSelect = document.getElementById('post-section');
         const editPostSectionSelect = document.getElementById('edit-post-section');
         const sectionsListAdmin = document.getElementById('sections-list-admin');
+        const sectionsCardsContainer = document.getElementById('sections-cards-container');
 
         function fetchSections() {
             const q = query(collection(db, "sections"), orderBy("name"));
             onSnapshot(q, (snap) => {
                 allSections = [];
-                sectionFilter.innerHTML = '<option value="todos" class="bg-black">Todos os Mistérios</option>';
+                // Admin selects
                 postSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
                 editPostSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
                 sectionsListAdmin.innerHTML = '';
+                sectionsCardsContainer.innerHTML = '';
 
                 snap.forEach(d => {
                     const sec = { id: d.id, ...d.data() };
                     allSections.push(sec);
-                    sectionFilter.add(new Option(sec.name, sec.id));
+                    
+                    // Dropdowns de Admin
                     postSectionSelect.add(new Option(sec.name, sec.id));
                     editPostSectionSelect.add(new Option(sec.name, sec.id));
                     
+                    // Lista de Admin
                     const div = document.createElement('div');
                     div.className = "flex justify-between items-center p-2 hover:bg-white/5 rounded border-b border-white/5";
                     div.innerHTML = `<span>${sec.name}</span> <button class="delete-sec-btn text-red-500 hover:text-red-300" data-id="${sec.id}"><i class="fas fa-times"></i></button>`;
                     sectionsListAdmin.appendChild(div);
+
+                    // === RENDERIZAR CARD DA SEÇÃO NO HUB ===
+                    const card = document.createElement('div');
+                    card.className = "project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer flex flex-col items-center justify-center text-center min-h-[250px] shadow-[0_0_20px_rgba(0,0,0,0.5)]";
+                    card.onclick = () => openPath(sec.id, sec.name);
+
+                    card.innerHTML = `
+                         <div class="absolute inset-0 bg-gradient-to-t from-primary-900/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                         <i class="fas fa-dungeon text-5xl text-gray-700 mb-6 group-hover:text-primary-400 transition transform group-hover:scale-110"></i>
+                         <h4 class="text-xl font-display text-white mb-2 group-hover:text-primary-400 transition">${sec.name}</h4>
+                         <p class="text-[10px] text-gray-500 uppercase tracking-widest">Clique para iniciar a trilha</p>
+                    `;
+                    sectionsCardsContainer.appendChild(card);
                 });
             });
         }
@@ -1059,6 +1241,151 @@
             const name = document.getElementById('section-name').value;
             if(name) { await addDoc(collection(db, "sections"), {name, createdAt: new Date()}); document.getElementById('create-section-form').reset(); }
         });
+
+        // === LOGICA DE TRILHA PROFISSIONAL (SVG SNAKE) ===
+        const sectionsHub = document.getElementById('sections-hub');
+        const activePathView = document.getElementById('active-path-view');
+        const pathTitle = document.getElementById('path-title');
+        const backToHubBtn = document.getElementById('back-to-hub-btn');
+
+        function openPath(sectionId, sectionName) {
+            activeSectionId = sectionId;
+            pathTitle.textContent = sectionName;
+            
+            // Troca a view
+            gsap.to(sectionsHub, { opacity: 0, duration: 0.3, onComplete: () => {
+                sectionsHub.classList.add('hidden');
+                activePathView.classList.remove('hidden');
+                gsap.fromTo(activePathView, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 });
+                renderProfessionalPath(sectionId);
+            }});
+        }
+
+        backToHubBtn.addEventListener('click', () => {
+             activeSectionId = null;
+             gsap.to(activePathView, { opacity: 0, duration: 0.3, onComplete: () => {
+                activePathView.classList.add('hidden');
+                sectionsHub.classList.remove('hidden');
+                gsap.fromTo(sectionsHub, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+            }});
+        });
+
+        function renderProfessionalPath(sectionId) {
+            const container = document.getElementById('path-steps-container');
+            container.innerHTML = '';
+            
+            // Filtra e ordena
+            const pathPosts = allPosts.filter(p => p.sectionId === sectionId).sort((a,b) => a.createdAt - b.createdAt);
+
+            if(pathPosts.length === 0) {
+                document.getElementById('empty-path-msg').classList.remove('hidden');
+                container.style.height = 'auto'; // Reseta altura se vazio
+                return;
+            }
+            document.getElementById('empty-path-msg').classList.add('hidden');
+
+            const icons = ['fa-scroll', 'fa-flask', 'fa-book-skull', 'fa-star', 'fa-feather-alt'];
+            const spacing = 120; // Espaço vertical entre nós
+            const amplitude = 80; // Largura do zigue-zague
+            const centerX = container.offsetWidth / 2 || 250; 
+            
+            // === CÁLCULO DINÂMICO DE ALTURA ===
+            // Multiplica o nº de posts pelo espaço e adiciona uma margem segura no final
+            const totalHeight = (pathPosts.length * spacing) + 250; 
+            container.style.height = totalHeight + 'px'; // Força o container a crescer
+
+            // Cria o SVG Container
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("class", "path-svg-line");
+            svg.style.height = totalHeight + 'px';
+            container.appendChild(svg);
+
+            let pathD = "";
+            let prevX = centerX;
+            let prevY = 40;
+
+            pathPosts.forEach((p, index) => {
+                // LÓGICA DE BLOQUEIO DUOLINGO
+                const isAdmin = currentUser && currentUser.uid === ADMIN_UID;
+                const hasSectionAccess = isAdmin || (currentUserPermissions && currentUserPermissions.includes(sectionId));
+                const isPaid = p.access === 'pago';
+                
+                let isCompleted = completedPosts.includes(p.id);
+                // Opcional: Se for admin, pode querer ver como completo ou não. Deixamos natural.
+
+                let isLocked = false;
+                
+                if (isPaid && !hasSectionAccess) {
+                    isLocked = true; // Sem permissão de compra
+                } else {
+                    // Lógica Sequencial: Se não for o primeiro, e o anterior não estiver completo, tranca.
+                    if (index > 0 && !completedPosts.includes(pathPosts[index-1].id) && !isAdmin) {
+                        isLocked = true;
+                    }
+                }
+
+                // Estado Visual
+                let statusClass = "status-locked";
+                if (isCompleted) statusClass = "status-completed";
+                else if (!isLocked) statusClass = "status-active";
+
+                // Coordenadas Sinuosas (Senoide)
+                const y = 40 + (index * spacing);
+                const x = centerX + Math.sin(index * 1.5) * amplitude; // Curva matemática
+
+                // Desenha a linha SVG até aqui
+                if (index === 0) {
+                    pathD += `M ${x} ${y}`;
+                } else {
+                    // Curva Bézier Suave (Quadrática)
+                    const cpY = (prevY + y) / 2;
+                    pathD += ` Q ${prevX} ${cpY}, ${x} ${y}`; 
+                }
+                prevX = x;
+                prevY = y;
+
+                // Renderiza o Nó HTML posicionado absolutamente
+                const nodeWrapper = document.createElement('div');
+                nodeWrapper.className = 'path-node-wrapper';
+                nodeWrapper.style.left = x + 'px';
+                nodeWrapper.style.top = y + 'px';
+
+                // Ícone rotativo
+                const icon = icons[index % icons.length];
+                const iconHtml = isLocked ? '<i class="fas fa-lock"></i>' : (isCompleted ? '<i class="fas fa-check"></i>' : `<i class="fas ${icon}"></i>`);
+
+                // Crown for active
+                const crown = (!isLocked && !isCompleted) ? '<i class="fas fa-crown crown-icon"></i>' : '';
+
+                nodeWrapper.innerHTML = `
+                    ${crown}
+                    <div class="game-node ${statusClass}" onclick="${isLocked ? '' : `openPostFromPath('${p.id}')`}">
+                        ${iconHtml}
+                    </div>
+                    <div class="node-label">${p.title}</div>
+                    ${!isLocked && !isCompleted ? '<div class="stars-container"><div class="absolute w-full h-full animate-spin-slow opacity-30"><i class="fas fa-star absolute top-0 left-1/2 text-xs text-yellow-500"></i><i class="fas fa-star absolute bottom-0 left-1/2 text-xs text-yellow-500"></i></div></div>' : ''}
+                `;
+                container.appendChild(nodeWrapper);
+            });
+
+            // Finaliza o desenho da linha SVG
+            const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            pathEl.setAttribute("d", pathD);
+            pathEl.setAttribute("stroke", "#333"); // Cor da trilha inativa
+            pathEl.setAttribute("stroke-width", "8");
+            pathEl.setAttribute("fill", "none");
+            pathEl.setAttribute("stroke-linecap", "round");
+            
+            // (Opcional: Poderia adicionar uma segunda linha 'stroke' colorida cobrindo até o ponto atual, mas isso requer calcular o comprimento do path)
+            
+            svg.appendChild(pathEl);
+        }
+
+        // Wrapper global para o onclick inline funcionar com module
+        window.openPostFromPath = function(id) {
+            openPost(id);
+        };
+
 
         // 2. Students
         const studentsListAdmin = document.getElementById('students-list-admin');
@@ -1125,63 +1452,19 @@
             } catch(e) { postStatus.textContent = "Falha no ritual."; }
         });
 
-        const postsListPago = document.getElementById('posts-list-pago');
-        const postsListAberto = document.getElementById('posts-list-aberto');
-
         function fetchPosts() {
-            onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "desc")), (snap) => {
+            onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "asc")), (snap) => {
                 allPosts = [];
                 snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
-                renderPosts(sectionFilter.value);
+                
+                // Se estivermos vendo uma trilha, atualiza ela em tempo real
+                if(activeSectionId) {
+                    renderProfessionalPath(activeSectionId);
+                }
             });
         }
 
-        function renderPosts(filterId) {
-            postsListPago.innerHTML = ''; postsListAberto.innerHTML = '';
-            let cPago = 0; let cAberto = 0;
-            const filtered = (filterId === 'todos') ? allPosts : allPosts.filter(p => p.sectionId === filterId);
-
-            filtered.forEach(p => {
-                const card = document.createElement('div');
-                card.className = "project-card bg-obsidian border border-white/5 cursor-pointer h-[420px] flex flex-col group relative overflow-hidden";
-                card.dataset.id = p.id;
-
-                let adminBtns = '';
-                if(currentUser && currentUser.uid === ADMIN_UID) {
-                    adminBtns = `<div class="absolute top-2 right-2 z-20 flex gap-2"><button class="edit-btn bg-black/80 p-2 rounded text-primary-400 hover:text-white" data-id="${p.id}"><i class="fas fa-pen"></i></button><button class="del-btn bg-black/80 p-2 rounded text-red-500 hover:text-red-300" data-id="${p.id}"><i class="fas fa-trash"></i></button></div>`;
-                }
-
-                card.innerHTML = `
-                    ${adminBtns}
-                    <div class="h-52 overflow-hidden relative">
-                        <img src="${p.coverImage}" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition duration-700 transform group-hover:scale-110 filter grayscale group-hover:grayscale-0">
-                        <div class="absolute inset-0 bg-gradient-to-t from-obsidian to-transparent opacity-80"></div>
-                        <span class="absolute top-3 left-3 bg-black/80 text-primary-400 text-[9px] px-2 py-1 uppercase tracking-widest border border-primary-900/30">${p.sectionName || 'Geral'}</span>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow relative">
-                        <h3 class="text-white font-display text-lg leading-tight mb-3 group-hover:text-primary-400 transition line-clamp-2">${p.title}</h3>
-                        <p class="text-gray-500 text-xs line-clamp-3 mb-6 font-body font-light leading-relaxed">${p.content.replace(/[#*_]/g, '').substring(0, 100)}...</p>
-                        <div class="mt-auto flex justify-between border-t border-white/5 pt-4 items-center">
-                             <span class="text-[10px] text-gray-600 uppercase tracking-wider"><i class="fas fa-eye mr-1"></i> ${p.viewCount||0}</span>
-                             <span class="text-[10px] text-primary-500 uppercase tracking-[0.2em] group-hover:translate-x-1 transition flex items-center gap-1">Ler <i class="fas fa-chevron-right text-[8px]"></i></span>
-                        </div>
-                    </div>
-                `;
-
-                if(p.access === 'aberto') { postsListAberto.appendChild(card); cAberto++; }
-                else if(p.access === 'pago') {
-                    const allowed = (currentUser && currentUser.uid === ADMIN_UID) || (currentUser && currentUserPermissions.includes(p.sectionId));
-                    if(allowed) { postsListPago.appendChild(card); cPago++; }
-                }
-            });
-
-            document.getElementById('empty-aberto').style.display = cAberto === 0 ? 'block' : 'none';
-            document.getElementById('empty-pago').style.display = (cPago === 0 && document.getElementById('pago-section').style.display === 'block') ? 'block' : 'none';
-        }
-
-        sectionFilter.addEventListener('change', (e) => renderPosts(e.target.value));
-
-        // === VIEW POST & COMMENTS ===
+        // === VIEW POST & COMMENTS & COMPLETION ===
         const postViewTitle = document.getElementById('post-view-title');
         const postViewContent = document.getElementById('post-view-content');
         const postViewCover = document.getElementById('post-view-cover-image');
@@ -1225,6 +1508,22 @@
                     postViewAttachContainer.classList.add('hidden');
                 }
 
+                // CONFIGURA BOTÃO DE CONCLUSÃO
+                const completeBtn = document.getElementById('mark-complete-btn');
+                
+                // Mas para user normal:
+                if(completedPosts.includes(id)) {
+                    completeBtn.classList.remove('bg-primary-900', 'text-white', 'hover:scale-105');
+                    completeBtn.classList.add('bg-green-500/20', 'text-green-400', 'border', 'border-green-500/50', 'cursor-default');
+                    completeBtn.innerHTML = '<i class="fas fa-check-double"></i> Ritual Já Concluído';
+                    completeBtn.onclick = null;
+                } else {
+                    completeBtn.classList.add('bg-primary-900', 'text-white', 'hover:scale-105');
+                    completeBtn.classList.remove('bg-green-500/20', 'text-green-400', 'border', 'border-green-500/50', 'cursor-default');
+                    completeBtn.innerHTML = '<i class="fas fa-check-circle"></i> Concluir Leitura & Avançar';
+                    completeBtn.onclick = markPostComplete;
+                }
+
                 document.getElementById('post-view-edit-btn').onclick = () => openEdit(id);
                 document.getElementById('post-view-delete-btn').onclick = () => confirmDel(id, 'post');
 
@@ -1235,24 +1534,66 @@
             loadingSpinner.classList.add('hidden');
         }
 
-        // LOAD COMMENTS
+        // FUNÇÃO DE MARCAR COMO COMPLETO
+        async function markPostComplete() {
+            if(!currentUser || !currentPostId) return;
+            const btn = document.getElementById('mark-complete-btn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consagrando...';
+            
+            try {
+                // Atualiza User no Firestore
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    completedPosts: arrayUnion(currentPostId)
+                });
+                
+                // Atualiza Localmente
+                if(!completedPosts.includes(currentPostId)) completedPosts.push(currentPostId);
+                
+                // UI Feedback
+                btn.className = "bg-yellow-500 text-black px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_30px_#FFD700] transform scale-110 transition";
+                btn.innerHTML = '<i class="fas fa-star"></i> Sábio! Avançando...';
+                
+                // Efeito sonoro simples (opcional, requer arquivo)
+                // const audio = new Audio('success.mp3'); audio.play();
+
+                setTimeout(() => {
+                    showView('blog-view'); // Volta para a trilha para ver o desbloqueio
+                }, 1500);
+
+            } catch(e) {
+                console.error(e);
+                alert("Erro ao salvar progresso.");
+                btn.innerHTML = originalText;
+            }
+        }
+
+        // LOAD COMMENTS (Client-side Sort Fix)
         function loadComments(postId) {
             if(commentsUnsubscribe) commentsUnsubscribe();
             
-            const q = query(collection(db, "comments"), where("postId", "==", postId), orderBy("createdAt", "desc"));
+            const q = query(collection(db, "comments"), where("postId", "==", postId));
+            
             commentsUnsubscribe = onSnapshot(q, (snap) => {
                 commentsList.innerHTML = '';
+                
                 if(snap.empty) {
                     commentsList.innerHTML = '<p class="text-gray-600 text-xs italic">O silêncio reina. Seja o primeiro a falar.</p>';
                     return;
                 }
                 
-                snap.forEach(d => {
-                    const c = d.data();
+                let comments = [];
+                snap.forEach(d => comments.push({ id: d.id, ...d.data() }));
+                
+                comments.sort((a, b) => {
+                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+                    return dateB - dateA;
+                });
+                
+                comments.forEach(c => {
                     const isOwner = currentUser && (currentUser.uid === c.userId || currentUser.uid === ADMIN_UID);
-                    
-                    // Logic to show Name/Avatar OR fallback to Email if old comment
-                    const displayName = c.userName || c.userEmail.split('@')[0];
+                    const displayName = c.userName || (c.userEmail ? c.userEmail.split('@')[0] : 'Anônimo');
                     const displayIcon = c.userAvatar ? `<i class="fas ${c.userAvatar} mr-1 text-primary-500"></i>` : '';
 
                     const div = document.createElement('div');
@@ -1260,10 +1601,10 @@
                     div.innerHTML = `
                         <div class="flex justify-between items-start mb-2">
                             <span class="text-primary-500 text-[10px] uppercase font-bold tracking-widest flex items-center">${displayIcon} ${displayName}</span>
-                            <span class="text-gray-600 text-[9px]">${c.createdAt?.toDate().toLocaleDateString() || ''}</span>
+                            <span class="text-gray-600 text-[9px]">${c.createdAt?.toDate ? c.createdAt.toDate().toLocaleDateString() : ''}</span>
                         </div>
                         <p class="text-gray-300 text-sm font-body leading-relaxed">${c.content}</p>
-                        ${isOwner ? `<button onclick="deleteComment('${d.id}')" class="absolute bottom-2 right-2 text-red-900 hover:text-red-500 transition text-[10px]"><i class="fas fa-trash"></i></button>` : ''}
+                        ${isOwner ? `<button onclick="deleteComment('${c.id}')" class="absolute bottom-2 right-2 text-red-900 hover:text-red-500 transition text-[10px]"><i class="fas fa-trash"></i></button>` : ''}
                     `;
                     commentsList.appendChild(div);
                 });
@@ -1284,8 +1625,8 @@
                     postId: currentPostId,
                     userId: currentUser.uid,
                     userEmail: currentUser.email,
-                    userName: currentProfile.displayName || currentUser.email.split('@')[0], // SAVE NAME
-                    userAvatar: currentProfile.avatar || 'fa-user-circle', // SAVE AVATAR
+                    userName: currentProfile.displayName || currentUser.email.split('@')[0],
+                    userAvatar: currentProfile.avatar || 'fa-user-circle',
                     content: txt,
                     createdAt: new Date()
                 });
@@ -1295,7 +1636,7 @@
             submitCommentBtn.textContent = "Enviar Comentário";
         });
 
-        // DELETE COMMENT (Global scope needed for onclick)
+        // DELETE COMMENT
         window.deleteComment = async function(id) {
             if(confirm("Deseja apagar este registro?")) {
                 await deleteDoc(doc(db, "comments", id));
@@ -1374,10 +1715,6 @@
         // === GLOBAL LISTENERS ===
         appRoot.addEventListener('click', (e) => {
             const card = e.target.closest('[data-id]');
-            // Open post from card
-            if(card && card.parentElement.id.includes('posts-list') && !e.target.closest('button')) {
-                openPost(card.dataset.id);
-            }
             
             // Buttons inside list
             if(e.target.closest('.edit-btn')) openEdit(e.target.closest('.edit-btn').dataset.id);
@@ -1558,7 +1895,7 @@
         btnStopSpeak.addEventListener('click', stopSpeaking);
         document.getElementById('back-to-posts-btn').addEventListener('click', () => {
             stopSpeaking();
-            showView('blog-view');
+            showView('blog-view'); // Volta para a trilha pois estamos no contexto do blog
         });
 
     </script>
