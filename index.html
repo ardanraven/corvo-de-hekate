@@ -215,6 +215,8 @@
         .path-container-wrapper {
             position: relative;
             width: 100%;
+            /* Ajuste para não cortar no PC mas proteger Mobile */
+            overflow-x: hidden; 
             min-height: 600px;
             display: flex;
             justify-content: center;
@@ -289,16 +291,26 @@
             background: #fff; color: #000;
             padding: 5px 10px; border-radius: 8px;
             font-family: 'Lato', sans-serif; font-weight: bold; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;
+            text-transform: uppercase; letter-spacing: 1px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
             opacity: 0; transform: translateY(-10px); transition: 0.3s; pointer-events: none;
+            
+            /* Correção para texto não cortar no celular */
+            white-space: normal;
+            text-align: center;
+            min-width: 120px;
+            max-width: 180px;
+            line-height: 1.2;
+            left: 50%; 
+            transform: translateX(-50%); /* Centraliza */
         }
         .node-label::before {
             content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
             border-width: 0 5px 5px 5px; border-style: solid; border-color: transparent transparent #fff transparent;
         }
         .path-node-wrapper:hover .node-label { opacity: 1; transform: translateY(0); }
-        .game-node.status-active + .node-label { opacity: 1; transform: translateY(0); top: 90px; }
+        /* Quando ativo, a label sobe com o elemento */
+        .game-node.status-active + .node-label { opacity: 1; transform: translateX(-50%) translateY(0); top: 90px; }
 
         /* TOOLTIP BLOQUEADO (NOVO) */
         .locked-tooltip {
@@ -685,7 +697,8 @@
                         <span class="text-primary-500 text-[10px] uppercase tracking-[0.3em]">Caminho Iniciático</span>
                     </div>
 
-                    <div class="relative w-full max-w-lg mx-auto min-h-[600px] px-4 pb-20">
+                    <!-- AJUSTE DE LARGURA: MAX-W-LG no Mobile, MAX-W-3XL no Desktop -->
+                    <div class="relative w-full md:max-w-3xl max-w-md mx-auto min-h-[600px] px-4 pb-20">
                         <!-- CONTAINER DO SVG E NÓS -->
                         <div id="path-steps-container" class="path-container-wrapper">
                             <!-- SVG SERÁ GERADO AQUI -->
@@ -836,7 +849,7 @@
                         </a>
                     </div>
 
-                    <!-- BOTÃO DE CONCLUIR RITUAL -->
+                    <!-- BOTÃO DE CONCLUIR RITUAL (NOVO) -->
                     <div class="mt-16 flex justify-center">
                         <button id="mark-complete-btn" class="bg-primary-900 hover:bg-primary-500 hover:text-black text-white px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_20px_var(--primary-main)] transition transform hover:scale-105 flex items-center gap-3">
                             <i class="fas fa-check-circle text-xl"></i> Concluir Leitura & Avançar
@@ -966,7 +979,7 @@
         let allSections = []; 
         let allStudents = []; 
         let commentsUnsubscribe = null;
-        let activeSectionId = null;
+        let activeSectionId = null; // Para saber qual trilha estamos vendo
 
         // === REFERÊNCIAS ===
         const appRoot = document.getElementById('app-root');
@@ -974,6 +987,7 @@
         const loadingSpinner = document.getElementById('loading-spinner');
         const allViews = document.querySelectorAll('.view-container');
         
+        // --- INTRO SAFETY ---
         window.forceOpenSite = function() {
             gsap.to(introSection, { opacity: 0, duration: 1, onComplete: () => {
                 introSection.style.display = 'none';
@@ -983,10 +997,13 @@
         };
 
         window.onload = function() {
+            // Failsafe timer
             setTimeout(() => { if(introSection.style.display !== 'none') window.forceOpenSite(); }, 8000); 
+            // Normal timer
             setTimeout(() => { window.forceOpenSite(); }, 7500);
         };
 
+        // === NAVEGAÇÃO ===
         function showView(viewId) {
             allViews.forEach(view => {
                 if (view.classList.contains('fixed')) {
@@ -997,18 +1014,26 @@
                 }
             });
             
+            // LÓGICA DE VISUALIZAÇÃO DO BLOG (HUB vs TRILHA)
             if(viewId === 'blog-view') {
                  if(!activeSectionId) {
+                     // MOSTRAR HUB (CARDS)
                      const hub = document.getElementById('sections-hub');
-                     hub.classList.remove('hidden'); hub.style.opacity = '1';
+                     hub.classList.remove('hidden');
+                     hub.style.opacity = '1'; // Garante visibilidade
                      document.getElementById('active-path-view').classList.add('hidden');
                  } else {
+                     // MOSTRAR TRILHA ATIVA
                      document.getElementById('sections-hub').classList.add('hidden');
                      const pathView = document.getElementById('active-path-view');
-                     pathView.classList.remove('hidden'); pathView.style.opacity = '1'; pathView.style.transform = 'translateY(0)';
-                     renderProfessionalPath(activeSectionId);
+                     pathView.classList.remove('hidden');
+                     pathView.style.opacity = '1'; // Garante visibilidade
+                     pathView.style.transform = 'translateY(0)'; // Reseta posição
+                     renderProfessionalPath(activeSectionId); // RE-RENDERIZA PARA ATUALIZAR STATUS VISUAL
                  }
             } else if (viewId !== 'post-view' && viewId !== 'edit-post-view') {
+                // Só reseta a seção se sair completamente do contexto do blog (ex: Home, Perfil)
+                // Se for para 'post-view' ou 'edit-post-view', mantém o ID.
                 activeSectionId = null; 
             }
 
@@ -1039,6 +1064,7 @@
         const commentFormContainer = document.getElementById('comment-form-container');
         const commentLoginMsg = document.getElementById('comment-login-msg');
 
+        // PROFILE FORM
         const profileForm = document.getElementById('profile-form');
         const profileDisplayNameInput = document.getElementById('profile-display-name');
         const profileStatus = document.getElementById('profile-status');
@@ -1059,14 +1085,17 @@
                         const expires = d.expiresAt.toDate();
                         if (new Date() > expires) { await signOut(auth); return; }
                         currentUserPermissions = d.accessibleSections || [];
-                        completedPosts = d.completedPosts || []; 
+                        completedPosts = d.completedPosts || []; // CARREGA POSTS FEITOS
                     } else { await signOut(auth); return; }
                 }
 
+                // Load Profile Data
                 if(userDoc.exists()) {
                     const d = userDoc.data();
                     currentProfile.displayName = d.displayName || user.email.split('@')[0];
                     currentProfile.avatar = d.avatar || 'fa-user-circle';
+                    
+                    // UI Updates
                     headerUserName.textContent = currentProfile.displayName;
                     headerUserIcon.className = `fas ${currentProfile.avatar}`;
                     profileDisplayNameInput.value = d.displayName || '';
@@ -1102,7 +1131,7 @@
                 commentLoginMsg.classList.remove('hidden');
             }
             fetchSections();
-            fetchPosts(); 
+            fetchPosts(); // Carrega os posts para estarem prontos quando abrir uma trilha
         });
 
         document.getElementById('login-form').addEventListener('submit', (e) => {
@@ -1114,25 +1143,38 @@
             });
         });
 
+        // SAVE PROFILE LOGIC
         profileForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if(!currentUser) return;
+            
             profileStatus.textContent = "Gravando nas estrelas...";
             const newName = profileDisplayNameInput.value.trim();
             const checkedAvatar = document.querySelector('input[name="avatar"][value]:checked');
             const newAvatar = checkedAvatar ? checkedAvatar.value : 'fa-user-circle';
 
             try {
-                await updateDoc(doc(db, "users", currentUser.uid), { displayName: newName, avatar: newAvatar });
+                // Update Firestore
+                await updateDoc(doc(db, "users", currentUser.uid), {
+                    displayName: newName,
+                    avatar: newAvatar
+                });
+                
+                // Update Auth Profile (Standard)
                 await updateProfile(currentUser, { displayName: newName, photoURL: newAvatar });
+                
+                // Update Local UI
                 currentProfile.displayName = newName;
                 currentProfile.avatar = newAvatar;
                 headerUserName.textContent = newName;
                 headerUserIcon.className = `fas ${newAvatar}`;
+                
                 profileStatus.textContent = "Identidade Consagrada!";
                 profileStatus.className = "text-center text-xs mt-4 h-4 text-green-400";
+                
                 setTimeout(() => showView('home-view'), 1500);
             } catch (err) {
+                console.error(err);
                 profileStatus.textContent = "Erro ao salvar.";
                 profileStatus.className = "text-center text-xs mt-4 h-4 text-red-400";
             }
@@ -1143,6 +1185,8 @@
         document.getElementById('close-login-btn').addEventListener('click', () => showView('home-view'));
 
         // === ADMIN FUNCTIONS ===
+        
+        // 1. Sections
         const postSectionSelect = document.getElementById('post-section');
         const editPostSectionSelect = document.getElementById('edit-post-section');
         const sectionsListAdmin = document.getElementById('sections-list-admin');
@@ -1152,6 +1196,7 @@
             const q = query(collection(db, "sections"), orderBy("name"));
             onSnapshot(q, (snap) => {
                 allSections = [];
+                // Admin selects
                 postSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
                 editPostSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
                 sectionsListAdmin.innerHTML = '';
@@ -1160,16 +1205,22 @@
                 snap.forEach(d => {
                     const sec = { id: d.id, ...d.data() };
                     allSections.push(sec);
+                    
+                    // Dropdowns de Admin
                     postSectionSelect.add(new Option(sec.name, sec.id));
                     editPostSectionSelect.add(new Option(sec.name, sec.id));
+                    
+                    // Lista de Admin
                     const div = document.createElement('div');
                     div.className = "flex justify-between items-center p-2 hover:bg-white/5 rounded border-b border-white/5";
                     div.innerHTML = `<span>${sec.name}</span> <button class="delete-sec-btn text-red-500 hover:text-red-300" data-id="${sec.id}"><i class="fas fa-times"></i></button>`;
                     sectionsListAdmin.appendChild(div);
 
+                    // === RENDERIZAR CARD DA SEÇÃO NO HUB ===
                     const card = document.createElement('div');
                     card.className = "project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer flex flex-col items-center justify-center text-center min-h-[250px] shadow-[0_0_20px_rgba(0,0,0,0.5)]";
                     card.onclick = () => openPath(sec.id, sec.name);
+
                     card.innerHTML = `
                          <div class="absolute inset-0 bg-gradient-to-t from-primary-900/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
                          <i class="fas fa-dungeon text-5xl text-gray-700 mb-6 group-hover:text-primary-400 transition transform group-hover:scale-110"></i>
@@ -1187,7 +1238,7 @@
             if(name) { await addDoc(collection(db, "sections"), {name, createdAt: new Date()}); document.getElementById('create-section-form').reset(); }
         });
 
-        // === TRILHA (PATH) ===
+        // === LOGICA DE TRILHA PROFISSIONAL (SVG SNAKE) ===
         const sectionsHub = document.getElementById('sections-hub');
         const activePathView = document.getElementById('active-path-view');
         const pathTitle = document.getElementById('path-title');
@@ -1196,6 +1247,8 @@
         function openPath(sectionId, sectionName) {
             activeSectionId = sectionId;
             pathTitle.textContent = sectionName;
+            
+            // Troca a view
             gsap.to(sectionsHub, { opacity: 0, duration: 0.3, onComplete: () => {
                 sectionsHub.classList.add('hidden');
                 activePathView.classList.remove('hidden');
@@ -1217,27 +1270,44 @@
             const container = document.getElementById('path-steps-container');
             container.innerHTML = '';
             
+            // Filtra e ordena
             const pathPosts = allPosts.filter(p => p.sectionId === sectionId).sort((a,b) => a.createdAt - b.createdAt);
 
             if(pathPosts.length === 0) {
                 document.getElementById('empty-path-msg').classList.remove('hidden');
-                container.style.height = 'auto'; 
+                container.style.height = 'auto'; // Reseta altura se vazio
                 return;
             }
             document.getElementById('empty-path-msg').classList.add('hidden');
 
             const icons = ['fa-scroll', 'fa-flask', 'fa-book-skull', 'fa-star', 'fa-feather-alt'];
             
-            const containerRect = container.getBoundingClientRect();
-            const containerWidth = containerRect.width;
-            const isMobile = window.innerWidth < 640; 
+            // === AJUSTES RESPONSIVOS (MOBILE/DUOLINGO STYLE) ===
+            const isMobile = window.innerWidth < 768; // md breakpoint
             
+            // Força recalculo seguro da largura disponível
+            // container.clientWidth ignora barras de rolagem, é mais seguro que getBoundingClientRect().width em alguns casos
+            const availableWidth = Math.min(container.clientWidth, window.innerWidth - 32); 
+            
+            // No mobile, a curva deve ser muito mais suave para não sair da tela
             const spacing = isMobile ? 110 : 130; 
-            const amplitude = isMobile ? Math.min(75, containerWidth / 3.5) : 100;
-            const centerX = containerWidth / 2; 
+            
+            // Amplitude segura: (Largura / 2) - (Raio do Nó + Padding de segurança)
+            // Nó tem 70px (raio 35), margem segura ~40
+            const maxSafeAmplitude = (availableWidth / 2) - 45; 
+            
+            // Se for mobile, usa a amplitude reduzida para não estourar a tela.
+            // Se for desktop, usa 120 (amplitude mais larga) para aproveitar o espaço extra.
+            const amplitude = isMobile ? Math.min(60, maxSafeAmplitude) : 120; 
+            
+            const centerX = availableWidth / 2; // Centraliza baseado na largura real disponível
+            
+            // === CÁLCULO DINÂMICO DE ALTURA ===
+            // Multiplica o nº de posts pelo espaço e adiciona uma margem segura no final
             const totalHeight = (pathPosts.length * spacing) + 250; 
-            container.style.height = totalHeight + 'px'; 
+            container.style.height = totalHeight + 'px'; // Força o container a crescer
 
+            // Cria o SVG Container
             const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
             svg.setAttribute("class", "path-svg-line");
             svg.style.height = totalHeight + 'px';
@@ -1252,19 +1322,33 @@
             sessionStorage.removeItem('just_completed_post'); // Limpa após usar
 
             pathPosts.forEach((p, index) => {
+                // LÓGICA DE BLOQUEIO DUOLINGO
                 const isAdmin = currentUser && currentUser.uid === ADMIN_UID;
                 const hasSectionAccess = isAdmin || (currentUserPermissions && currentUserPermissions.includes(sectionId));
                 const isPaid = p.access === 'pago';
+                
                 let isCompleted = completedPosts.includes(p.id);
+                // Opcional: Se for admin, pode querer ver como completo ou não. Deixamos natural.
+
                 let isLocked = false;
                 
-                if (isPaid && !hasSectionAccess) isLocked = true;
-                else {
+                if (isPaid && !hasSectionAccess) {
+                    isLocked = true; // Sem permissão de compra
+                } else {
+                    // Lógica Sequencial:
+                    // Se estiver LOGADO, mantém a regra de que precisa completar o anterior.
+                    // Se for VISITANTE (sem login), libera tudo que for GRATIS (aberto), pois não dá pra completar.
                     if (currentUser) {
-                         if (index > 0 && !completedPosts.includes(pathPosts[index-1].id) && !isAdmin) isLocked = true;
-                    } else isLocked = false;
+                         if (index > 0 && !completedPosts.includes(pathPosts[index-1].id) && !isAdmin) {
+                            isLocked = true;
+                        }
+                    } else {
+                        // Visitante vendo conteúdo aberto = LIBERADO
+                        isLocked = false;
+                    }
                 }
 
+                // Estado Visual
                 let statusClass = "status-locked";
                 if (isCompleted) statusClass = "status-completed";
                 else if (!isLocked) statusClass = "status-active";
@@ -1285,23 +1369,32 @@
                 // Se acabamos de completar este post, o avatar não deve estar nele, mas no próximo.
                 // Mas o loop varre sequencialmente. O próximo item cairá no `if` acima naturalmente.
 
+                // Coordenadas Sinuosas (Senoide)
                 const y = 40 + (index * spacing);
-                const x = centerX + Math.sin(index * 1.5) * amplitude;
+                const x = centerX + Math.sin(index * 1.5) * amplitude; // Curva matemática
 
-                if (index === 0) pathD += `M ${x} ${y}`;
-                else {
+                // Desenha a linha SVG até aqui
+                if (index === 0) {
+                    pathD += `M ${x} ${y}`;
+                } else {
+                    // Curva Bézier Suave (Quadrática)
                     const cpY = (prevY + y) / 2;
                     pathD += ` Q ${prevX} ${cpY}, ${x} ${y}`; 
                 }
-                prevX = x; prevY = y;
+                prevX = x;
+                prevY = y;
 
+                // Renderiza o Nó HTML posicionado absolutamente
                 const nodeWrapper = document.createElement('div');
                 nodeWrapper.className = 'path-node-wrapper group'; // Adicionado 'group' para hover
                 nodeWrapper.style.left = x + 'px';
                 nodeWrapper.style.top = y + 'px';
 
+                // Ícone rotativo
                 const icon = icons[index % icons.length];
                 const iconHtml = isLocked ? '<i class="fas fa-lock"></i>' : (isCompleted ? '<i class="fas fa-check"></i>' : `<i class="fas ${icon}"></i>`);
+
+                // Crown for active
                 const crown = (!isLocked && !isCompleted) ? '<i class="fas fa-crown crown-icon"></i>' : '';
 
                 // AVATAR HTML
@@ -1338,18 +1431,26 @@
                 container.appendChild(nodeWrapper);
             });
 
+            // Finaliza o desenho da linha SVG
             const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
             pathEl.setAttribute("d", pathD);
-            pathEl.setAttribute("stroke", "#333"); 
+            pathEl.setAttribute("stroke", "#333"); // Cor da trilha inativa
             pathEl.setAttribute("stroke-width", "8");
             pathEl.setAttribute("fill", "none");
             pathEl.setAttribute("stroke-linecap", "round");
+            
+            // (Opcional: Poderia adicionar uma segunda linha 'stroke' colorida cobrindo até o ponto atual, mas isso requer calcular o comprimento do path)
+            
             svg.appendChild(pathEl);
         }
 
-        window.openPostFromPath = function(id) { openPost(id); };
+        // Wrapper global para o onclick inline funcionar com module
+        window.openPostFromPath = function(id) {
+            openPost(id);
+        };
 
-        // 2. Students & Admin Code (Mantido igual)
+
+        // 2. Students
         const studentsListAdmin = document.getElementById('students-list-admin');
         function fetchStudents() {
             onSnapshot(query(collection(db, "users")), (snap) => {
@@ -1359,7 +1460,10 @@
                     if(d.id === ADMIN_UID) return;
                     const st = { id: d.id, ...d.data() };
                     allStudents.push(st);
+                    
+                    // Show Name if exists, else Email
                     const displayLabel = st.displayName ? `${st.displayName} (${st.email.split('@')[0]})` : st.email;
+                    
                     const div = document.createElement('div');
                     div.className = "flex justify-between p-2 border-b border-white/5 hover:bg-white/5";
                     div.innerHTML = `<span class="truncate w-32" title="${st.email}">${displayLabel}</span><button class="manage-student-btn text-primary-400" data-id="${st.id}"><i class="fas fa-cog"></i></button>`;
@@ -1415,7 +1519,11 @@
             onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "asc")), (snap) => {
                 allPosts = [];
                 snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
-                if(activeSectionId) renderProfessionalPath(activeSectionId);
+                
+                // Se estivermos vendo uma trilha, atualiza ela em tempo real
+                if(activeSectionId) {
+                    renderProfessionalPath(activeSectionId);
+                }
             });
         }
 
@@ -1427,6 +1535,7 @@
         const postViewAttachContainer = document.getElementById('post-view-attachment-container');
         const postViewAttachLink = document.getElementById('post-view-attachment');
 
+        // COMMENTS ELEMENTS
         const commentsList = document.getElementById('comments-list');
         const commentInput = document.getElementById('comment-input');
         const submitCommentBtn = document.getElementById('submit-comment-btn');
@@ -1462,7 +1571,10 @@
                     postViewAttachContainer.classList.add('hidden');
                 }
 
+                // CONFIGURA BOTÃO DE CONCLUSÃO
                 const completeBtn = document.getElementById('mark-complete-btn');
+                
+                // Mas para user normal:
                 if(completedPosts.includes(id)) {
                     completeBtn.classList.remove('bg-primary-900', 'text-white', 'hover:scale-105');
                     completeBtn.classList.add('bg-green-500/20', 'text-green-400', 'border', 'border-green-500/50', 'cursor-default');
@@ -1485,6 +1597,7 @@
             loadingSpinner.classList.add('hidden');
         }
 
+        // FUNÇÃO DE MARCAR COMO COMPLETO
         async function markPostComplete() {
             if(!currentUser || !currentPostId) return;
             const btn = document.getElementById('mark-complete-btn');
@@ -1492,20 +1605,26 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consagrando...';
             
             try {
+                // Atualiza User no Firestore
                 await updateDoc(doc(db, "users", currentUser.uid), {
                     completedPosts: arrayUnion(currentPostId)
                 });
                 
+                // Atualiza Localmente
                 if(!completedPosts.includes(currentPostId)) completedPosts.push(currentPostId);
                 
                 // ARMAZENA O ID PARA A ANIMAÇÃO QUANDO VOLTAR
                 sessionStorage.setItem('just_completed_post', currentPostId);
 
+                // UI Feedback
                 btn.className = "bg-yellow-500 text-black px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_30px_#FFD700] transform scale-110 transition";
                 btn.innerHTML = '<i class="fas fa-star"></i> Sábio! Avançando...';
                 
+                // Efeito sonoro simples (opcional, requer arquivo)
+                // const audio = new Audio('success.mp3'); audio.play();
+
                 setTimeout(() => {
-                    showView('blog-view'); 
+                    showView('blog-view'); // Volta para a trilha para ver o desbloqueio
                 }, 1500);
 
             } catch(e) {
@@ -1515,23 +1634,34 @@
             }
         }
 
+        // LOAD COMMENTS (Client-side Sort Fix)
         function loadComments(postId) {
             if(commentsUnsubscribe) commentsUnsubscribe();
+            
             const q = query(collection(db, "comments"), where("postId", "==", postId));
+            
             commentsUnsubscribe = onSnapshot(q, (snap) => {
                 commentsList.innerHTML = '';
-                if(snap.empty) { commentsList.innerHTML = '<p class="text-gray-600 text-xs italic">O silêncio reina. Seja o primeiro a falar.</p>'; return; }
+                
+                if(snap.empty) {
+                    commentsList.innerHTML = '<p class="text-gray-600 text-xs italic">O silêncio reina. Seja o primeiro a falar.</p>';
+                    return;
+                }
+                
                 let comments = [];
                 snap.forEach(d => comments.push({ id: d.id, ...d.data() }));
+                
                 comments.sort((a, b) => {
                     const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
                     const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
                     return dateB - dateA;
                 });
+                
                 comments.forEach(c => {
                     const isOwner = currentUser && (currentUser.uid === c.userId || currentUser.uid === ADMIN_UID);
                     const displayName = c.userName || (c.userEmail ? c.userEmail.split('@')[0] : 'Anônimo');
                     const displayIcon = c.userAvatar ? `<i class="fas ${c.userAvatar} mr-1 text-primary-500"></i>` : '';
+
                     const div = document.createElement('div');
                     div.className = "bg-black/40 border border-white/5 p-4 rounded relative";
                     div.innerHTML = `
@@ -1547,24 +1677,37 @@
             });
         }
 
+        // ADD COMMENT
         submitCommentBtn.addEventListener('click', async () => {
             if(!currentUser || !currentPostId) return;
             const txt = commentInput.value.trim();
             if(!txt) return;
-            submitCommentBtn.disabled = true; submitCommentBtn.textContent = "Enviando...";
+
+            submitCommentBtn.disabled = true;
+            submitCommentBtn.textContent = "Enviando...";
+
             try {
                 await addDoc(collection(db, "comments"), {
-                    postId: currentPostId, userId: currentUser.uid, userEmail: currentUser.email,
+                    postId: currentPostId,
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
                     userName: currentProfile.displayName || currentUser.email.split('@')[0],
                     userAvatar: currentProfile.avatar || 'fa-user-circle',
-                    content: txt, createdAt: new Date()
+                    content: txt,
+                    createdAt: new Date()
                 });
                 commentInput.value = '';
             } catch(e) { console.error(e); alert("Erro ao comentar."); }
-            submitCommentBtn.disabled = false; submitCommentBtn.textContent = "Enviar Comentário";
+            submitCommentBtn.disabled = false;
+            submitCommentBtn.textContent = "Enviar Comentário";
         });
 
-        window.deleteComment = async function(id) { if(confirm("Deseja apagar este registro?")) await deleteDoc(doc(db, "comments", id)); };
+        // DELETE COMMENT
+        window.deleteComment = async function(id) {
+            if(confirm("Deseja apagar este registro?")) {
+                await deleteDoc(doc(db, "comments", id));
+            }
+        };
 
         function formatText(txt) {
             if(!txt) return '';
@@ -1599,6 +1742,7 @@
             const id = document.getElementById('edit-post-id').value;
             const secSelect = document.getElementById('edit-post-section');
             const secName = secSelect.options[secSelect.selectedIndex].text;
+            
             await updateDoc(doc(db, "posts", id), {
                 title: document.getElementById('edit-post-title').value,
                 coverImage: document.getElementById('edit-post-cover-image').value,
@@ -1617,20 +1761,36 @@
              else showView('blog-view');
         });
 
-        function confirmDel(id, type) { itemToDelete = {id, type}; document.getElementById('delete-confirm-modal').style.display = 'flex'; }
+        function confirmDel(id, type) {
+            itemToDelete = {id, type};
+            document.getElementById('delete-confirm-modal').style.display = 'flex';
+        }
         document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
-            if(itemToDelete.type === 'post') { await deleteDoc(doc(db, "posts", itemToDelete.id)); showView('blog-view'); } 
-            else if (itemToDelete.type === 'section') await deleteDoc(doc(db, "sections", itemToDelete.id));
+            if(itemToDelete.type === 'post') {
+                await deleteDoc(doc(db, "posts", itemToDelete.id));
+                showView('blog-view');
+            } else if (itemToDelete.type === 'section') {
+                await deleteDoc(doc(db, "sections", itemToDelete.id));
+            }
             document.getElementById('delete-confirm-modal').style.display = 'none';
         });
-        document.getElementById('cancel-delete-btn').addEventListener('click', () => document.getElementById('delete-confirm-modal').style.display = 'none');
+        document.getElementById('cancel-delete-btn').addEventListener('click', () => {
+            document.getElementById('delete-confirm-modal').style.display = 'none';
+        });
 
+        // === GLOBAL LISTENERS ===
         appRoot.addEventListener('click', (e) => {
             const card = e.target.closest('[data-id]');
+            
+            // Buttons inside list
             if(e.target.closest('.edit-btn')) openEdit(e.target.closest('.edit-btn').dataset.id);
             if(e.target.closest('.del-btn')) confirmDel(e.target.closest('.del-btn').dataset.id, 'post');
             if(e.target.closest('.delete-sec-btn')) confirmDel(e.target.closest('.delete-sec-btn').dataset.id, 'section');
-            if(e.target.closest('.manage-student-btn')) openManageStudent(e.target.closest('.manage-student-btn').dataset.id);
+            
+            // Student
+            if(e.target.closest('.manage-student-btn')) {
+                openManageStudent(e.target.closest('.manage-student-btn').dataset.id);
+            }
         });
 
         const manageModal = document.getElementById('manage-student-modal');
@@ -1639,22 +1799,32 @@
         let currentManagingUser = null;
 
         async function openManageStudent(sid) {
+            // Re-fetch latest data for accuracy
             const docSnap = await getDoc(doc(db, "users", sid));
             if(!docSnap.exists()) return;
             const st = { id: docSnap.id, ...docSnap.data() };
             currentManagingUser = st;
+
             document.getElementById('student-modal-email').textContent = st.email;
             document.getElementById('student-modal-id').value = sid;
             document.getElementById('student-modal-display-name').textContent = st.displayName || 'Sem Nome Mágico';
+            
+            // Handle Date Display
             const expDate = st.expiresAt.toDate();
             studentExpiryDate.textContent = expDate.toLocaleDateString('pt-BR');
+            
             if(expDate > new Date()) {
-                studentStatusBadge.textContent = "ATIVO"; studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-green-900/50 text-green-400";
+                studentStatusBadge.textContent = "ATIVO";
+                studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-green-900/50 text-green-400";
             } else {
-                studentStatusBadge.textContent = "EXPIRADO"; studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-red-900/50 text-red-400";
+                studentStatusBadge.textContent = "EXPIRADO";
+                studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-red-900/50 text-red-400";
             }
+
+            // Populate Sections
             const list = document.getElementById('student-modal-sections-list');
             list.innerHTML = '';
+            
             allSections.forEach(sec => {
                 const checked = st.accessibleSections && st.accessibleSections.includes(sec.id);
                 const label = document.createElement('label');
@@ -1665,24 +1835,37 @@
             manageModal.style.display = 'flex';
         }
         
+        // --- Access Buttons Logic ---
         async function updateAccessTime(monthsToAdd) {
             if(!currentManagingUser) return;
             const ref = doc(db, "users", currentManagingUser.id);
+            
             let newDate;
-            if (monthsToAdd === 0) { newDate = new Date(); newDate.setDate(newDate.getDate() - 1); } 
-            else {
+            if (monthsToAdd === 0) {
+                 // Revoke (set to yesterday)
+                 newDate = new Date();
+                 newDate.setDate(newDate.getDate() - 1);
+            } else {
+                // If expired, start from today. If active, add to existing date.
                 const currentExp = currentManagingUser.expiresAt.toDate();
                 const baseDate = (currentExp > new Date()) ? currentExp : new Date();
+                
                 newDate = new Date(baseDate);
-                if(monthsToAdd === 1) newDate.setDate(newDate.getDate() + 30);
+                // Simple logic: treat 1 month as 30 days roughly for JS simplicity or use setMonth
+                if(monthsToAdd === 1) newDate.setDate(newDate.getDate() + 30); // Using days is safer for "months" sometimes
                 if(monthsToAdd === 3) newDate.setDate(newDate.getDate() + 90);
             }
-            await updateDoc(ref, { expiresAt: newDate }); openManageStudent(currentManagingUser.id); 
+            
+            await updateDoc(ref, { expiresAt: newDate });
+            openManageStudent(currentManagingUser.id); // Refresh modal
         }
 
         document.getElementById('renew-30-btn').addEventListener('click', () => updateAccessTime(1));
         document.getElementById('renew-90-btn').addEventListener('click', () => updateAccessTime(3));
-        document.getElementById('revoke-btn').addEventListener('click', () => { if(confirm("Bloquear acesso?")) updateAccessTime(0); });
+        document.getElementById('revoke-btn').addEventListener('click', () => {
+            if(confirm("Tem certeza que deseja bloquear o acesso deste aluno imediatamente?")) updateAccessTime(0);
+        });
+
         document.getElementById('save-student-sections-btn').addEventListener('click', async () => {
             const sid = document.getElementById('student-modal-id').value;
             const checks = document.querySelectorAll('#student-modal-sections-list input:checked');
@@ -1692,6 +1875,8 @@
         });
         document.getElementById('close-student-modal-btn').addEventListener('click', () => manageModal.style.display = 'none');
 
+
+        // === AI TEXT & AUDIO ===
         const geminiApiKeyInput = document.getElementById('gemini-api-key');
         if(localStorage.getItem('geminiKey')) geminiApiKeyInput.value = localStorage.getItem('geminiKey');
         geminiApiKeyInput.addEventListener('input', () => localStorage.setItem('geminiKey', geminiApiKeyInput.value));
@@ -1700,12 +1885,14 @@
             const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
             if(!key) return alert("Insira a API Key");
             const txt = el.value; if(!txt) return;
+            
             try {
                 const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${key}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }], systemInstruction: { parts: [{ text: "Formate este texto sobre bruxaria hekatina. Destaque termos importantes com ** e nomes de divindades com ##. Seja poético." }] } })
                 });
-                const res = await req.json(); el.value = res.candidates[0].content.parts[0].text;
+                const res = await req.json();
+                el.value = res.candidates[0].content.parts[0].text;
             } catch(e) { console.error(e); }
         }
         document.getElementById('format-create-btn').addEventListener('click', () => runAI(document.getElementById('post-content')));
@@ -1717,25 +1904,34 @@
         const btnStopSpeak = document.getElementById('btn-stop-speak');
 
         function base64ToBuffer(b64) {
-            const str = window.atob(b64); const b = new Uint8Array(str.length);
-            for(let i=0; i<str.length; i++) b[i] = str.charCodeAt(i); return b.buffer;
+            const str = window.atob(b64);
+            const b = new Uint8Array(str.length);
+            for(let i=0; i<str.length; i++) b[i] = str.charCodeAt(i);
+            return b.buffer;
         }
         function makeWav(data) {
-            const b = new ArrayBuffer(44 + data.byteLength); const v = new DataView(b);
+            const b = new ArrayBuffer(44 + data.byteLength);
+            const v = new DataView(b);
             const w = (o,s)=> { for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
             w(0,'RIFF'); v.setUint32(4, 36+data.byteLength, true); w(8,'WAVE');
             w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true);
             v.setUint16(22,1,true); v.setUint32(24,24000,true); v.setUint32(28,48000,true);
             v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data');
-            v.setUint32(40,data.byteLength,true); new Uint8Array(b, 44).set(new Uint8Array(data)); return b;
+            v.setUint32(40,data.byteLength,true);
+            new Uint8Array(b, 44).set(new Uint8Array(data));
+            return b;
         }
 
         async function speak() {
             if(!audioPlayer.paused && audioPlayer.src) { audioPlayer.pause(); btnSpeakText.textContent = "Continuar"; return; }
             if(audioPlayer.paused && audioPlayer.src) { audioPlayer.play(); btnSpeakText.textContent = "Pausar"; return; }
-            const key = HARDCODED_API_KEY || geminiApiKeyInput.value; if(!key) return alert("API Key necessária.");
+
+            const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
+            if(!key) return alert("API Key necessária.");
+
             btnSpeakText.textContent = "Carregando...";
             const txt = document.getElementById('post-view-content').innerText.substring(0, 4000);
+            
             try {
                 const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${key}`, {
                     method: 'POST', headers: {'Content-Type': 'application/json'},
@@ -1747,15 +1943,34 @@
                 const res = await req.json();
                 const pcm = base64ToBuffer(res.candidates[0].content.parts[0].inlineData.data);
                 const wav = makeWav(pcm);
-                audioPlayer.src = URL.createObjectURL(new Blob([wav], { type: 'audio/wav' }));
+                const blob = new Blob([wav], { type: 'audio/wav' });
+                audioPlayer.src = URL.createObjectURL(blob);
+                
                 audioPlayer.onplay = () => { btnSpeakText.textContent = "Pausar"; btnStopSpeak.classList.remove('hidden'); };
-                audioPlayer.onended = stopSpeaking; audioPlayer.play();
+                audioPlayer.onended = stopSpeaking;
+                audioPlayer.play();
             } catch(e) { console.error(e); btnSpeakText.textContent = "Ouvir"; }
         }
-        function stopSpeaking() { if(audioPlayer.src) { audioPlayer.pause(); audioPlayer.src = ""; } btnSpeakText.textContent = "Ouvir o Chamado"; btnStopSpeak.classList.add('hidden'); }
-        btnSpeak.addEventListener('click', speak); btnStopSpeak.addEventListener('click', stopSpeaking);
-        document.getElementById('back-to-posts-btn').addEventListener('click', () => { stopSpeaking(); showView('blog-view'); });
-        window.addEventListener('resize', () => { if(activeSectionId && !document.getElementById('active-path-view').classList.contains('hidden')) renderProfessionalPath(activeSectionId); });
+
+        function stopSpeaking() {
+            if(audioPlayer.src) { audioPlayer.pause(); audioPlayer.src = ""; }
+            btnSpeakText.textContent = "Ouvir o Chamado"; btnStopSpeak.classList.add('hidden');
+        }
+
+        btnSpeak.addEventListener('click', speak);
+        btnStopSpeak.addEventListener('click', stopSpeaking);
+        document.getElementById('back-to-posts-btn').addEventListener('click', () => {
+            stopSpeaking();
+            showView('blog-view'); // Volta para a trilha pois estamos no contexto do blog
+        });
+
+        // Adiciona listener para redimensionamento da janela para ajustar a trilha
+        window.addEventListener('resize', () => {
+            if(activeSectionId && !document.getElementById('active-path-view').classList.contains('hidden')) {
+                renderProfessionalPath(activeSectionId);
+            }
+        });
+
     </script>
 </body>
 </html>
