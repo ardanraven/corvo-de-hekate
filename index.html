@@ -264,6 +264,7 @@
             display: flex;
             flex-col: column;
             align-items: center;
+            width: 140px; /* Largura fixa para ajudar na centralização do texto */
         }
 
         /* O Círculo do Nó */
@@ -280,6 +281,7 @@
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             /* Estilo "Botão 3D" */
             box-shadow: 0 6px 0 rgba(0,0,0,0.5); 
+            z-index: 5;
         }
         
         /* Ajuste Mobile para os Nós */
@@ -291,8 +293,7 @@
                 box-shadow: 0 4px 0 rgba(0,0,0,0.5); 
             }
             .game-node:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.5); }
-            .node-label { top: 70px; font-size: 0.65rem; }
-            .game-node.status-active + .node-label { top: 75px; }
+            /* Não usamos mais o top absoluto no label, agora é relativo ao flow flex */
         }
 
         .game-node:active {
@@ -332,33 +333,43 @@
         }
         .game-node.status-locked:active { transform: none; box-shadow: 0 6px 0 #000; }
 
-        /* Label Flutuante (Tooltip) */
+        /* Label Flutuante (Tooltip) - REFORMULADO */
         .node-label {
-            position: absolute;
-            top: 85px;
-            background: #fff;
+            margin-top: 15px; /* Espaço entre a bola e o texto */
+            background: rgba(255,255,255,0.9);
             color: #000;
-            padding: 5px 10px;
-            border-radius: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
             font-family: 'Lato', sans-serif;
             font-weight: bold;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            white-space: nowrap;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            
+            /* Controle de tamanho e quebra de linha */
+            max-width: 100%; /* Respeita a largura do wrapper (140px) */
+            line-height: 1.2;
+            word-wrap: break-word; /* Quebra palavras longas se precisar */
+            
+            /* Animação suave */
             opacity: 0;
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             transition: 0.3s;
             pointer-events: none;
+            position: relative; /* Agora é relativo para empurrar conteúdo se precisar */
+            z-index: 10;
         }
+        
+        /* Setinha do label */
         .node-label::before {
-            content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
-            border-width: 0 5px 5px 5px; border-style: solid; border-color: transparent transparent #fff transparent;
+            content: ''; position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+            border-width: 0 4px 4px 4px; border-style: solid; border-color: transparent transparent rgba(255,255,255,0.9) transparent;
         }
         
         .path-node-wrapper:hover .node-label { opacity: 1; transform: translateY(0); }
-        .game-node.status-active + .node-label { opacity: 1; transform: translateY(0); top: 90px; } /* Sempre mostra o label do ativo */
+        .game-node.status-active ~ .node-label { opacity: 1; transform: translateY(0); } /* Sempre mostra o label do ativo */
 
         /* Estrelas de progresso ao redor do nó */
         .stars-container {
@@ -1315,7 +1326,7 @@
             const isMobile = window.innerWidth < 640; // sm breakpoint
             
             // No mobile, a curva é menor para caber na tela, e os nós ficam um pouco mais pertos
-            const spacing = isMobile ? 110 : 130; 
+            const spacing = isMobile ? 120 : 130; 
             const amplitude = isMobile ? Math.min(75, containerWidth / 3.5) : 100; // Limita a largura da curva
             const centerX = containerWidth / 2; 
             
@@ -1393,13 +1404,17 @@
 
                 // Crown for active
                 const crown = (!isLocked && !isCompleted) ? '<i class="fas fa-crown crown-icon"></i>' : '';
+                
+                // Truncamento do título para caber no label
+                let title = p.title;
+                if(title.length > 25) title = title.substring(0, 22) + '...';
 
                 nodeWrapper.innerHTML = `
                     ${crown}
                     <div class="game-node ${statusClass}" onclick="${isLocked ? '' : `openPostFromPath('${p.id}')`}">
                         ${iconHtml}
                     </div>
-                    <div class="node-label">${p.title}</div>
+                    <div class="node-label">${title}</div>
                     ${!isLocked && !isCompleted ? '<div class="stars-container"><div class="absolute w-full h-full animate-spin-slow opacity-30"><i class="fas fa-star absolute top-0 left-1/2 text-xs text-yellow-500"></i><i class="fas fa-star absolute bottom-0 left-1/2 text-xs text-yellow-500"></i></div></div>' : ''}
                 `;
                 container.appendChild(nodeWrapper);
