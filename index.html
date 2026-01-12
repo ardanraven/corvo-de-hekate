@@ -3,144 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O Coven do Corvo | Santuário Digital</title>
+    <title>Ordo Rex Lucifer | A Chama Negra</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
-        // 🔮 CONFIGURAÇÃO DO SACERDOTE 🔮
-        // Opções: 'Yule', 'Imbolc', 'Ostara', 'Beltane', 'Litha', 'Lammas', 'Mabon', 'Samhain', 'AnoNovo'
-        // ESPECIAL: Se escolher 'Hekate', ele alterna automaticamente com 'Nyx' (Os Dois Pilares)
-        const CURRENT_THEME = 'Lammas'; 
+        // 🔮 CONFIGURAÇÃO VISUAL - TEMA LUCIFERIANO 🔮
+        const CURRENT_THEME = 'RexLucifer'; 
 
-        // BANCO DE DADOS DE ESTÉTICA
         const THEMES = {
-            'Yule': {
-                name: 'Yule', 
-                primary: { 400: '#D4AF37', 500: '#C5A028', 900: '#3D3008' }, // Dourado
-                accent: '#8B0000', // Vermelho Sangue
-                particle: '❄', // Neve
-                particleColor: '#FFFFFF',
-                particleDirection: 'down'
-            },
-            'Imbolc': {
-                name: 'Imbolc',
-                primary: { 400: '#A5F2F3', 500: '#7CD1D3', 900: '#1A4D4F' }, // Gelo/Ciano
-                accent: '#7CD1D3', // Branco Puro
-                particle: '✨', // Brilho
-                particleColor: '#A5F2F3',
-                particleDirection: 'up'
-            },
-            'Ostara': {
-                name: 'Ostara',
-                primary: { 400: '#90EE90', 500: '#77DD77', 900: '#1A4F1A' }, // Verde Claro
-                accent: '#FFB7C5', // Rosa Flor
-                particle: '🌸', // Flor
-                particleColor: '#FFB7C5',
-                particleDirection: 'down'
-            },
-            'Beltane': {
-                name: 'Beltane',
-                primary: { 400: '#FF2400', 500: '#DD2400', 900: '#4F0A00' }, // Vermelho Fogo
-                accent: '#50C878', // Verde Esmeralda
-                particle: '🔥', // Fogo
-                particleColor: '#FF4500',
-                particleDirection: 'up'
-            },
-            'Litha': {
-                name: 'Litha',
-                primary: { 400: '#FFD700', 500: '#FFC000', 900: '#5C4800' }, // Amarelo Sol
-                accent: '#FFA500', // Laranja
-                particle: '☀️', // Sol
-                particleColor: '#FFD700',
-                particleDirection: 'up'
-            },
-            'Lammas': {
-                name: 'Lammas',
-                primary: { 400: '#F4C430', 500: '#DAA520', 900: '#5C4000' }, // Trigo/Dourado
-                accent: '#D2691E', // Marrom/Laranja
-                particle: '🌾', // Trigo
-                particleColor: '#F4C430',
-                particleDirection: 'down'
-            },
-            'Mabon': {
-                name: 'Mabon',
-                primary: { 400: '#D2691E', 500: '#8B4513', 900: '#3D1F00' }, // Marrom
-                accent: '#800080', // Roxo
-                particle: '🍂', // Folha
-                particleColor: '#D2691E',
-                particleDirection: 'down'
-            },
-            'Samhain': {
-                name: 'Samhain',
-                primary: { 400: '#9370DB', 500: '#8A2BE2', 900: '#2E004F' }, // Roxo
-                accent: '#FF4500', // Laranja Abóbora
-                particle: '👻', // Fantasma
-                particleColor: '#FFFFFF',
-                particleDirection: 'up'
-            },
-            // TEMA ESPECIAL: ANO NOVO (COM FOGOS)
-            'AnoNovo': {
-                name: 'Ano Novo',
-                primary: { 400: '#E5E4E2', 500: '#C0C0C0', 900: '#1C1C1C' }, // Platina/Prata
-                accent: '#D4AF37', // Dourado Champanhe
-                particle: 'fireworks', // ATIVADOR DE FOGOS
-                particleColor: '#FFD700', // Ouro
-                particleDirection: 'up' 
-            },
-            // PILAR 1: HEKATE (Prata e Cinza)
-            'Hekate': {
-                name: 'Hekate',
-                primary: { 400: '#C0C0C0', 500: '#A9A9A9', 900: '#2F2F2F' }, // Prata/Cinza
-                accent: '#DAA520', // Dourado Envelhecido (Tochas)
-                particle: '🔑', // Chave
-                particleColor: '#C0C0C0',
-                particleDirection: 'up'
-            },
-            // PILAR 2: NYX (Azul Noite Profunda e Estrelas)
-            'Nyx': {
-                name: 'Nyx',
-                primary: { 400: '#818CF8', 500: '#4F46E5', 900: '#1E1B4B' }, // Índigo/Midnight
-                accent: '#E0E7FF', // Brilho Estelar
-                particle: '✦', // Estrela
-                particleColor: '#FFFFFF',
-                particleDirection: 'down' // Estrelas caindo
+            'RexLucifer': { 
+                name: 'Lux Tenebris', 
+                primary: { 400: '#FFD700', 500: '#B8860B', 900: '#1C1C1C' }, // Ouro Imperial e Sombra
+                accent: '#8B0000', // Sangue Carmesim
+                particle: '🔥' // Fogo da Iluminação
             }
         };
 
-        // LÓGICA DOS PILARES (Alterna Hekate/Nyx)
-        let themeKey = CURRENT_THEME;
-        
-        if (CURRENT_THEME === 'Hekate') {
-            // Verifica quem apareceu por último
-            const lastPillar = localStorage.getItem('coven_pillar_toggle');
-            
-            if (lastPillar === 'Hekate') {
-                themeKey = 'Nyx';
-                localStorage.setItem('coven_pillar_toggle', 'Nyx');
-            } else {
-                themeKey = 'Hekate';
-                localStorage.setItem('coven_pillar_toggle', 'Hekate');
-            }
-            console.log("Os Pilares Giraram: Agora rege " + themeKey);
-        }
-
-        const activeTheme = THEMES[themeKey] || THEMES['Yule'];
+        const activeTheme = THEMES[CURRENT_THEME];
 
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        void: '#050505',
+                        void: '#000000', // Preto absoluto
                         primary: activeTheme.primary,
-                        obsidian: '#0f0f10',
+                        obsidian: '#0a0a0a', // Quase preto
                         accent: activeTheme.accent,
+                        royal: '#1a1a1a'
                     },
                     fontFamily: {
-                        display: ['Cinzel', 'serif'],
+                        display: ['Cinzel', 'serif'], // Fonte com serifa majestosa
                         body: ['Lato', 'sans-serif'],
                     },
-                    animation: { 'bounce-slow': 'bounce 3s infinite' }
+                    animation: { 
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 12s linear infinite'
+                    }
                 }
             }
         }
@@ -154,523 +53,292 @@
 
     <style>
         /* ESTILOS GERAIS */
-        body { background-color: #050505; color: #e5e5e5; overflow-x: hidden; }
+        body { background-color: #000; color: #d4d4d4; overflow-x: hidden; }
         
-        /* Scrollbar Dinâmica */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--accent-color, #8B0000), var(--primary-color, #D4AF37)); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, var(--accent-color), var(--primary-color)); border-radius: 3px; }
 
         .glass-dark {
-            background: rgba(20, 20, 20, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.05); /* Borda dourada sutil */
         }
 
-        /* Classes Utilitárias do Tema (CSS Variables injetadas via JS depois) */
-        .text-gradient-theme {
-            background: linear-gradient(to right, var(--primary-dark), var(--primary-light), var(--primary-main));
-            -webkit-background-clip: text; background-clip: text; color: transparent; background-size: 200% auto; animation: shine 5s linear infinite;
+        /* TEXTO DOURADO BRILHANTE */
+        .text-gradient-gold {
+            background: linear-gradient(to right, #B8860B, #FFD700, #F0E68C, #B8860B);
+            -webkit-background-clip: text; background-clip: text; color: transparent; 
+            background-size: 300% auto; animation: shine 6s linear infinite;
         }
-        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes shine { to { background-position: 300% center; } }
         
         .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-        #intro-sequence { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         
-        /* CARDS */
-        .project-card {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; overflow: hidden;
+        /* INPUTS ESTILIZADOS */
+        .input-luxe { 
+            background: rgba(255, 255, 255, 0.02); 
+            border: 1px solid rgba(255, 215, 0, 0.1); 
+            color: #FFD700; 
+            transition: 0.3s; 
+            font-family: 'Cinzel', serif;
         }
-        /* Icone do festival no canto do card */
-        .project-card::after {
-            content: var(--theme-icon, '❄️'); 
-            position: absolute; top: 10px; right: 10px; font-size: 1.5rem; opacity: 0.3; filter: grayscale(0.5) sepia(1) hue-rotate(-50deg); transition: 0.4s;
+        .input-luxe:focus { 
+            outline: none; 
+            border-color: #FFD700; 
+            background: rgba(255, 215, 0, 0.05); 
+            box-shadow: 0 0 15px rgba(184, 134, 11, 0.2);
         }
-        .project-card:hover::after { opacity: 0.8; filter: none; transform: rotate(15deg); }
-        .project-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-main);
-            box-shadow: 0 10px 40px -10px rgba(255, 255, 255, 0.1), 0 0 20px var(--accent-color-alpha);
-        }
-        
-        .input-luxe { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #fff; transition: 0.3s; }
-        .input-luxe:focus { outline: none; border-color: var(--primary-main); background: rgba(255, 255, 255, 0.05); }
+        .input-luxe::placeholder { color: #555; font-family: 'Lato', sans-serif; }
 
-        /* SELEÇÃO DE AVATAR */
-        .avatar-option input[type="radio"] { display: none; }
-        .avatar-option label { 
-            display: flex; align-items: center; justify-content: center; 
-            width: 50px; height: 50px; border-radius: 50%; 
-            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.3s;
-            color: #666; font-size: 1.2rem;
-        }
-        .avatar-option input[type="radio"]:checked + label {
-            background: var(--primary-main); color: #000; box-shadow: 0 0 15px var(--primary-main);
-        }
-
-        /* CORVO SVG ANIMADO */
-        .mystic-crow-svg {
-            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
-            animation: hoverCrow 4s ease-in-out infinite alternate;
-        }
-        .crow-wing-left { transform-origin: center; animation: flapLeft 1.2s ease-in-out infinite alternate; }
-        .crow-wing-right { transform-origin: center; animation: flapRight 1.2s ease-in-out infinite alternate; }
-        
-        @keyframes hoverCrow { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
-        @keyframes flapLeft { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(-10deg) translateY(5px); } }
-        @keyframes flapRight { 0% { transform: rotate(0deg) translateY(0); } 100% { transform: rotate(10deg) translateY(5px); } }
-        
-        /* PARTICLES CONTAINER */
+        /* PARTICLES (BRASAS SUBINDO) */
         .particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: hidden; }
         .particle {
             position: absolute; opacity: 0;
-            animation: particleAnim linear infinite;
+            animation: fireRise linear infinite;
+            filter: blur(1px);
         }
-        @keyframes particleAnim {
-            0% { opacity: 0; transform: translateY(var(--start-y)) rotate(0deg); }
-            20% { opacity: 0.7; }
-            100% { opacity: 0; transform: translateY(var(--end-y)) rotate(360deg); }
-        }
-
-        /* FIREWORKS CANVAS */
-        #fireworks-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-        /* --- SISTEMA DE TRILHA (PATH SYSTEM v2) --- */
-        .path-container-wrapper {
-            position: relative;
-            width: 100%;
-            /* Ajuste para não cortar no PC mas proteger Mobile */
-            overflow-x: hidden; 
-            min-height: 600px;
-            display: flex;
-            justify-content: center;
-            padding-top: 40px;
-            padding-bottom: 100px;
+        @keyframes fireRise {
+            0% { opacity: 0; transform: translateY(100vh) scale(0.5); }
+            20% { opacity: 0.6; }
+            80% { opacity: 0.6; }
+            100% { opacity: 0; transform: translateY(-10vh) scale(1.5); }
         }
 
-        .path-svg-line {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+        /* CARD DE VÍDEO / SEÇÃO */
+        .project-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative; overflow: hidden;
+            background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: #FFD700;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 1), 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+        .project-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, #FFD700, transparent);
+            opacity: 0.3;
         }
 
-        .path-node-wrapper {
-            position: absolute;
-            transform: translate(-50%, -50%); 
-            z-index: 2;
-            display: flex;
-            flex-col: column;
-            align-items: center;
+        /* SVG ESTRELA DA MANHÃ */
+        .morning-star-svg {
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3));
+            animation: floatStar 6s ease-in-out infinite alternate;
         }
-
-        .game-node {
-            width: 70px; height: 70px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 6px 0 rgba(0,0,0,0.5); 
-        }
+        .star-core { transform-origin: center; animation: spin-slow 20s linear infinite; }
+        .star-rays { transform-origin: center; animation: pulse-slow 4s ease-in-out infinite; }
         
-        @media (max-width: 640px) {
-            .game-node { width: 60px; height: 60px; font-size: 1.5rem; box-shadow: 0 4px 0 rgba(0,0,0,0.5); }
-            .game-node:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,0.5); }
-            .node-label { top: 70px; font-size: 0.65rem; }
-            .game-node.status-active + .node-label { top: 75px; }
+        @keyframes floatStar { 0% { transform: translateY(0); } 100% { transform: translateY(-15px); } }
+
+        /* TRILHA (PATH SYSTEM) */
+        .path-container-wrapper {
+            position: relative; width: 100%; overflow-x: hidden; min-height: 600px;
+            display: flex; justify-content: center; padding-top: 40px; padding-bottom: 100px;
         }
+        .path-svg-line { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .path-node-wrapper { position: absolute; transform: translate(-50%, -50%); z-index: 2; display: flex; flex-direction: column; align-items: center; }
+        
+        .game-node {
+            width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; cursor: pointer; position: relative; transition: transform 0.3s;
+            box-shadow: 0 0 15px rgba(0,0,0,0.8); border: 2px solid #333;
+            background: #000;
+        }
+        .game-node:active { transform: scale(0.95); }
 
-        .game-node:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0,0,0,0.5); }
-
-        /* STATUS */
         .game-node.status-completed {
-            background: linear-gradient(135deg, var(--primary-dark), var(--primary-main));
-            border: 4px solid #FFD700; color: #000;
-            box-shadow: 0 6px 0 #b8860b, 0 0 20px var(--primary-main);
+            background: radial-gradient(circle, #B8860B, #3D3008);
+            border: 2px solid #FFD700; color: #000; 
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.4);
         }
-
         .game-node.status-active {
-            background: var(--accent-color);
-            border: 4px solid #fff; color: #fff;
-            box-shadow: 0 6px 0 #500000, 0 0 30px var(--accent-color);
-            animation: pulseActive 2s infinite;
+            background: #8B0000; border: 2px solid #ff4444; color: #fff;
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.6); animation: pulseActive 2s infinite;
         }
         @keyframes pulseActive {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(139, 0, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(139, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 0, 0, 0); }
         }
-
         .game-node.status-locked {
-            background: #1a1a1a;
-            border: 4px solid #333; color: #444;
-            cursor: not-allowed;
-            box-shadow: 0 6px 0 #000;
+            background: #050505; border: 2px solid #222; color: #333; cursor: not-allowed;
         }
-        .game-node.status-locked:active { transform: none; box-shadow: 0 6px 0 #000; }
+        
+        /* Time Lock Special Style */
+        .game-node.status-time-locked {
+            background: #0a0000; border: 2px dashed #500; color: #500; cursor: not-allowed; opacity: 0.7;
+        }
 
-        /* Label Tooltip Normal */
         .node-label {
-            position: absolute; top: 85px;
-            background: #fff; color: #000;
-            padding: 5px 10px; border-radius: 8px;
-            font-family: 'Lato', sans-serif; font-weight: bold; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            opacity: 0; transform: translateY(-10px); transition: 0.3s; pointer-events: none;
-            
-            /* Correção para texto não cortar no celular */
-            white-space: normal;
-            text-align: center;
-            min-width: 120px;
-            max-width: 180px;
-            line-height: 1.2;
-            left: 50%; 
-            transform: translateX(-50%); /* Centraliza */
+            position: absolute; top: 85px; background: #111; color: #FFD700; padding: 5px 12px; border: 1px solid #333;
+            font-family: 'Cinzel', serif; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.9); opacity: 0; transform: translateY(-10px); transition: 0.3s; pointer-events: none;
+            text-align: center; min-width: 140px; left: 50%; transform: translateX(-50%); z-index: 10;
         }
-        .node-label::before {
-            content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
-            border-width: 0 5px 5px 5px; border-style: solid; border-color: transparent transparent #fff transparent;
-        }
-        .path-node-wrapper:hover .node-label { opacity: 1; transform: translateY(0); }
-        /* Quando ativo, a label sobe com o elemento */
-        .game-node.status-active + .node-label { opacity: 1; transform: translateX(-50%) translateY(0); top: 90px; }
-
-        /* TOOLTIP BLOQUEADO (NOVO) */
+        .path-node-wrapper:hover .node-label { opacity: 1; transform: translateX(-50%) translateY(0); }
+        
+        /* Tooltip para Bloqueio de Tempo */
         .locked-tooltip {
-            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%) translateY(-10px);
-            background: #2a0a0a; color: #ff6b6b; border: 1px solid #500;
-            padding: 8px 12px; border-radius: 4px;
+            position: absolute; bottom: 85px; background: #2a0000; color: #ff8888; padding: 8px 12px; border: 1px solid #800;
             font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; text-align: center;
-            width: 140px; pointer-events: none; opacity: 0; transition: opacity 0.3s, transform 0.3s;
-            z-index: 30; box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            width: 160px; pointer-events: none; opacity: 0; transition: 0.3s; left: 50%; transform: translateX(-50%);
+            z-index: 20; box-shadow: 0 0 20px rgba(0,0,0,1);
         }
-        .locked-tooltip::after {
-            content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
-            border-width: 5px 5px 0 5px; border-style: solid; border-color: #500 transparent transparent transparent;
-        }
-        .path-node-wrapper:hover .game-node.status-locked ~ .locked-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .path-node-wrapper:hover .game-node.status-time-locked ~ .locked-tooltip { opacity: 1; }
 
-        /* ESTRELAS E DECORAÇÃO */
-        .stars-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
-        
-        /* ANIMAÇÃO DE DESBLOQUEIO (CELEBRAÇÃO) */
-        .celebration-unlock {
-            animation: unlockFlash 1.5s ease-out forwards;
+        .video-wrapper {
+            position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+            background: #000; border: 1px solid #333; box-shadow: 0 0 50px rgba(0,0,0,1);
         }
-        @keyframes unlockFlash {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); background: var(--accent-color); filter: brightness(1); }
-            50% { transform: scale(1.3); box-shadow: 0 0 50px 20px rgba(212, 175, 55, 0.8); background: #FFD700; filter: brightness(2); border-color: white; }
-            100% { transform: scale(1); box-shadow: 0 6px 0 #b8860b, 0 0 20px var(--primary-main); filter: brightness(1); }
-        }
-
-        /* ÍCONE FLUTUANTE DE AVATAR (NOVO) */
-        .path-avatar-float {
-            position: absolute; top: -55px; left: 50%; transform: translateX(-50%);
-            z-index: 20; pointer-events: none;
-            filter: drop-shadow(0 0 10px rgba(255,215,0,0.4));
-        }
-        .path-avatar-icon { font-size: 2.5rem; animation: bounceAvatar 2s infinite ease-in-out; color: var(--accent-color); }
-        .path-avatar-arrow { color: var(--accent-color); text-align: center; margin-top: -5px; animation: pulse 1s infinite; font-size: 0.8rem; }
-        
-        @keyframes bounceAvatar {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+        .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased font-body selection:bg-primary-900 selection:text-white">
 
     <div class="particle-container" id="particles"></div>
     <script>
         const root = document.documentElement;
         root.style.setProperty('--primary-main', activeTheme.primary[400]);
         root.style.setProperty('--primary-light', activeTheme.primary[500]);
-        root.style.setProperty('--primary-dark', activeTheme.primary[900]);
         root.style.setProperty('--accent-color', activeTheme.accent);
-        
-        // --- SISTEMA DE PARTÍCULAS HÍBRIDO (DOM ou CANVAS) ---
+
         const pContainer = document.getElementById('particles');
-        
-        if (activeTheme.particle === 'fireworks') {
-            // === MODO FOGOS DE ARTIFÍCIO (CANVAS) ===
-            const canvas = document.createElement('canvas');
-            canvas.id = 'fireworks-canvas';
-            pContainer.appendChild(canvas);
-            const ctx = canvas.getContext('2d');
-            
-            let width = window.innerWidth;
-            let height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-
-            window.addEventListener('resize', () => {
-                width = window.innerWidth;
-                height = window.innerHeight;
-                canvas.width = width;
-                canvas.height = height;
-            });
-
-            class Particle {
-                constructor(x, y, color) {
-                    this.x = x;
-                    this.y = y;
-                    this.color = color;
-                    this.speed = Math.random() * 5 + 1;
-                    this.angle = Math.random() * Math.PI * 2;
-                    this.vx = Math.cos(this.angle) * this.speed;
-                    this.vy = Math.sin(this.angle) * this.speed;
-                    this.alpha = 1;
-                    this.decay = Math.random() * 0.015 + 0.005;
-                    this.gravity = 0.05;
-                }
-                draw() {
-                    ctx.save();
-                    ctx.globalAlpha = this.alpha;
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                }
-                update() {
-                    this.vx *= 0.95; // atrito
-                    this.vy *= 0.95;
-                    this.vy += this.gravity;
-                    this.x += this.vx;
-                    this.y += this.vy;
-                    this.alpha -= this.decay;
-                }
-            }
-
-            class Rocket {
-                constructor() {
-                    this.x = Math.random() * width;
-                    this.y = height;
-                    this.targetY = Math.random() * (height * 0.5); // Explode na metade superior
-                    this.speed = Math.random() * 3 + 8; // Velocidade de subida
-                    this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                    this.exploded = false;
-                }
-                draw() {
-                    ctx.fillStyle = this.color;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                    // Rastro
-                    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y + 5, 2, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                update() {
-                    this.y -= this.speed;
-                    if(this.y <= this.targetY) {
-                        this.exploded = true;
-                    }
-                }
-            }
-
-            let rockets = [];
-            let particles = [];
-
-            function loop() {
-                // Rastro suave
-                ctx.globalCompositeOperation = 'destination-out';
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; // Quanto menor alpha, maior o rastro
-                ctx.fillRect(0, 0, width, height);
-                ctx.globalCompositeOperation = 'lighter';
-
-                // Lança foguetes aleatoriamente
-                if (Math.random() < 0.03) { // Frequência de lançamentos
-                    rockets.push(new Rocket());
-                }
-
-                // Atualiza foguetes
-                for (let i = rockets.length - 1; i >= 0; i--) {
-                    rockets[i].update();
-                    rockets[i].draw();
-                    if (rockets[i].exploded) {
-                        // Cria explosão
-                        for (let j = 0; j < 40; j++) { // Qtd de particulas por explosão
-                            particles.push(new Particle(rockets[i].x, rockets[i].y, rockets[i].color));
-                        }
-                        rockets.splice(i, 1);
-                    }
-                }
-
-                // Atualiza partículas da explosão
-                for (let i = particles.length - 1; i >= 0; i--) {
-                    particles[i].update();
-                    particles[i].draw();
-                    if (particles[i].alpha <= 0) {
-                        particles.splice(i, 1);
-                    }
-                }
-
-                requestAnimationFrame(loop);
-            }
-            loop();
-
-        } else {
-            // === MODO PARTÍCULAS PADRÃO (DOM - EMOJIS) ===
-            root.style.setProperty('--theme-icon', `'${activeTheme.particle}'`);
-            const pCount = 40; 
-            const isUp = activeTheme.particleDirection === 'up';
-
-            for (let i = 0; i < pCount; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                p.innerHTML = activeTheme.particle;
-                p.style.left = Math.random() * 100 + '%';
-                if(isUp) {
-                    p.style.bottom = '-20px'; p.style.setProperty('--start-y', '0'); p.style.setProperty('--end-y', '-100vh');
-                } else {
-                    p.style.top = '-20px'; p.style.setProperty('--start-y', '0'); p.style.setProperty('--end-y', '100vh');
-                }
-                p.style.animationDuration = Math.random() * 10 + 5 + 's';
-                p.style.animationDelay = Math.random() * 5 + 's';
-                p.style.fontSize = Math.random() * 10 + 8 + 'px';
-                p.style.color = Math.random() > 0.7 ? activeTheme.primary[400] : activeTheme.particleColor;
-                pContainer.appendChild(p);
-            }
+        for (let i = 0; i < 40; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.innerHTML = Math.random() > 0.5 ? '✦' : '🔥';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.animationDuration = Math.random() * 5 + 3 + 's';
+            p.style.animationDelay = Math.random() * 5 + 's';
+            p.style.fontSize = Math.random() * 10 + 5 + 'px';
+            p.style.color = Math.random() > 0.7 ? '#FFD700' : '#8B0000';
+            pContainer.appendChild(p);
         }
     </script>
 
-    <div id="intro-sequence">
-        <div style="width: 100%; max-width: 1000px; padding: 20px;"> 
-            <div style="padding:56.25% 0 0 0;position:relative;">
-                <iframe src="https://player.vimeo.com/video/1136095667?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&controls=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Intro"></iframe>
-            </div>
-            <button onclick="forceOpenSite()" class="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-500 text-[10px] uppercase tracking-widest hover:text-white transition z-50">
-                Pular Intro
-            </button>
-        </div>
-    </div>
-
-    <div id="app-root" style="display: none; opacity: 0;">
+    <div id="app-root">
         
-        <div id="loading-spinner" class="fixed inset-0 bg-black/90 z-50 flex flex-col items-center justify-center hidden">
-            <div class="relative animate-bounce mb-4">
-                <i class="fas fa-crow text-4xl text-primary-400"></i>
-                <i class="fas fa-certificate absolute -top-2 -right-2 text-accent text-sm animate-spin"></i>
+        <div id="loading-spinner" class="fixed inset-0 bg-black z-50 flex flex-col items-center justify-center hidden">
+            <div class="relative mb-6">
+                <i class="fas fa-crown text-5xl text-primary-500 animate-pulse"></i>
             </div>
-            <p class="text-primary-400 text-xs tracking-[0.3em] uppercase animate-pulse">Carregando Magia...</p>
+            <p class="text-primary-400 text-xs tracking-[0.5em] uppercase font-display">Invocando a Luz...</p>
         </div>
 
-        <header class="fixed top-0 w-full z-40 bg-void/90 backdrop-blur border-b border-primary-900/30 h-20 transition-all duration-300">
+        <!-- HEADER -->
+        <header class="fixed top-0 w-full z-40 bg-black/80 backdrop-blur-md border-b border-primary-500/10 h-24 transition-all duration-300">
             <div class="container mx-auto px-6 h-full flex justify-between items-center">
-                <div class="flex items-center gap-3 cursor-pointer group" onclick="showView('home-view')">
-                    <img src="https://i.ibb.co/2705r709/Black-Friday.png" alt="Logo" class="h-10 w-auto opacity-80 group-hover:opacity-100 transition filter drop-shadow-[0_0_5px_rgba(212,175,55,0.3)]">
+                <div class="flex items-center gap-4 cursor-pointer group" onclick="showView('home-view')">
+                    <div class="h-12 w-12 bg-gradient-to-br from-primary-900 to-black rounded-sm flex items-center justify-center border border-primary-500/30 group-hover:border-primary-400 transition shadow-[0_0_15px_rgba(184,134,11,0.2)]">
+                        <i class="fas fa-crown text-primary-400 text-xl"></i>
+                    </div>
                     <div class="flex flex-col">
-                        <span class="text-[10px] text-primary-400 uppercase tracking-[0.3em]">O Coven do</span>
-                        <h1 class="text-lg font-display text-white tracking-widest group-hover:text-primary-400 transition flex items-center gap-2">CORVO <i class="fas fa-moon text-accent text-xs opacity-50 group-hover:opacity-100 transition"></i></h1>
+                        <span class="text-[9px] text-accent uppercase tracking-[0.4em] font-bold">Ordo</span>
+                        <h1 class="text-xl font-display font-bold text-white tracking-widest group-hover:text-primary-400 transition">REX LUCIFER</h1>
                     </div>
                 </div>
 
-                <nav class="hidden md:flex items-center space-x-8">
-                    <button data-view="home-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Santuário</button>
-                    <button data-view="blog-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Grimório</button>
-                    <button data-view="sobre-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Sacerdote</button>
-                    <div class="w-[1px] h-4 bg-white/10"></div>
-                    <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-primary-400" title="Calendário"><i class="fas fa-moon"></i></a>
-                    <a href="https://caminhodatocha.site" target="_blank" class="border border-primary-900/50 text-primary-400 px-5 py-2 text-[10px] uppercase tracking-widest hover:bg-primary-900 hover:text-white transition font-bold relative overflow-hidden group">
-                        <span class="relative z-10">Fazer Parte do Coven</span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-accent/20 to-primary-900/20 opacity-0 group-hover:opacity-100 transition"></div>
-                    </a>
-                </nav>
-
-                <div class="flex items-center gap-4">
-                    <div id="user-info" class="hidden items-center gap-3">
-                        <button onclick="showView('profile-view')" class="flex items-center gap-2 text-gray-400 hover:text-primary-400 transition group">
-                            <i id="header-user-icon" class="fas fa-user-circle"></i>
-                            <span id="header-user-name" class="text-[10px] hidden sm:inline uppercase tracking-widest group-hover:underline">Iniciado</span>
+                <nav class="hidden md:flex items-center space-x-10">
+                    <button data-view="home-view" class="internal-link text-[10px] font-display font-bold tracking-[0.2em] text-gray-500 hover:text-primary-400 uppercase transition">Templo</button>
+                    <button data-view="blog-view" class="internal-link text-[10px] font-display font-bold tracking-[0.2em] text-gray-500 hover:text-primary-400 uppercase transition">Arquivos da Chama</button>
+                    
+                    <div class="w-[1px] h-6 bg-primary-500/20"></div>
+                    
+                    <div id="user-info" class="hidden items-center gap-4">
+                        <button onclick="showView('profile-view')" class="flex items-center gap-3 text-gray-400 hover:text-primary-400 transition group">
+                            <i id="header-user-icon" class="fas fa-user-astronaut"></i>
+                            <div class="flex flex-col text-right">
+                                <span class="text-[9px] text-accent uppercase tracking-widest">Iniciado</span>
+                                <span id="header-user-name" class="text-[10px] hidden sm:inline uppercase font-display tracking-widest text-white group-hover:text-primary-400"></span>
+                            </div>
                         </button>
-                        <div class="w-[1px] h-3 bg-white/10 mx-1"></div>
-                        <button id="logout-btn" class="text-gray-400 hover:text-red-500 text-xs" title="Sair"><i class="fas fa-power-off"></i></button>
+                        <button id="logout-btn" class="text-gray-600 hover:text-red-600 text-xs transition" title="Sair"><i class="fas fa-sign-out-alt"></i></button>
                     </div>
-                    <button id="login-btn" class="hidden text-xs font-display text-primary-400 uppercase tracking-widest hover:text-white border-b border-transparent hover:border-primary-400 pb-1">Login</button>
-                    <button id="mobile-menu-btn" class="md:hidden text-primary-400 text-xl"><i class="fas fa-bars"></i></button>
-                </div>
+                    <button id="login-btn" class="hidden px-6 py-2 border border-primary-500/30 text-[10px] font-display font-bold text-primary-400 uppercase tracking-widest hover:bg-primary-900/20 hover:border-primary-400 transition">Acesso</button>
+                </nav>
             </div>
         </header>
 
-        <div id="mobile-menu" class="hidden fixed inset-0 z-30 bg-black pt-24 px-8 md:hidden">
-            <div class="flex flex-col gap-6 text-center">
-                <button data-view="home-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Santuário</button>
-                <button data-view="blog-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Grimório</button>
-                <button data-view="sobre-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Sacerdote</button>
-                <button data-view="profile-view" class="internal-link text-primary-400 text-xl font-display py-2"><i class="fas fa-user mr-2"></i>Meu Perfil</button>
-                <a href="https://caminhodatocha.site" class="text-primary-400 text-xl font-display py-2"><i class="fas fa-gift mr-2"></i>Coven</a>
-                <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-gray-500 mt-8 uppercase text-xs">Fechar</button>
-            </div>
-        </div>
-
-        <main class="pt-20 min-h-screen relative z-10">
+        <main class="pt-24 min-h-screen relative z-10">
             
+            <!-- HOME VIEW REFORMULADA -->
             <div id="home-view" class="view-container">
-                
-                <section class="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
-                    <div class="absolute inset-0 z-0 opacity-30 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-accent/20 via-obsidian to-black"></div>
-                    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-900/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
-                    
-                    <div class="relative z-10 max-w-4xl mx-auto space-y-6">
-                        <div class="flex justify-center mb-4 relative">
-                            <i class="fas fa-star-of-life text-2xl text-primary-500 animate-spin-slow opacity-50"></i>
+                <!-- HERO SECTION -->
+                <section class="relative min-h-[90vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+                    <!-- Fundo Sombrio com Brilho Central -->
+                    <div class="absolute inset-0 z-0 bg-[radial-gradient(circle_at_center,rgba(184,134,11,0.15)_0%,rgba(0,0,0,1)_70%)]"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-primary-500/5 rounded-full animate-pulse-slow pointer-events-none"></div>
+                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-primary-500/10 rounded-full pointer-events-none"></div>
+
+                    <div class="relative z-10 max-w-5xl mx-auto space-y-8">
+                        <div class="flex justify-center mb-6">
+                            <i class="fas fa-fire text-3xl text-accent animate-pulse"></i>
                         </div>
-                        <h2 class="text-primary-500 text-xs md:text-sm tracking-[0.6em] uppercase fade-in-up flex items-center justify-center gap-3" style="animation-delay: 0.1s">
-                            <span class="h-[1px] w-8 bg-primary-500"></span> <script>document.write(activeTheme.name)</script> <span class="h-[1px] w-8 bg-primary-500"></span>
+                        
+                        <h2 class="text-primary-500 text-xs md:text-sm tracking-[0.8em] uppercase fade-in-up font-display border-b border-primary-500/20 pb-4 inline-block">
+                            Lux Ex Tenebris
                         </h2>
-                        <h1 class="text-5xl md:text-7xl lg:text-9xl font-display font-black text-white leading-tight fade-in-up" style="animation-delay: 0.3s">
-                            O COVEN DO <br><span class="text-gradient-theme">CORVO</span>
+                        
+                        <h1 class="text-5xl md:text-8xl font-display font-black text-white leading-tight fade-in-up uppercase" style="animation-delay: 0.2s">
+                            Desperte a <br><span class="text-gradient-gold">Divindade</span> Interior
                         </h1>
-                        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-accent to-transparent mx-auto my-6 fade-in-up" style="animation-delay: 0.5s"></div>
-                        <p class="text-gray-300 max-w-2xl mx-auto text-lg md:text-xl font-body font-light leading-relaxed fade-in-up" style="animation-delay: 0.6s">
-                            Neste ciclo sagrado, os caminhos se cruzam e a magia antiga sussurra. <br>
-                            Seja bem-vindo a nossa plataforma de Estudos.
+                        
+                        <p class="text-gray-400 max-w-2xl mx-auto text-lg font-body font-light leading-relaxed fade-in-up" style="animation-delay: 0.4s">
+                            Bem-vindo à <strong>Ordo Rex Lucifer</strong>. Aqui, a escuridão não é o fim, mas o útero onde a verdadeira luz é forjada pela vontade indomável.
                         </p>
-                        <div class="pt-8 flex flex-col md:flex-row gap-6 justify-center items-center fade-in-up" style="animation-delay: 0.8s">
-                            <button data-view="blog-view" class="internal-link px-10 py-4 bg-transparent border border-primary-400 text-primary-400 font-display text-sm font-bold tracking-[0.2em] uppercase hover:bg-primary-900/50 hover:text-white transition shadow-[0_0_20px_rgba(255,255,255,0.1)] relative group overflow-hidden">
-                                <span class="relative z-10">Abrir o Grimório</span>
-                                <div class="absolute inset-0 bg-gradient-to-r from-accent/10 to-primary-500/10 opacity-0 group-hover:opacity-100 transition"></div>
+                        
+                        <div class="pt-10 fade-in-up flex justify-center gap-6" style="animation-delay: 0.6s">
+                            <button data-view="blog-view" class="internal-link px-12 py-4 bg-primary-900/20 border border-primary-500 text-primary-400 font-display text-xs font-bold tracking-[0.3em] uppercase hover:bg-primary-500 hover:text-black transition shadow-[0_0_30px_rgba(184,134,11,0.1)] relative group overflow-hidden">
+                                <span class="relative z-10">Iniciar a Jornada</span>
+                                <div class="absolute inset-0 bg-primary-500 opacity-0 group-hover:opacity-100 transition duration-500"></div>
                             </button>
                         </div>
                     </div>
                 </section>
 
-                <section id="about-section" class="py-24 px-6 bg-obsidian border-t border-primary-900/30 relative overflow-hidden">
+                <!-- FILOSOFIA & SOBRE (EXTENSA) -->
+                <section class="py-32 px-6 bg-obsidian border-t border-primary-900/20 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-accent/5 via-transparent to-transparent pointer-events-none"></div>
 
-                    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
-                        <div class="order-2 md:order-1 space-y-8 text-justify">
-                            <h3 class="text-3xl font-display text-white flex items-center gap-4">
-                                <i class="fas fa-gift text-accent text-2xl"></i> O Mensageiro Festivo
-                            </h3>
+                    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-20 items-center relative z-10">
+                        <div class="order-2 md:order-1 space-y-10 text-justify">
+                            <div>
+                                <h3 class="text-4xl font-display text-white mb-2 flex items-center gap-4">
+                                    <span class="text-primary-500 text-6xl opacity-50">I.</span> A Doutrina da Luz Oculta
+                                </h3>
+                                <div class="h-[1px] w-24 bg-accent mt-4"></div>
+                            </div>
+                            
                             <p class="text-gray-400 font-body leading-loose text-lg">
-                                Nas sombras e na luz dos festivais, o <strong>Corvo</strong> vigia. Antigamente, eles eram os olhos dos deuses; hoje, trazem os presentes do conhecimento oculto.
+                                O Luciferianismo, em sua essência, não é a adoração do mal, mas a reverência ao <strong>Intelecto Desperto</strong>. Lúcifer, o <em>Portador da Luz</em>, é o arquétipo daquele que questiona, que busca a sabedoria proibida e que se recusa a curvar-se diante da estagnação.
                             </p>
+                            
                             <p class="text-gray-400 font-body leading-loose text-lg">
-                                Hekate, a Senhora das Encruzilhadas, segura as chaves do cosmos e abençoa este ciclo. Este blog é o nosso ponto de encontro para celebrar a Roda do Ano.
+                                Sob a orientação do Sacerdote <strong>Black Lord</strong>, a Ordo Rex Lucifer oferece um caminho estruturado para aqueles que desejam retomar a coroa de sua própria existência. Rejeitamos a culpa herdada e abraçamos a responsabilidade total pelo nosso destino.
                             </p>
-                            <div class="pt-4 flex items-center gap-4">
-                                <i class="fas fa-key text-primary-500"></i>
-                                <p class="text-primary-400 font-display text-sm tracking-widest uppercase">Bênçãos de <script>document.write(activeTheme.name)</script>, Sacerdote Leonardo</p>
+
+                            <div class="bg-black/50 border-l-2 border-primary-500 p-6">
+                                <p class="text-primary-400 font-display italic text-lg mb-2">"A Chama Negra é a centelha divina individualizada. É a consciência que separa o Eu do Todo, permitindo a criação consciente."</p>
+                                <p class="text-gray-600 text-xs uppercase tracking-widest">— Codex Luciferi</p>
                             </div>
                         </div>
-                        <div class="order-1 md:order-2 flex justify-center relative h-96 items-center">
+
+                        <!-- ILUSTRAÇÃO SVG: A ESTRELA DA MANHÃ -->
+                        <div class="order-1 md:order-2 flex justify-center relative h-[500px] items-center">
                              <div class="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-accent/10 blur-[100px] rounded-full pointer-events-none animate-pulse"></div>
                             
-                            <svg class="mystic-crow-svg w-full h-full max-w-md" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                            <svg class="morning-star-svg w-full h-full max-w-md" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
                                 <defs>
-                                    <linearGradient id="crowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#3a3a3a;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#0a0a0a;stop-opacity:1" />
+                                    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#B8860B;stop-opacity:1" />
                                     </linearGradient>
-                                    <filter id="goldGlow">
-                                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                                    <filter id="glow">
+                                        <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
                                         <feMerge>
                                             <feMergeNode in="coloredBlur"/>
                                             <feMergeNode in="SourceGraphic"/>
@@ -678,1457 +346,927 @@
                                     </filter>
                                 </defs>
                                 
-                                <g class="crow-body" fill="url(#crowGradient)" stroke="var(--primary-main)" stroke-width="1.5" filter="url(#goldGlow)">
-                                    <path d="M250,200 C220,250 230,350 250,400 C270,350 280,250 250,200 Z" />
-                                    <path d="M250,200 C230,180 230,150 250,130 C270,150 270,180 250,200 Z" />
-                                    <path d="M250,130 L240,110 L260,110 Z" fill="var(--primary-main)"/>
-                                    
-                                    <g class="crow-wing-left">
-                                        <path d="M230,220 C150,200 50,150 20,100 C80,150 180,250 230,280 Z" opacity="0.9"/>
-                                        <path d="M235,230 C160,220 70,180 40,130 C100,180 190,260 235,290 Z" opacity="0.7"/>
-                                    </g>
-
-                                    <g class="crow-wing-right">
-                                        <path d="M270,220 C350,200 450,150 480,100 C420,150 320,250 270,280 Z" opacity="0.9"/>
-                                         <path d="M265,230 C340,220 430,180 460,130 C400,180 310,260 265,290 Z" opacity="0.7"/>
-                                    </g>
-                                    
-                                    <circle cx="250" cy="165" r="5" fill="var(--primary-main)" filter="url(#goldGlow)"/>
+                                <g class="star-core" transform="translate(250,250)">
+                                    <polygon points="0,-100 22,-30 95,-30 36,15 58,85 0,45 -58,85 -36,15 -95,-30 -22,-30" fill="none" stroke="url(#starGradient)" stroke-width="2" />
+                                    <circle cx="0" cy="0" r="10" fill="#FFD700" filter="url(#glow)"/>
                                 </g>
+
+                                <g class="star-rays" transform="translate(250,250)">
+                                    <path d="M0,-180 L10,-40 L0,0 L-10,-40 Z" fill="url(#starGradient)" opacity="0.8" />
+                                    <path d="M0,180 L10,40 L0,0 L-10,40 Z" fill="url(#starGradient)" opacity="0.8" />
+                                    <path d="M180,0 L40,-10 L0,0 L40,10 Z" fill="url(#starGradient)" opacity="0.8" />
+                                    <path d="M-180,0 L-40,-10 L0,0 L-40,10 Z" fill="url(#starGradient)" opacity="0.8" />
+                                    
+                                    <path d="M120,-120 L30,-30 L0,0" stroke="#8B0000" stroke-width="1" opacity="0.6"/>
+                                    <path d="M-120,120 L-30,30 L0,0" stroke="#8B0000" stroke-width="1" opacity="0.6"/>
+                                    <path d="M120,120 L30,30 L0,0" stroke="#8B0000" stroke-width="1" opacity="0.6"/>
+                                    <path d="M-120,-120 L-30,-30 L0,0" stroke="#8B0000" stroke-width="1" opacity="0.6"/>
+                                </g>
+                                
+                                <circle cx="250" cy="250" r="160" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="5,10" opacity="0.5" class="animate-[spin_30s_linear_infinite]" />
                             </svg>
                         </div>
                     </div>
                 </section>
 
+                <!-- PILARES DA ORDEM (GRID) -->
                 <section class="py-24 px-6 bg-void relative overflow-hidden">
-                    <div class="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent"></div>
+                    <div class="absolute top-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-500/30 to-transparent"></div>
                     <div class="max-w-7xl mx-auto">
                         <div class="text-center mb-16 space-y-4">
-                            <i class="fas fa-holly-berry text-primary-500 text-2xl"></i>
-                            <h3 class="text-4xl font-display text-white">Presentes do Templo</h3>
-                            <p class="text-gray-500 text-sm uppercase tracking-widest">Projetos e Caminhos</p>
+                            <i class="fas fa-chess-king text-primary-500 text-3xl opacity-80"></i>
+                            <h3 class="text-4xl font-display text-white uppercase tracking-widest">Os Pilares da Ascensão</h3>
+                            <p class="text-gray-500 text-xs uppercase tracking-[0.3em]">As bases do nosso Templo</p>
                         </div>
 
                         <div class="grid md:grid-cols-3 gap-8">
-                            <div class="project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer" onclick="showView('blog-view')">
+                            <!-- Card 1 -->
+                            <div class="project-card border border-white/5 p-10 relative group cursor-pointer h-full" onclick="showView('blog-view')">
                                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
-                                    <i class="fas fa-book-open text-7xl text-primary-900"></i>
+                                    <i class="fas fa-book-dead text-8xl text-primary-900"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-primary-400 mb-4 group-hover:text-white transition flex items-center gap-2">O Grimório <i class="fas fa-star text-[10px] text-accent opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <h4 class="text-2xl font-display text-primary-400 mb-6 group-hover:text-white transition uppercase">Gnose <span class="text-[10px] block text-gray-600 tracking-widest mt-1">Conhecimento</span></h4>
                                 <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
-                                    O coração deste santuário. Artigos profundos e rituais para celebrar a roda do ano.
+                                    Estudo profundo de magia cerimonial, psicologia sombria e filosofia ocultista. O saber é a única arma que não enferruja.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-primary-400 transition flex items-center gap-2">Ler Agora <i class="fas fa-arrow-right"></i></span>
+                                <span class="text-[10px] font-bold text-accent uppercase tracking-widest group-hover:text-white transition flex items-center gap-2">Explorar Arquivos <i class="fas fa-arrow-right"></i></span>
                             </div>
 
-                            <a href="https://caminhodatocha.site" target="_blank" class="project-card bg-obsidian border border-white/5 p-8 relative group block">
+                            <!-- Card 2 -->
+                            <div class="project-card border border-white/5 p-10 relative group cursor-pointer h-full bg-royal">
                                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
-                                    <i class="fas fa-fire text-7xl text-accent"></i>
+                                    <i class="fas fa-fist-raised text-8xl text-accent"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-primary-400 mb-4 group-hover:text-white transition flex items-center gap-2">Coven do Corvo <i class="fas fa-gift text-[10px] text-accent opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <h4 class="text-2xl font-display text-primary-400 mb-6 group-hover:text-white transition uppercase">Potentia <span class="text-[10px] block text-gray-600 tracking-widest mt-1">Poder Pessoal</span></h4>
                                 <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
-                                    O maior presente que você pode se dar: conhecimento estruturado. Um mergulho profundo nos mistérios.
+                                    Práticas para fortalecer a Vontade. Rituais de empoderamento e a arte de moldar a realidade conforme o desejo do Magista.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-primary-400 transition flex items-center gap-2">Saber Mais <i class="fas fa-external-link-alt"></i></span>
-                            </a>
+                                <span class="text-[10px] font-bold text-accent uppercase tracking-widest group-hover:text-white transition flex items-center gap-2">Ver Rituais <i class="fas fa-fire"></i></span>
+                            </div>
 
-                            <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="project-card bg-obsidian border border-white/5 p-8 relative group block">
+                            <!-- Card 3 -->
+                            <div class="project-card border border-white/5 p-10 relative group cursor-pointer h-full">
                                 <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-30 transition duration-500">
-                                    <i class="fas fa-calendar-alt text-7xl text-primary-900"></i>
+                                    <i class="fas fa-users text-8xl text-primary-900"></i>
                                 </div>
-                                <h4 class="text-xl font-display text-primary-400 mb-4 group-hover:text-white transition flex items-center gap-2">Calendário Hekatino <i class="fas fa-snowflake text-[10px] text-accent opacity-50 group-hover:opacity-100 transition"></i></h4>
+                                <h4 class="text-2xl font-display text-primary-400 mb-6 group-hover:text-white transition uppercase">Fraternitas <span class="text-[10px] block text-gray-600 tracking-widest mt-1">O Círculo Interno</span></h4>
                                 <p class="text-gray-400 text-sm leading-relaxed mb-8 min-h-[80px]">
-                                    Sincronize-se com os ciclos. Mapeie os dias sagrados e os rituais específicos.
+                                    Uma comunidade seleta de iniciados. Aqui, a lealdade e a troca de experiências elevam todos os membros.
                                 </p>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-primary-400 transition flex items-center gap-2">Acessar <i class="fas fa-external-link-alt"></i></span>
-                            </a>
+                                <span class="text-[10px] font-bold text-accent uppercase tracking-widest group-hover:text-white transition flex items-center gap-2">Unir-se à Ordem <i class="fas fa-user-plus"></i></span>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <section class="py-20 px-6 border-t border-primary-900/30 bg-[#080808] text-center relative overflow-hidden">
-                     <div class="absolute inset-0 bg-gradient-to-t from-accent/10 to-primary-500/5 blur-[120px] pointer-events-none"></div>
-                    <div class="max-w-2xl mx-auto space-y-8 relative z-10">
-                        <i class="fas fa-key text-3xl text-primary-500 animate-pulse"></i>
-                        <h3 class="text-3xl font-display text-white">Junte-se à Celebração do Coven</h3>
-                        <p class="text-gray-400 font-body leading-relaxed">
-                            Nestes dias sagrados, alguns segredos são compartilhados apenas entre os iniciados. <br>
-                            Se você possui a chave, adentre o círculo interno.
+                <!-- CALL TO ACTION FINAL -->
+                <section class="py-28 px-6 border-t border-primary-900/30 bg-[#020202] text-center relative overflow-hidden">
+                     <div class="absolute inset-0 bg-gradient-to-t from-accent/5 to-transparent blur-[100px] pointer-events-none"></div>
+                    <div class="max-w-3xl mx-auto space-y-10 relative z-10">
+                        <div class="mb-4">
+                            <i class="fas fa-skull text-4xl text-accent animate-pulse"></i>
+                        </div>
+                        <h3 class="text-4xl md:text-5xl font-display text-white uppercase leading-tight">
+                            O Chamado do Abismo
+                        </h3>
+                        <p class="text-gray-400 font-body leading-loose text-lg">
+                            Muitos ouvem o sussurro, poucos têm a coragem de responder. <br>
+                            Se você sente a Chama Negra queimar em seu peito, seu lugar é entre os Reis e Rainhas desta era.
                         </p>
-                        <button onclick="document.getElementById('login-view').style.display='flex'" class="inline-block border border-primary-900 px-10 py-4 text-primary-400 font-display text-xs font-bold tracking-[0.3em] uppercase hover:bg-accent/80 hover:text-white hover:border-accent transition relative group overflow-hidden">
-                            <span class="relative z-10">Área Restrita</span>
-                             <div class="absolute inset-0 bg-primary-400/10 opacity-0 group-hover:opacity-100 transition"></div>
-                        </button>
+                        <div class="pt-6">
+                            <button onclick="document.getElementById('login-view').style.display='flex'" class="inline-block border border-primary-500 px-12 py-5 text-primary-400 font-display text-xs font-bold tracking-[0.4em] uppercase hover:bg-primary-900 hover:text-white hover:border-primary-900 transition duration-500 shadow-[0_0_20px_rgba(184,134,11,0.2)]">
+                                Requerer Iniciação
+                            </button>
+                        </div>
+                        <p class="text-[9px] text-gray-600 uppercase tracking-widest mt-8">A porta está aberta, mas o caminho é estreito.</p>
                     </div>
                 </section>
             </div>
 
+            <!-- ACERVO / BLOG VIEW -->
             <div id="blog-view" class="view-container hidden max-w-7xl mx-auto pt-10 px-4">
                 
-                <!-- PAINEL DE ADMIN (VISÍVEL APENAS PARA O SACERDOTE) -->
-                <div id="admin-panel" class="hidden mb-16 p-8 bg-obsidian border border-primary-900/30 rounded-sm relative overflow-hidden">
-                    <div class="absolute -right-10 -top-10 text-9xl text-white/5 pointer-events-none"><i class="fas fa-feather"></i></div>
-                    <h3 class="text-primary-400 font-display text-xl mb-6 flex items-center gap-2 relative z-10"><i class="fas fa-crown"></i> Painel do Sacerdote</h3>
+                <!-- PAINEL ADMIN -->
+                <div id="admin-panel" class="hidden mb-16 p-8 bg-royal border border-primary-500/20 rounded-none relative overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+                    <div class="absolute top-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent"></div>
+                    <h3 class="text-primary-400 font-display text-2xl mb-8 flex items-center gap-3 relative z-10"><i class="fas fa-chess-king"></i> Painel do Magister Templi</h3>
                     
-                    <div class="grid lg:grid-cols-2 gap-10 relative z-10">
-                        <form id="create-post-form" class="space-y-4">
-                            <input type="text" id="post-title" class="input-luxe w-full p-3 font-display text-lg" placeholder="Título do Ritual" required>
-                            <input type="url" id="post-cover-image" class="input-luxe w-full p-3 font-body text-sm" placeholder="Link da Imagem (https://...)" required>
-                            <div class="relative">
-                                <textarea id="post-content" rows="6" class="input-luxe w-full p-3 font-body text-sm" placeholder="Escreva os segredos..." required></textarea>
-                                <button type="button" id="format-create-btn" class="absolute bottom-2 right-2 text-[10px] bg-black border border-primary-900 text-primary-400 px-3 py-1 uppercase hover:bg-primary-900 transition"><i class="fas fa-magic mr-1"></i> IA</button>
+                    <div class="grid lg:grid-cols-2 gap-12 relative z-10">
+                        <form id="create-post-form" class="space-y-6">
+                            <h4 class="text-gray-500 text-xs uppercase tracking-[0.2em] border-b border-white/5 pb-2">Novo Rito de Conhecimento</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <input type="text" id="post-title" class="input-luxe w-full p-4 text-lg" placeholder="Nome do Ritual (Título)" required>
+                                <input type="text" id="post-subtitle" class="input-luxe w-full p-4 text-sm" placeholder="Arcano (Subtítulo)" required>
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <select id="post-access" class="input-luxe w-full p-2 text-sm bg-black cursor-pointer"><option value="aberto">🔓 Público</option><option value="pago">🔐 Membros</option></select>
-                                <select id="post-section" class="input-luxe w-full p-2 text-sm bg-black cursor-pointer" required><option value="">Carregando...</option></select>
+                            
+                            <div class="p-6 bg-black border border-white/5 space-y-4">
+                                <p class="text-[10px] text-accent uppercase tracking-widest font-bold"><i class="fab fa-google-drive mr-2"></i>Chaves do Drive</p>
+                                <input type="url" id="post-video-link" class="input-luxe w-full p-3 text-sm" placeholder="Link do VÍDEO (Google Drive)" required>
+                                <input type="url" id="post-pdf-link" class="input-luxe w-full p-3 text-sm" placeholder="Link do PDF (Google Drive)" required>
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <input type="text" id="post-attachment-name" placeholder="Nome do Anexo" class="input-luxe w-full p-2 text-sm">
-                                <input type="url" id="post-attachment-link" placeholder="Link do Anexo" class="input-luxe w-full p-2 text-sm">
+
+                            <textarea id="post-content" rows="3" class="input-luxe w-full p-4 text-sm font-body" placeholder="Palavras de introdução..."></textarea>
+                            
+                            <div class="grid grid-cols-2 gap-6">
+                                <select id="post-access" class="input-luxe w-full p-3 bg-black cursor-pointer text-xs uppercase"><option value="aberto">👁️ Exotérico (Aberto)</option><option value="pago">🗝️ Esotérico (Fechado)</option></select>
+                                <select id="post-section" class="input-luxe w-full p-3 bg-black cursor-pointer text-xs uppercase" required><option value="">Carregando Caminhos...</option></select>
                             </div>
-                            <button type="submit" class="w-full bg-primary-900/40 border border-primary-500/50 text-primary-400 py-3 font-bold uppercase text-xs tracking-widest hover:bg-primary-500 hover:text-black transition">Publicar no Grimório</button>
-                            <p id="post-status" class="text-center text-xs h-4 text-primary-500"></p>
+
+                            <button type="submit" class="w-full bg-primary-900/20 border border-primary-500 text-primary-400 py-4 font-display font-bold uppercase text-xs tracking-[0.3em] hover:bg-primary-500 hover:text-black transition">Consagrar Aula</button>
+                            <p id="post-status" class="text-center text-xs h-4 text-primary-500 font-display"></p>
                         </form>
 
-                        <div class="space-y-6">
-                            <div class="bg-black/40 p-5 border border-white/5">
-                                <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3"><i class="fas fa-user-plus mr-2"></i>Novo Assinante</h4>
-                                <form id="create-account-form" class="flex gap-2 flex-col">
-                                    <input type="email" id="new-email" placeholder="Email do Aluno" class="input-luxe p-2 text-sm">
-                                    <input type="password" id="new-password" placeholder="Senha Provisória" class="input-luxe p-2 text-sm">
-                                    <select id="account-validity" class="input-luxe p-2 text-sm bg-black"><option value="1">1 Mês</option><option value="3">3 Meses</option></select>
-                                    <button type="submit" class="border border-white/20 text-white py-2 text-xs uppercase hover:bg-white hover:text-black transition">Criar Acesso</button>
-                                    <p id="account-status" class="text-xs h-4"></p>
-                                </form>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="bg-black/40 p-4 border border-white/5">
-                                    <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3">Módulos</h4>
-                                    <form id="create-section-form" class="flex gap-2 mb-2">
-                                        <input type="text" id="section-name" placeholder="Nome" class="input-luxe w-full p-1 text-xs">
-                                        <button type="submit" class="text-primary-400 hover:text-white"><i class="fas fa-plus"></i></button>
+                        <div class="space-y-8">
+                            <!-- Gestão de Alunos -->
+                            <div class="bg-black/40 p-6 border border-white/5 flex flex-col h-full relative group">
+                                <div class="absolute -inset-0.5 bg-gradient-to-r from-primary-500/20 to-accent/20 opacity-0 group-hover:opacity-100 transition duration-500 blur"></div>
+                                <div class="relative bg-black p-4 h-full">
+                                    <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-6 flex items-center justify-between border-b border-white/5 pb-2">
+                                        <span><i class="fas fa-users mr-2"></i>Livro dos Iniciados</span>
+                                        <span id="student-count" class="text-primary-500 font-display text-lg">0</span>
+                                    </h4>
+                                    
+                                    <form id="create-account-form" class="flex flex-col gap-3 mb-6">
+                                        <input type="email" id="new-email" placeholder="Email do Neófito" class="input-luxe p-3 text-xs" required>
+                                        <input type="password" id="new-password" placeholder="Senha de Acesso" class="input-luxe p-3 text-xs" required>
+                                        <button type="submit" id="create-student-btn" class="bg-white/5 hover:bg-white/10 text-gray-300 py-2 text-[10px] uppercase tracking-widest transition border border-white/10">Registrar</button>
+                                        <p id="account-status" class="text-xs h-4 text-center"></p>
                                     </form>
-                                    <div id="sections-list-admin" class="max-h-24 overflow-y-auto text-xs text-gray-500 custom-scrollbar"></div>
-                                </div>
-                                <div class="bg-black/40 p-4 border border-white/5">
-                                    <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3">Alunos</h4>
-                                    <div id="students-list-admin" class="max-h-32 overflow-y-auto text-xs text-gray-500 space-y-1 custom-scrollbar"></div>
+
+                                    <div class="flex-1 overflow-y-auto custom-scrollbar max-h-[250px]">
+                                        <div id="students-list-container" class="space-y-1"></div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="bg-black/40 p-2 border border-white/5">
-                                <input type="password" id="gemini-api-key" placeholder="Cole a API Key do Gemini aqui" class="input-luxe w-full p-1 text-[10px]">
+
+                            <!-- Gestão de Módulos -->
+                            <div class="bg-black/40 p-6 border border-white/5">
+                                <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Caminhos (Trilhas)</h4>
+                                <form id="create-section-form" class="flex gap-2 mb-4">
+                                    <input type="text" id="section-name" placeholder="Nome do Caminho" class="input-luxe w-full p-2 text-xs">
+                                    <button type="submit" class="text-primary-400 hover:text-white px-2"><i class="fas fa-plus"></i></button>
+                                </form>
+                                <div id="sections-list-admin" class="max-h-32 overflow-y-auto text-xs text-gray-500 custom-scrollbar space-y-2"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- SELETOR DE TRILHAS (HUB DE SEÇÕES) -->
+                <!-- HUB DE SEÇÕES -->
                 <div id="sections-hub" class="mb-20">
-                    <div class="text-center mb-12 space-y-4">
-                        <i class="fas fa-map-signs text-primary-500 text-2xl"></i>
-                        <h3 class="text-4xl font-display text-white">Trilhas de Conhecimento</h3>
-                        <p class="text-gray-500 text-sm uppercase tracking-widest">Escolha o mistério que deseja desvendar</p>
+                    <div class="text-center mb-16 space-y-6">
+                        <i class="fas fa-dungeon text-primary-500 text-4xl opacity-80"></i>
+                        <h3 class="text-5xl font-display text-white uppercase">Arquivos da Chama</h3>
+                        <div class="h-[1px] w-24 bg-gradient-to-r from-transparent via-accent to-transparent mx-auto"></div>
+                        <p class="text-gray-500 text-xs uppercase tracking-[0.3em]">Escolha o portal que deseja atravessar</p>
                     </div>
-                    <div id="sections-cards-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <!-- OS CARDS DAS SEÇÕES SERÃO INJETADOS AQUI PELO JS -->
+                    <div id="sections-cards-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
                         <div class="col-span-full text-center py-20">
                             <i class="fas fa-circle-notch fa-spin text-primary-900 text-4xl"></i>
                         </div>
                     </div>
                 </div>
 
-                <!-- VIEW DA TRILHA ESPECÍFICA (PATH VIEW REFORMULADA) -->
+                <!-- TRILHA / PATH VIEW -->
                 <div id="active-path-view" class="hidden mb-20 relative">
-                    <button id="back-to-hub-btn" class="fixed top-24 left-4 z-30 text-gray-500 hover:text-primary-400 text-xs uppercase tracking-widest flex items-center gap-2 transition bg-black/50 p-2 rounded backdrop-blur border border-white/10">
-                        <i class="fas fa-arrow-left"></i> Voltar às Trilhas
+                    <button id="back-to-hub-btn" class="fixed top-28 left-6 z-30 text-primary-500/70 hover:text-primary-400 text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 transition bg-black/80 p-3 border border-primary-500/20 hover:border-primary-500 font-display">
+                        <i class="fas fa-chevron-left"></i> Voltar aos Portais
                     </button>
 
-                    <div class="text-center mb-16 pt-8 relative z-10">
-                        <h2 id="path-title" class="text-3xl font-display text-white mb-2"></h2>
-                        <span class="text-primary-500 text-[10px] uppercase tracking-[0.3em]">Caminho Iniciático</span>
+                    <div class="text-center mb-20 pt-8 relative z-10">
+                        <h2 id="path-title" class="text-4xl font-display text-white mb-4 uppercase text-gradient-gold"></h2>
+                        <span class="text-gray-600 text-[10px] uppercase tracking-[0.5em] border-t border-b border-gray-800 py-2">Trilha de Ascensão</span>
                     </div>
 
-                    <!-- AJUSTE DE LARGURA: MAX-W-LG no Mobile, MAX-W-3XL no Desktop -->
-                    <div class="relative w-full md:max-w-3xl max-w-md mx-auto min-h-[600px] px-4 pb-20">
-                        <!-- CONTAINER DO SVG E NÓS -->
-                        <div id="path-steps-container" class="path-container-wrapper">
-                            <!-- SVG SERÁ GERADO AQUI -->
-                        </div>
-                        
-                        <p id="empty-path-msg" class="hidden text-center text-gray-600 text-sm italic mt-10">O caminho ainda está sendo traçado pelos ventos.</p>
+                    <div class="relative w-full md:max-w-4xl max-w-md mx-auto min-h-[600px] px-4 pb-20">
+                        <!-- Fundo da Trilha -->
+                        <div class="absolute inset-0 bg-gradient-to-b from-primary-900/5 via-transparent to-transparent pointer-events-none"></div>
+                        <div id="path-steps-container" class="path-container-wrapper"></div>
+                        <p id="empty-path-msg" class="hidden text-center text-gray-600 text-sm italic mt-10 font-display">O caminho ainda não foi revelado.</p>
                     </div>
                 </div>
             </div>
 
+            <!-- PERFIL -->
             <div id="profile-view" class="view-container hidden max-w-2xl mx-auto pt-10 px-4">
-                 <div class="bg-obsidian border border-primary-900/30 p-8 md:p-12 relative overflow-hidden shadow-2xl">
-                     <div class="absolute -top-10 -right-10 text-9xl text-white/5 pointer-events-none"><i class="fas fa-id-card"></i></div>
+                 <div class="bg-royal border border-white/10 p-10 relative overflow-hidden shadow-2xl text-center">
+                     <i class="fas fa-id-card-alt text-6xl text-white/5 absolute top-5 right-5"></i>
+                     <h2 class="text-3xl font-display text-white mb-2">Credencial da Ordem</h2>
+                     <div class="h-[1px] w-full bg-gradient-to-r from-transparent via-primary-500 to-transparent my-6 opacity-30"></div>
+                     <p class="text-xs text-primary-500 uppercase tracking-widest mb-2">Identidade Espiritual</p>
+                     <p id="profile-email-display" class="text-xl text-white font-display tracking-wider mb-6"></p>
                      
-                     <h2 class="text-3xl font-display text-white mb-2 flex items-center gap-3"><i class="fas fa-hat-wizard text-primary-500"></i> Identidade Mágica</h2>
-                     <p class="text-gray-500 text-xs uppercase tracking-widest mb-10">Como você será conhecido no Coven</p>
+                     <p id="profile-admin-badge" class="hidden inline-block border border-accent/50 text-accent px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-bold">
+                        <i class="fas fa-crown mr-2"></i> Magister Templi
+                     </p>
                      
-                     <form id="profile-form" class="space-y-8">
-                         <div>
-                             <label class="block text-primary-400 text-xs uppercase tracking-widest mb-3">Nome de Arte</label>
-                             <input type="text" id="profile-display-name" placeholder="Ex: Corvo Noturno" class="input-luxe w-full p-4 font-display text-lg text-white border-b-2 border-primary-900/50 focus:border-primary-400" maxlength="30">
-                         </div>
-
-                         <div>
-                             <label class="block text-primary-400 text-xs uppercase tracking-widest mb-4">Escolha seu Totem</label>
-                             <div class="flex flex-wrap gap-4 justify-center md:justify-start">
-                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-crow" id="av1"><label for="av1"><i class="fas fa-crow"></i></label></div>
-                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-moon" id="av2"><label for="av2"><i class="fas fa-moon"></i></label></div>
-                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-fire" id="av3"><label for="av3"><i class="fas fa-fire"></i></label></div>
-                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-key" id="av4"><label for="av4"><i class="fas fa-key"></i></label></div>
-                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-star" id="av5"><label for="av5"><i class="fas fa-star"></i></label></div>
-                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-ghost" id="av6"><label for="av6"><i class="fas fa-ghost"></i></label></div>
-                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-eye" id="av7"><label for="av7"><i class="fas fa-eye"></i></label></div>
-                                 <div class="avatar-option"><input type="radio" name="avatar" value="fa-skull" id="av8"><label for="av8"><i class="fas fa-skull"></i></label></div>
-                             </div>
-                         </div>
-
-                         <div class="pt-6 border-t border-white/5">
-                             <button type="submit" class="w-full bg-primary-900 text-white py-4 font-display font-bold uppercase tracking-[0.2em] hover:bg-primary-500 hover:text-black transition shadow-[0_0_15px_var(--primary-main)]">Salvar Identidade</button>
-                             <p id="profile-status" class="text-center text-xs mt-4 h-4"></p>
-                         </div>
-                     </form>
+                     <div class="mt-10 bg-black/50 p-4 border border-white/5">
+                         <p class="text-[10px] text-gray-600 uppercase">Seu progresso é registrado no livro da vida.</p>
+                     </div>
                  </div>
-            </div>
-
-            <div id="sobre-view" class="view-container hidden max-w-5xl mx-auto pt-10 px-4">
-                <div class="glass-dark p-8 md:p-16 border-t border-primary-900/50 relative overflow-hidden">
-                    <div class="absolute -top-20 -right-20 w-60 h-60 bg-accent/10 rounded-full blur-3xl"></div>
-                    
-                    <div class="flex flex-col md:flex-row gap-12 items-center relative z-10">
-                        <div class="w-full md:w-2/5 relative group">
-                            <div class="absolute inset-0 border border-primary-500/20 translate-x-3 translate-y-3 group-hover:translate-x-2 group-hover:translate-y-2 transition duration-500"></div>
-                            <img src="https://i.ibb.co/0ymRCF5C/2-DACB7-CC-CE28-4383-BD50-DEB2-C7-A38721.png" class="w-full grayscale hover:grayscale-0 transition duration-700 shadow-2xl relative z-10">
-                            <div class="absolute -bottom-5 -left-5 text-3xl text-primary-500 opacity-50 rotate-12"><i class="fas fa-holly-berry text-accent"></i></div>
-                        </div>
-                        <div class="w-full md:w-3/5 text-gray-300 font-body leading-relaxed space-y-6 text-lg text-justify">
-                            <div>
-                                <h2 class="text-4xl font-display text-white mb-1 flex items-center gap-3">Leonardo <i class="fas fa-star-of-life text-primary-500 text-xl"></i></h2>
-                                <p class="text-primary-500 text-xs uppercase tracking-[0.4em]">Sacerdote de Hekate</p>
-                            </div>
-                            <p>
-                                <span class="text-4xl float-left mr-2 text-primary-600 font-display">N</span>este período sagrado, refletimos sobre as encruzilhadas. Minha vida foi dedicada a entender as escolhas que fazemos nas sombras, guiado pela chama da Deusa que renasce.
-                            </p>
-                            <p>
-                                O projeto <strong>O Coven do Corvo</strong> é meu presente para a comunidade. Aqui, a magia não é teoria; é vivência. Compartilho minha devoção e a sabedoria das chaves.
-                            </p>
-                            <div class="pt-6 border-t border-white/5 flex gap-4 text-2xl text-primary-400">
-                                <a href="#" class="hover:text-white transition"><i class="fab fa-instagram"></i></a>
-                                <a href="#" class="hover:text-white transition"><i class="fab fa-youtube"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
         </main>
 
-        <footer class="bg-black py-12 text-center border-t border-primary-900/20 relative z-10 overflow-hidden">
-            <div class="absolute inset-0 bg-accent/5 pointer-events-none"></div>
-            <i class="fas fa-crow text-primary-900 text-2xl mb-4 animate-pulse relative z-10"></i>
-            <p class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-2 relative z-10">© 2025 Coven do Corvo | <script>document.write(activeTheme.name)</script></p>
-            <p class="text-gray-800 text-[10px] relative z-10">Desenvolvido nas Sombras</p>
-        </footer>
-
-        <div id="login-view" class="view-container hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="w-full max-w-sm relative bg-obsidian p-10 border border-primary-900/30 shadow-[0_0_50px_rgba(139,0,0,0.2)]">
-                <button id="close-login-btn" class="absolute top-4 right-4 text-gray-500 hover:text-white transition"><i class="fas fa-times"></i></button>
-                <div class="text-center mb-10">
-                    <i class="fas fa-key text-primary-500 text-2xl mb-4"></i>
-                    <h2 class="text-2xl font-display text-white tracking-widest flex justify-center items-center gap-2">ACESSO <i class="fas fa-holly-berry text-accent text-sm"></i></h2>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest mt-2">Área do Coven do Corvo</p>
+        <!-- MODAL DE LOGIN -->
+        <div id="login-view" class="view-container hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
+            <div class="w-full max-w-md relative bg-royal p-12 border border-primary-500/20 shadow-[0_0_100px_rgba(0,0,0,1)]">
+                <button id="close-login-btn" class="absolute top-4 right-4 text-gray-600 hover:text-white transition"><i class="fas fa-times"></i></button>
+                
+                <div class="text-center mb-12">
+                    <i class="fas fa-fire text-accent text-3xl mb-4"></i>
+                    <h2 id="login-title" class="text-3xl font-display text-white tracking-[0.2em] uppercase">Sanctum</h2>
+                    <div class="h-[1px] w-12 bg-accent mx-auto my-4"></div>
+                    <p id="login-subtitle" class="text-[10px] text-gray-500 uppercase tracking-[0.4em]">Identifique-se</p>
                 </div>
-                <form id="login-form" class="space-y-6">
-                    <div class="group">
-                        <input type="email" id="login-email" placeholder="EMAIL" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-primary-400 outline-none transition font-display tracking-wider">
+                
+                <form id="login-form" class="space-y-8">
+                    <div class="group relative">
+                        <input type="email" id="login-email" placeholder="EMAIL" class="w-full bg-transparent border-b border-gray-800 p-4 text-center text-white outline-none font-display tracking-widest focus:border-primary-500 transition-colors placeholder:text-gray-700">
                     </div>
-                    <div class="group">
-                        <input type="password" id="login-password" placeholder="SENHA" class="w-full bg-transparent border-b border-gray-700 p-3 text-center text-white focus:border-primary-400 outline-none transition font-display tracking-wider">
+                    <div class="group relative">
+                        <input type="password" id="login-password" placeholder="SENHA" class="w-full bg-transparent border-b border-gray-800 p-4 text-center text-white outline-none font-display tracking-widest focus:border-primary-500 transition-colors placeholder:text-gray-700">
                     </div>
-                    <button type="submit" class="w-full border border-primary-900 text-primary-400 py-4 uppercase text-xs tracking-[0.3em] hover:bg-accent/80 hover:text-white hover:border-accent transition font-bold mt-4">Entrar</button>
+                    <button type="submit" id="login-submit-btn" class="w-full border border-primary-900 text-primary-400 py-5 uppercase text-[10px] tracking-[0.4em] hover:bg-primary-500 hover:text-black transition font-bold mt-4 shadow-[0_0_20px_rgba(0,0,0,0.5)]">Adentrar</button>
                 </form>
-                <p id="login-error" class="text-center text-red-500 text-xs mt-6 font-display tracking-wider"></p>
+
+                <div class="text-center mt-10 pt-8 border-t border-white/5">
+                    <button id="toggle-register-btn" class="text-gray-600 text-[9px] uppercase tracking-[0.2em] hover:text-white transition">Solicitar Iniciação (Criar Conta)</button>
+                </div>
+
+                <p id="login-error" class="text-center text-accent text-xs mt-6 font-display tracking-wider"></p>
             </div>
         </div>
 
-        <div id="post-view" class="view-container hidden fixed inset-0 z-[60] bg-[#050505] overflow-y-auto custom-scrollbar">
-            <div class="max-w-4xl mx-auto min-h-screen bg-obsidian border-x border-white/5 relative shadow-2xl">
-                <div class="sticky top-0 z-20 bg-obsidian/95 backdrop-blur border-b border-white/5 p-4 flex justify-between items-center h-16 shadow-lg">
-                    <button id="back-to-posts-btn" class="text-primary-400 text-xs uppercase tracking-[0.2em] hover:text-white transition flex items-center gap-2 group">
-                        <i class="fas fa-arrow-left group-hover:-translate-x-1 transition"></i> Voltar
+        <!-- PLAYER DE VÍDEO (AULA) -->
+        <div id="post-view" class="view-container hidden fixed inset-0 z-[60] bg-black overflow-y-auto custom-scrollbar">
+            <div class="max-w-6xl mx-auto min-h-screen bg-royal border-x border-white/5 relative shadow-2xl">
+                <!-- Top Bar -->
+                <div class="sticky top-0 z-20 bg-royal/95 backdrop-blur border-b border-white/5 p-4 flex justify-between items-center h-20 shadow-lg px-8">
+                    <button id="back-to-posts-btn" class="text-gray-400 text-[10px] uppercase tracking-[0.2em] hover:text-primary-400 transition flex items-center gap-3 group font-display">
+                        <i class="fas fa-long-arrow-alt-left text-lg group-hover:-translate-x-1 transition"></i> Retornar
                     </button>
                     <div class="admin-only-controls hidden gap-4">
-                        <button id="post-view-edit-btn" class="text-gray-500 hover:text-white transition"><i class="fas fa-pen"></i></button>
-                        <button id="post-view-delete-btn" class="text-gray-500 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>
+                        <button id="post-view-delete-btn" class="text-red-900 hover:text-red-500 transition text-xs uppercase tracking-widest border border-red-900/30 px-4 py-2 hover:bg-red-900/10"><i class="fas fa-trash mr-2"></i> Excluir Registro</button>
                     </div>
                 </div>
 
-                <div class="p-6 md:p-16 pb-32">
-                    <h1 id="post-view-title" class="text-3xl md:text-5xl font-display text-white text-center mb-6 leading-tight"></h1>
-                    
-                    <div class="flex justify-center items-center gap-6 text-[10px] text-gray-500 uppercase tracking-widest mb-12 border-b border-white/5 pb-6">
-                        <span><i class="fas fa-eye text-primary-900 mr-2"></i><span id="post-view-count">0</span> Leituras</span>
-                        <i class="fas fa-circle text-[3px] text-primary-500"></i>
-                        <span>Coven do Corvo</span>
-                    </div>
-
-                    <div class="flex justify-center mb-12">
-                         <div id="audio-controls" class="inline-flex items-center gap-4 px-6 py-2 border border-primary-900/30 rounded-full cursor-pointer hover:border-primary-400/50 transition group bg-black/50">
-                            <button id="btn-speak" class="flex items-center gap-3 text-primary-500 group-hover:text-primary-300 text-xs uppercase font-bold tracking-widest">
-                                <i id="btn-speak-icon" class="fas fa-play text-[10px]"></i> <span id="btn-speak-text">Ouvir o Chamado</span>
-                            </button>
-                            <button id="btn-stop-speak" class="hidden text-red-800 hover:text-red-500 transition"><i class="fas fa-stop"></i></button>
-                            <audio id="gemini-audio-player" class="hidden"></audio>
+                <div class="p-0">
+                    <!-- ÁREA DO VÍDEO -->
+                    <div class="w-full bg-black border-b border-primary-500/20 relative">
+                        <div class="absolute inset-0 bg-accent/5 pointer-events-none"></div>
+                        <div class="max-w-5xl mx-auto video-wrapper">
+                            <iframe id="video-iframe" src="" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
                         </div>
                     </div>
 
-                    <div class="relative group mb-12">
-                        <div class="absolute inset-0 bg-primary-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                        <img id="post-view-cover-image" class="w-full h-auto max-h-[600px] object-cover border-y border-white/10 grayscale group-hover:grayscale-0 transition duration-1000 relative z-10">
-                    </div>
+                    <div class="p-8 md:p-16 pb-32">
+                        <!-- TÍTULO E DOWNLOAD -->
+                        <div class="flex flex-col md:flex-row justify-between items-start gap-12 mb-12 border-b border-white/5 pb-12">
+                            <div class="flex-1 space-y-4">
+                                <span class="text-accent text-[9px] uppercase tracking-[0.4em] font-bold block border-l-2 border-accent pl-3">Rito em Andamento</span>
+                                <h1 id="post-view-title" class="text-4xl md:text-5xl font-display text-white leading-tight uppercase"></h1>
+                                <h3 id="post-view-subtitle" class="text-xl text-primary-500 font-display italic"></h3>
+                            </div>
+                            
+                            <a id="post-view-pdf-btn" href="#" target="_blank" class="shrink-0 bg-black border border-primary-900 hover:border-primary-500 text-gray-300 hover:text-white px-8 py-5 font-display font-bold uppercase tracking-[0.2em] text-[10px] flex items-center gap-4 transition group">
+                                <i class="fas fa-scroll text-2xl text-primary-500 group-hover:text-white transition"></i> 
+                                <div class="text-left">
+                                    <span class="block text-[8px] text-gray-600">Documento Sagrado</span>
+                                    <span>Baixar PDF</span>
+                                </div>
+                            </a>
+                        </div>
 
-                    <div id="post-view-content" class="prose prose-invert prose-lg max-w-none font-body text-gray-300 leading-loose text-justify"></div>
-
-                    <div id="post-view-attachment-container" class="hidden mt-20 pt-10 border-t border-primary-900/30 text-center">
-                        <p class="text-[10px] text-primary-600 uppercase tracking-widest mb-4">Conteúdo Adicional</p>
-                        <a id="post-view-attachment" href="#" target="_blank" class="inline-flex items-center gap-3 border border-primary-900 text-primary-400 px-8 py-3 text-xs uppercase tracking-widest hover:bg-primary-400 hover:text-black transition">
-                            <i class="fas fa-download"></i> Baixar Material
-                        </a>
-                    </div>
-
-                    <!-- BOTÃO DE CONCLUIR RITUAL (NOVO) -->
-                    <div class="mt-16 flex justify-center">
-                        <button id="mark-complete-btn" class="bg-primary-900 hover:bg-primary-500 hover:text-black text-white px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_20px_var(--primary-main)] transition transform hover:scale-105 flex items-center gap-3">
-                            <i class="fas fa-check-circle text-xl"></i> Concluir Leitura & Avançar
-                        </button>
-                    </div>
-                    
-                    <div id="comments-section" class="mt-24 border-t border-primary-900/20 pt-10">
-                         <h3 class="text-2xl font-display text-white mb-8 flex items-center gap-2"><i class="fas fa-comments text-primary-500"></i> Discussões do Coven</h3>
-                         
-                         <div id="comments-list" class="space-y-6 mb-10"></div>
-                         
-                         <div id="comment-form-container" class="hidden bg-black/30 p-6 border border-white/5 rounded">
-                             <h4 class="text-sm text-primary-400 font-display mb-4 uppercase tracking-widest">Deixar uma oferenda de palavras</h4>
-                             <textarea id="comment-input" class="input-luxe w-full p-4 text-sm mb-4 bg-obsidian" rows="3" placeholder="Compartilhe sua visão..."></textarea>
-                             <button id="submit-comment-btn" class="bg-primary-900/50 border border-primary-900 text-white px-6 py-2 text-xs uppercase tracking-widest hover:bg-primary-500 hover:text-black transition">Enviar Comentário</button>
-                         </div>
-                         <p id="comment-login-msg" class="text-center text-gray-600 text-xs italic mt-8">Entre no santuário para deixar sua marca.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="edit-post-view" class="view-container hidden fixed inset-0 z-[70] bg-black p-4 overflow-y-auto">
-             <div class="max-w-2xl mx-auto mt-20 bg-obsidian p-8 border border-white/10 shadow-2xl">
-                <h2 class="text-xl font-display text-white mb-8 border-b border-white/10 pb-4">Editar Pergaminho</h2>
-                <form id="edit-post-form" class="space-y-6">
-                    <input type="hidden" id="edit-post-id">
-                    <input type="text" id="edit-post-title" class="input-luxe w-full p-3 font-display" required>
-                    <input type="url" id="edit-post-cover-image" class="input-luxe w-full p-3" required>
-                    <div class="relative">
-                        <textarea id="edit-post-content" rows="10" class="input-luxe w-full p-3" required></textarea>
-                        <button type="button" id="format-edit-btn" class="absolute bottom-3 right-3 text-primary-400 text-[10px] uppercase border border-primary-900 px-2 py-1 bg-black">IA</button>
-                    </div>
-                     <div class="grid grid-cols-2 gap-6">
-                        <input type="text" id="edit-post-attachment-name" class="input-luxe w-full p-3">
-                        <input type="url" id="edit-post-attachment-link" class="input-luxe w-full p-3">
-                    </div>
-                    <div class="grid grid-cols-2 gap-6">
-                        <select id="edit-post-access" class="input-luxe w-full p-3 bg-black"><option value="pago">Pago</option><option value="aberto">Aberto</option></select>
-                        <select id="edit-post-section" class="input-luxe w-full p-3 bg-black"></select>
-                    </div>
-                    <div class="flex gap-4 mt-8">
-                        <button type="submit" class="flex-1 bg-primary-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-primary-600 transition">Salvar</button>
-                        <button type="button" id="cancel-edit-btn" class="flex-1 bg-gray-800 text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-700 transition">Cancelar</button>
-                    </div>
-                    <p id="edit-post-status" class="text-center mt-4 text-xs text-primary-500"></p>
-                </form>
-             </div>
-        </div>
-
-        <div id="manage-student-modal" class="hidden fixed inset-0 z-[80] bg-black/90 flex items-center justify-center p-4">
-            <div class="bg-obsidian border border-white/10 p-8 w-full max-w-md shadow-2xl">
-                <div class="flex justify-between mb-6">
-                    <div>
-                        <span class="text-[10px] text-gray-500 uppercase tracking-widest block">Gerenciando</span>
-                        <div class="flex flex-col">
-                            <span id="student-modal-email" class="text-primary-400 font-display text-lg"></span>
-                            <span id="student-modal-display-name" class="text-gray-500 text-xs italic"></span>
+                        <!-- DESCRIÇÃO -->
+                        <div class="mb-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
+                            <div class="lg:col-span-2">
+                                <h4 class="text-gray-600 text-[10px] uppercase tracking-[0.2em] mb-6"><i class="fas fa-align-left mr-2"></i>Escrituras do Mestre</h4>
+                                <div id="post-view-content" class="prose prose-invert max-w-none text-gray-400 font-body leading-loose text-justify border-l border-white/5 pl-6"></div>
+                            </div>
+                            
+                            <!-- BOTÃO CONCLUIR (LADO DIREITO) -->
+                            <div class="flex flex-col items-center justify-center bg-black/30 p-8 border border-white/5 h-fit">
+                                <i class="fas fa-certificate text-4xl text-gray-800 mb-6"></i>
+                                <p class="text-center text-gray-500 text-xs mb-6">Ao finalizar o estudo, sele a sua mente.</p>
+                                <button id="mark-complete-btn" class="w-full bg-transparent border border-primary-500/30 text-primary-400 hover:bg-primary-500 hover:text-black py-4 font-display font-bold uppercase tracking-[0.2em] text-[10px] transition transform hover:scale-105 flex items-center justify-center gap-3">
+                                    <i class="fas fa-check-circle text-lg"></i> Consagrar Leitura
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- COMENTÁRIOS -->
+                        <div id="comments-section" class="border-t border-white/5 pt-12">
+                             <h3 class="text-2xl font-display text-white mb-8"><i class="fas fa-comments text-primary-900 mr-3"></i> Diálogo da Ordem</h3>
+                             
+                             <div id="comments-list" class="space-y-6 mb-10"></div>
+                             
+                             <div id="comment-form-container" class="hidden bg-black p-6 border border-white/10">
+                                 <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-4">Sua voz no abismo</p>
+                                 <textarea id="comment-input" class="input-luxe w-full p-4 text-sm mb-4 bg-obsidian" rows="3" placeholder="Escreva sua reflexão..."></textarea>
+                                 <button id="submit-comment-btn" class="text-primary-400 text-[10px] uppercase tracking-[0.2em] hover:text-white transition font-bold border border-primary-900/30 px-6 py-3 hover:bg-primary-900/10">Enviar Oferenda</button>
+                             </div>
                         </div>
                     </div>
-                    <button id="close-student-modal-btn"><i class="fas fa-times text-gray-500 hover:text-white transition"></i></button>
-                </div>
-                <input type="hidden" id="student-modal-id">
-                
-                <div class="mb-6 p-4 bg-black/40 border border-primary-900/20 rounded">
-                    <p class="text-[10px] text-gray-500 uppercase mb-2">Validade do Acesso</p>
-                    <div class="flex items-center justify-between mb-4">
-                        <span id="student-expiry-date" class="text-white font-body text-sm"></span>
-                        <span id="student-status-badge" class="px-2 py-1 text-[9px] uppercase font-bold rounded bg-gray-800 text-gray-400">Verificando</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                         <button id="renew-30-btn" class="bg-green-900/30 text-green-400 border border-green-900/50 py-2 text-[10px] uppercase hover:bg-green-900/50 transition">Renovar +30 Dias</button>
-                         <button id="renew-90-btn" class="bg-green-900/30 text-green-400 border border-green-900/50 py-2 text-[10px] uppercase hover:bg-green-900/50 transition">Renovar +3 Meses</button>
-                         <button id="revoke-btn" class="col-span-2 bg-red-900/30 text-red-400 border border-red-900/50 py-2 text-[10px] uppercase hover:bg-red-900/50 transition font-bold">REVOGAR ACESSO</button>
-                    </div>
-                </div>
-
-                <p class="text-[10px] text-gray-500 uppercase mb-2">Permissões de Módulos</p>
-                <div id="student-modal-sections-list" class="space-y-3 mb-8 max-h-40 overflow-y-auto custom-scrollbar bg-black/50 p-4 border border-white/5"></div>
-                <button id="save-student-sections-btn" class="w-full bg-primary-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-primary-500 hover:text-black transition font-bold">Salvar Permissões</button>
-                <p id="student-modal-status" class="text-center text-xs mt-4 h-4"></p>
-            </div>
-        </div>
-
-        <div id="delete-confirm-modal" class="hidden fixed inset-0 z-[90] bg-black/95 flex items-center justify-center">
-            <div class="text-center p-10 border border-red-900/30 bg-obsidian shadow-[0_0_50px_rgba(255,0,0,0.1)]">
-                <i class="fas fa-exclamation-triangle text-red-900 text-4xl mb-6"></i>
-                <h2 id="delete-modal-title" class="text-xl font-display text-white mb-2">Tem certeza?</h2>
-                <p class="text-gray-500 text-xs uppercase tracking-widest mb-8">O conhecimento será perdido para sempre.</p>
-                <div class="flex justify-center gap-6">
-                    <button id="confirm-delete-btn" class="bg-red-900/50 text-red-100 border border-red-900 px-8 py-3 text-xs uppercase hover:bg-red-900 transition">Excluir</button>
-                    <button id="cancel-delete-btn" class="bg-gray-800 text-white px-8 py-3 text-xs uppercase hover:bg-gray-700 transition">Cancelar</button>
                 </div>
             </div>
         </div>
 
-    </div> <script src="https://player.vimeo.com/api/player.js"></script>
+    </div>
+
+    <!-- FIREBASE MODULE -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, setLogLevel, orderBy, increment, where, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, getDoc, setDoc, query, deleteDoc, updateDoc, orderBy, increment, where, arrayUnion } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // === CONFIGURAÇÃO FIREBASE ===
         const firebaseConfig = {
-          apiKey: "AIzaSyBQXn_dPUivGjfGrWvMwysa-IDX8eXNbCA",
-          authDomain: "corvo-4f7e7.firebaseapp.com",
-          projectId: "corvo-4f7e7",
-          storageBucket: "corvo-4f7e7.firebasestorage.app",
-          messagingSenderId: "793120208869",
-          appId: "1:793120208869:web:378c37a33c729ff1a6e10c",
-          measurementId: "G-V8LBRHPNKT"
+          apiKey: "AIzaSyDBIIcYpc0UGYOEYUMziqRbRFCKwwFKHWo",
+          authDomain: "black-f70c1.firebaseapp.com",
+          projectId: "black-f70c1",
+          storageBucket: "black-f70c1.firebasestorage.app",
+          messagingSenderId: "405843705668",
+          appId: "1:405843705668:web:7a6ab1a8bdb2016aaf2111"
         };
-        const ADMIN_UID = "9yeLL3aKVXVHKiBNKI3yFiCPMIE3"; 
-        const HARDCODED_API_KEY = "AIzaSyA2m-CD-RJOiac90q7p4iql7fYyhlnW1xY"; 
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
-        // === VARIÁVEIS ===
-        let currentUser = null; 
-        let currentUserPermissions = []; 
-        let completedPosts = []; // NOVO: ARRAY DE POSTS COMPLETOS PELO USER
-        let currentProfile = { displayName: null, avatar: null };
-        let itemToDelete = { id: null, type: null }; 
-        let allPosts = []; 
-        let allSections = []; 
-        let allStudents = []; 
-        let commentsUnsubscribe = null;
-        let activeSectionId = null; // Para saber qual trilha estamos vendo
-
-        // === REFERÊNCIAS ===
-        const appRoot = document.getElementById('app-root');
-        const introSection = document.getElementById('intro-sequence');
-        const loadingSpinner = document.getElementById('loading-spinner');
-        const allViews = document.querySelectorAll('.view-container');
         
-        // --- INTRO SAFETY ---
-        window.forceOpenSite = function() {
-            gsap.to(introSection, { opacity: 0, duration: 1, onComplete: () => {
-                introSection.style.display = 'none';
-                appRoot.style.display = 'block';
-                gsap.to(appRoot, { opacity: 1, duration: 1 });
-            }});
-        };
+        // 🚨 MANTENHA O ADMIN UID AQUI 🚨
+        const ADMIN_UID = "COLE_SEU_UID_AQUI"; 
 
-        window.onload = function() {
-            // Failsafe timer
-            setTimeout(() => { if(introSection.style.display !== 'none') window.forceOpenSite(); }, 8000); 
-            // Normal timer
-            setTimeout(() => { window.forceOpenSite(); }, 7500);
-        };
+        // STATE
+        let currentUser = null;
+        let currentUserData = null; // Guardar dados completos para ver datas
+        let completedPosts = [];
+        let allPosts = [];
+        let allSections = [];
+        let activeSectionId = null;
+        let currentPostId = null;
+        let commentsUnsubscribe = null;
+        let isRegisterMode = false;
+        let studentsUnsubscribe = null; 
 
-        // === NAVEGAÇÃO ===
-        function showView(viewId) {
-            allViews.forEach(view => {
-                if (view.classList.contains('fixed')) {
-                    if(view.id === viewId) view.style.display = 'flex';
-                    else if(!viewId.includes('modal') && !['manage-student-modal','delete-confirm-modal'].includes(view.id)) view.style.display = 'none';
-                } else {
-                    view.style.display = view.id === viewId ? 'block' : 'none';
-                }
-            });
-            
-            // LÓGICA DE VISUALIZAÇÃO DO BLOG (HUB vs TRILHA)
-            if(viewId === 'blog-view') {
-                 if(!activeSectionId) {
-                     // MOSTRAR HUB (CARDS)
-                     const hub = document.getElementById('sections-hub');
-                     hub.classList.remove('hidden');
-                     hub.style.opacity = '1'; // Garante visibilidade
-                     document.getElementById('active-path-view').classList.add('hidden');
-                 } else {
-                     // MOSTRAR TRILHA ATIVA
-                     document.getElementById('sections-hub').classList.add('hidden');
-                     const pathView = document.getElementById('active-path-view');
-                     pathView.classList.remove('hidden');
-                     pathView.style.opacity = '1'; // Garante visibilidade
-                     pathView.style.transform = 'translateY(0)'; // Reseta posição
-                     renderProfessionalPath(activeSectionId); // RE-RENDERIZA PARA ATUALIZAR STATUS VISUAL
-                 }
-            } else if (viewId !== 'post-view' && viewId !== 'edit-post-view') {
-                // Só reseta a seção se sair completamente do contexto do blog (ex: Home, Perfil)
-                // Se for para 'post-view' ou 'edit-post-view', mantém o ID.
-                activeSectionId = null; 
-            }
-
-            // RESET DE SCROLL GLOBAL
-            if(!viewId.includes('modal') && viewId !== 'login-view') window.scrollTo(0,0);
-            
-            // RESET DE SCROLL DE CONTAINERS INTERNOS (Para post-view fixo)
-            const targetEl = document.getElementById(viewId);
-            if(targetEl) targetEl.scrollTop = 0;
-
-            document.getElementById('mobile-menu').classList.add('hidden');
-        }
-
-        document.querySelectorAll('.internal-link').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const target = e.currentTarget.dataset.view;
-                if(target) showView(target);
-                stopSpeaking();
-            });
-        });
-
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            document.getElementById('mobile-menu').classList.remove('hidden');
-        });
-
-        // === AUTH & PROFILE ===
+        // UI REFS
+        const loadingSpinner = document.getElementById('loading-spinner');
         const loginBtn = document.getElementById('login-btn');
         const logoutBtn = document.getElementById('logout-btn');
         const userInfo = document.getElementById('user-info');
-        const headerUserName = document.getElementById('header-user-name');
-        const headerUserIcon = document.getElementById('header-user-icon');
         const adminPanel = document.getElementById('admin-panel');
-        const adminControls = document.querySelectorAll('.admin-only-controls');
-        const commentFormContainer = document.getElementById('comment-form-container');
-        const commentLoginMsg = document.getElementById('comment-login-msg');
+        const sectionsHub = document.getElementById('sections-hub');
+        const activePathView = document.getElementById('active-path-view');
 
-        // PROFILE FORM
-        const profileForm = document.getElementById('profile-form');
-        const profileDisplayNameInput = document.getElementById('profile-display-name');
-        const profileStatus = document.getElementById('profile-status');
-
-        onAuthStateChanged(auth, async (user) => {
-            currentUserPermissions = [];
-            completedPosts = [];
-            currentProfile = { displayName: null, avatar: null };
-
-            if (user) {
-                const isAdmin = user.uid === ADMIN_UID;
-                const userDocRef = doc(db, "users", user.uid);
-                const userDoc = await getDoc(userDocRef);
-                
-                if (!isAdmin) {
-                    if (userDoc.exists()) {
-                        const d = userDoc.data();
-                        const expires = d.expiresAt.toDate();
-                        if (new Date() > expires) { await signOut(auth); return; }
-                        currentUserPermissions = d.accessibleSections || [];
-                        completedPosts = d.completedPosts || []; // CARREGA POSTS FEITOS
-                    } else { await signOut(auth); return; }
+        // === NAV ===
+        window.showView = function(viewId) {
+            ['home-view', 'blog-view', 'profile-view', 'post-view', 'login-view'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    if(id === 'post-view' || id === 'login-view') el.style.display = 'none'; 
+                    else el.style.display = (id === viewId) ? 'block' : 'none';
                 }
+            });
 
-                // Load Profile Data
-                if(userDoc.exists()) {
-                    const d = userDoc.data();
-                    currentProfile.displayName = d.displayName || user.email.split('@')[0];
-                    currentProfile.avatar = d.avatar || 'fa-user-circle';
-                    
-                    // UI Updates
-                    headerUserName.textContent = currentProfile.displayName;
-                    headerUserIcon.className = `fas ${currentProfile.avatar}`;
-                    profileDisplayNameInput.value = d.displayName || '';
-                    if(d.avatar) {
-                        const rb = document.querySelector(`input[name="avatar"][value="${d.avatar}"]`);
-                        if(rb) rb.checked = true;
-                    }
-                }
-
-                currentUser = user;
-                userInfo.style.display = 'flex';
-                loginBtn.style.display = 'none';
-                commentFormContainer.classList.remove('hidden');
-                commentLoginMsg.classList.add('hidden');
-                
-                if (isAdmin) {
-                    adminPanel.style.display = 'block';
-                    adminControls.forEach(el => { el.style.display = 'flex'; el.classList.remove('hidden'); });
-                    fetchStudents();
-                } else {
-                    adminPanel.style.display = 'none';
-                    adminControls.forEach(el => el.style.display = 'none');
-                }
-                if(document.getElementById('login-view').style.display === 'flex') showView('blog-view');
-
-            } else {
-                currentUser = null;
-                userInfo.style.display = 'none';
-                loginBtn.style.display = 'block';
-                adminPanel.style.display = 'none';
-                adminControls.forEach(el => el.style.display = 'none');
-                commentFormContainer.classList.add('hidden');
-                commentLoginMsg.classList.remove('hidden');
+            if(viewId === 'login-view') {
+                document.getElementById('login-view').style.display = 'flex';
+                resetLoginForm();
             }
-            fetchSections();
-            fetchPosts(); // Carrega os posts para estarem prontos quando abrir uma trilha
+            if(viewId === 'post-view') document.getElementById('post-view').style.display = 'block';
+
+            if(viewId === 'blog-view') {
+                if(!activeSectionId) {
+                    sectionsHub.classList.remove('hidden');
+                    activePathView.classList.add('hidden');
+                } else {
+                    sectionsHub.classList.add('hidden');
+                    activePathView.classList.remove('hidden');
+                    renderProfessionalPath(activeSectionId); // RENDERIZA A TRILHA (AGORA COM LÓGICA DE TEMPO)
+                }
+            }
+            window.scrollTo(0,0);
+        };
+
+        document.querySelectorAll('.internal-link').forEach(btn => {
+            btn.addEventListener('click', (e) => showView(e.currentTarget.dataset.view));
         });
 
-        document.getElementById('login-form').addEventListener('submit', (e) => {
+        // === AUTH & LOGIN/REGISTER TOGGLE ===
+        const toggleRegBtn = document.getElementById('toggle-register-btn');
+        const loginTitle = document.getElementById('login-title');
+        const loginSubtitle = document.getElementById('login-subtitle');
+        const loginSubmitBtn = document.getElementById('login-submit-btn');
+
+        function resetLoginForm() {
+            isRegisterMode = false;
+            updateLoginUI();
+            document.getElementById('login-form').reset();
+            document.getElementById('login-error').textContent = "";
+        }
+
+        function updateLoginUI() {
+            if (isRegisterMode) {
+                loginTitle.textContent = "INICIAÇÃO";
+                loginSubtitle.textContent = "Solicitar Acesso";
+                loginSubmitBtn.textContent = "Requerer Entrada";
+                toggleRegBtn.textContent = "Já é iniciado? Adentrar";
+            } else {
+                loginTitle.textContent = "SANCTUM";
+                loginSubtitle.textContent = "Identifique-se";
+                loginSubmitBtn.textContent = "Adentrar";
+                toggleRegBtn.textContent = "Solicitar Iniciação (Criar Conta)";
+            }
+        }
+
+        toggleRegBtn.addEventListener('click', () => {
+            isRegisterMode = !isRegisterMode;
+            updateLoginUI();
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-password').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(err => {
-                document.getElementById('login-error').textContent = "Credenciais incorretas.";
-            });
-        });
-
-        // SAVE PROFILE LOGIC
-        profileForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if(!currentUser) return;
-            
-            profileStatus.textContent = "Gravando nas estrelas...";
-            const newName = profileDisplayNameInput.value.trim();
-            const checkedAvatar = document.querySelector('input[name="avatar"][value]:checked');
-            const newAvatar = checkedAvatar ? checkedAvatar.value : 'fa-user-circle';
+            const errorMsg = document.getElementById('login-error');
+            errorMsg.textContent = "Invocando...";
 
             try {
-                // Update Firestore
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    displayName: newName,
-                    avatar: newAvatar
-                });
-                
-                // Update Auth Profile (Standard)
-                await updateProfile(currentUser, { displayName: newName, photoURL: newAvatar });
-                
-                // Update Local UI
-                currentProfile.displayName = newName;
-                currentProfile.avatar = newAvatar;
-                headerUserName.textContent = newName;
-                headerUserIcon.className = `fas ${newAvatar}`;
-                
-                profileStatus.textContent = "Identidade Consagrada!";
-                profileStatus.className = "text-center text-xs mt-4 h-4 text-green-400";
-                
-                setTimeout(() => showView('home-view'), 1500);
+                if (isRegisterMode) {
+                    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+                    await setDoc(doc(db, "users", cred.user.uid), { 
+                        email, 
+                        createdAt: new Date(), 
+                        completedPosts: [],
+                        completionDates: {} // Inicia objeto de datas vazio
+                    });
+                    window.location.reload();
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                }
             } catch (err) {
                 console.error(err);
-                profileStatus.textContent = "Erro ao salvar.";
-                profileStatus.className = "text-center text-xs mt-4 h-4 text-red-400";
+                errorMsg.textContent = "Acesso Negado: " + err.code;
             }
         });
 
-        logoutBtn.addEventListener('click', () => signOut(auth));
-        loginBtn.addEventListener('click', () => showView('login-view'));
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                userInfo.style.display = 'flex';
+                loginBtn.style.display = 'none';
+                document.getElementById('header-user-name').textContent = user.email.split('@')[0];
+                document.getElementById('profile-email-display').textContent = user.email;
+                document.getElementById('comment-form-container').classList.remove('hidden');
+
+                if (user.uid === ADMIN_UID) {
+                    adminPanel.style.display = 'block'; 
+                    document.querySelectorAll('.admin-only-controls').forEach(e => e.classList.remove('hidden'));
+                    document.getElementById('profile-admin-badge').classList.remove('hidden');
+                    fetchStudents(); 
+                } else {
+                    adminPanel.style.display = 'none';
+                    document.querySelectorAll('.admin-only-controls').forEach(e => e.classList.add('hidden'));
+                    document.getElementById('profile-admin-badge').classList.add('hidden');
+                }
+
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if(userDoc.exists()) {
+                    currentUserData = userDoc.data();
+                    completedPosts = currentUserData.completedPosts || [];
+                }
+                
+                if(document.getElementById('login-view').style.display === 'flex') showView('blog-view');
+            } else {
+                currentUser = null;
+                currentUserData = null;
+                userInfo.style.display = 'none';
+                loginBtn.style.display = 'block';
+                adminPanel.style.display = 'none';
+                document.querySelectorAll('.admin-only-controls').forEach(e => e.classList.add('hidden'));
+                document.getElementById('comment-form-container').classList.add('hidden');
+                if(studentsUnsubscribe) studentsUnsubscribe(); 
+            }
+            fetchSections();
+            fetchPosts();
+        });
+
+        document.getElementById('login-btn').addEventListener('click', () => showView('login-view'));
         document.getElementById('close-login-btn').addEventListener('click', () => showView('home-view'));
+        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
-        // === ADMIN FUNCTIONS ===
-        
-        // 1. Sections
-        const postSectionSelect = document.getElementById('post-section');
-        const editPostSectionSelect = document.getElementById('edit-post-section');
-        const sectionsListAdmin = document.getElementById('sections-list-admin');
-        const sectionsCardsContainer = document.getElementById('sections-cards-container');
-
+        // === DATA ===
         function fetchSections() {
-            const q = query(collection(db, "sections"), orderBy("name"));
-            onSnapshot(q, (snap) => {
+            onSnapshot(query(collection(db, "sections"), orderBy("name")), (snap) => {
                 allSections = [];
-                // Admin selects
-                postSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
-                editPostSectionSelect.innerHTML = '<option value="" class="bg-black">Selecione o Módulo</option>';
-                sectionsListAdmin.innerHTML = '';
-                sectionsCardsContainer.innerHTML = '';
+                const select = document.getElementById('post-section');
+                const container = document.getElementById('sections-cards-container');
+                const listAdmin = document.getElementById('sections-list-admin');
+                
+                select.innerHTML = '<option value="">Selecione o Caminho</option>';
+                container.innerHTML = '';
+                listAdmin.innerHTML = '';
 
                 snap.forEach(d => {
-                    const sec = { id: d.id, ...d.data() };
-                    allSections.push(sec);
+                    const s = { id: d.id, ...d.data() };
+                    allSections.push(s);
+                    select.add(new Option(s.name, s.id));
+                    listAdmin.innerHTML += `<div class="flex justify-between p-2 border-b border-white/5 uppercase">${s.name} <button onclick="deleteSection('${s.id}')" class="text-red-900 hover:text-red-500"><i class="fas fa-times"></i></button></div>`;
                     
-                    // Dropdowns de Admin
-                    postSectionSelect.add(new Option(sec.name, sec.id));
-                    editPostSectionSelect.add(new Option(sec.name, sec.id));
-                    
-                    // Lista de Admin
-                    const div = document.createElement('div');
-                    div.className = "flex justify-between items-center p-2 hover:bg-white/5 rounded border-b border-white/5";
-                    div.innerHTML = `<span>${sec.name}</span> <button class="delete-sec-btn text-red-500 hover:text-red-300" data-id="${sec.id}"><i class="fas fa-times"></i></button>`;
-                    sectionsListAdmin.appendChild(div);
-
-                    // === RENDERIZAR CARD DA SEÇÃO NO HUB ===
                     const card = document.createElement('div');
-                    card.className = "project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer flex flex-col items-center justify-center text-center min-h-[250px] shadow-[0_0_20px_rgba(0,0,0,0.5)]";
-                    card.onclick = () => openPath(sec.id, sec.name);
-
+                    card.className = "project-card border border-white/5 p-10 relative group cursor-pointer flex flex-col items-center justify-center text-center min-h-[300px]";
+                    card.onclick = () => openPath(s.id, s.name);
                     card.innerHTML = `
-                         <div class="absolute inset-0 bg-gradient-to-t from-primary-900/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                         <i class="fas fa-dungeon text-5xl text-gray-700 mb-6 group-hover:text-primary-400 transition transform group-hover:scale-110"></i>
-                         <h4 class="text-xl font-display text-white mb-2 group-hover:text-primary-400 transition">${sec.name}</h4>
-                         <p class="text-[10px] text-gray-500 uppercase tracking-widest">Clique para iniciar a trilha</p>
+                        <div class="absolute inset-0 bg-[radial-gradient(circle,rgba(255,215,0,0.1)_0%,rgba(0,0,0,0)_70%)] opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                        <i class="fas fa-dharmachakra text-6xl text-gray-800 mb-8 group-hover:text-primary-500 transition transform group-hover:rotate-180 duration-1000"></i>
+                        <h4 class="text-2xl font-display text-white mb-2 group-hover:text-primary-400 transition uppercase tracking-widest">${s.name}</h4>
+                        <p class="text-[9px] text-gray-600 uppercase tracking-[0.4em]">Adentrar Portal</p>
                     `;
-                    sectionsCardsContainer.appendChild(card);
+                    container.appendChild(card);
                 });
             });
         }
-        
-        document.getElementById('create-section-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('section-name').value;
-            if(name) { await addDoc(collection(db, "sections"), {name, createdAt: new Date()}); document.getElementById('create-section-form').reset(); }
-        });
-
-        // === LOGICA DE TRILHA PROFISSIONAL (SVG SNAKE) ===
-        const sectionsHub = document.getElementById('sections-hub');
-        const activePathView = document.getElementById('active-path-view');
-        const pathTitle = document.getElementById('path-title');
-        const backToHubBtn = document.getElementById('back-to-hub-btn');
-
-        function openPath(sectionId, sectionName) {
-            activeSectionId = sectionId;
-            pathTitle.textContent = sectionName;
-            
-            // Troca a view
-            gsap.to(sectionsHub, { opacity: 0, duration: 0.3, onComplete: () => {
-                sectionsHub.classList.add('hidden');
-                activePathView.classList.remove('hidden');
-                gsap.fromTo(activePathView, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5 });
-                renderProfessionalPath(sectionId);
-            }});
-        }
-
-        backToHubBtn.addEventListener('click', () => {
-             activeSectionId = null;
-             gsap.to(activePathView, { opacity: 0, duration: 0.3, onComplete: () => {
-                activePathView.classList.add('hidden');
-                sectionsHub.classList.remove('hidden');
-                gsap.fromTo(sectionsHub, { opacity: 0 }, { opacity: 1, duration: 0.5 });
-            }});
-        });
-
-        function renderProfessionalPath(sectionId) {
-            const container = document.getElementById('path-steps-container');
-            container.innerHTML = '';
-            
-            // Filtra e ordena
-            const pathPosts = allPosts.filter(p => p.sectionId === sectionId).sort((a,b) => a.createdAt - b.createdAt);
-
-            if(pathPosts.length === 0) {
-                document.getElementById('empty-path-msg').classList.remove('hidden');
-                container.style.height = 'auto'; // Reseta altura se vazio
-                return;
-            }
-            document.getElementById('empty-path-msg').classList.add('hidden');
-
-            const icons = ['fa-scroll', 'fa-flask', 'fa-book-skull', 'fa-star', 'fa-feather-alt'];
-            
-            // === AJUSTES RESPONSIVOS (MOBILE/DUOLINGO STYLE) ===
-            const containerRect = container.getBoundingClientRect();
-            const containerWidth = containerRect.width;
-            const isMobile = window.innerWidth < 768; // md breakpoint
-            
-            // Força recalculo seguro da largura disponível
-            // container.clientWidth ignora barras de rolagem, é mais seguro que getBoundingClientRect().width em alguns casos
-            const availableWidth = Math.min(container.clientWidth, window.innerWidth - 32); 
-            
-            // No mobile, a curva deve ser muito mais suave para não sair da tela
-            // AUMENTANDO O ESPAÇAMENTO PARA DAR MAIS RESPIRO
-            const spacing = isMobile ? 180 : 220; 
-            
-            // Amplitude segura: (Largura / 2) - (Raio do Nó + Padding de segurança)
-            // Nó tem 70px (raio 35), margem segura ~40
-            const maxSafeAmplitude = (availableWidth / 2) - 45; 
-            
-            // Se for mobile, usa a amplitude reduzida para não estourar a tela.
-            // Se for desktop, usa 120 (amplitude mais larga) para aproveitar o espaço extra.
-            const amplitude = isMobile ? Math.min(60, maxSafeAmplitude) : 120; 
-            
-            const centerX = availableWidth / 2; // Centraliza baseado na largura real disponível
-            
-            // === CÁLCULO DINÂMICO DE ALTURA ===
-            // Multiplica o nº de posts pelo espaço e adiciona uma margem segura no final
-            const totalHeight = (pathPosts.length * spacing) + 250; 
-            container.style.height = totalHeight + 'px'; // Força o container a crescer
-
-            // Cria o SVG Container
-            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-            svg.setAttribute("class", "path-svg-line");
-            svg.style.height = totalHeight + 'px';
-            container.appendChild(svg);
-
-            let pathD = "";
-            let prevX = centerX;
-            let prevY = 40;
-
-            // RECUPERA ÚLTIMO ITEM COMPLETADO PARA ANIMAÇÃO
-            const justCompletedId = sessionStorage.getItem('just_completed_post');
-            sessionStorage.removeItem('just_completed_post'); // Limpa após usar
-
-            pathPosts.forEach((p, index) => {
-                // LÓGICA DE BLOQUEIO DUOLINGO
-                const isAdmin = currentUser && currentUser.uid === ADMIN_UID;
-                const hasSectionAccess = isAdmin || (currentUserPermissions && currentUserPermissions.includes(sectionId));
-                const isPaid = p.access === 'pago';
-                
-                let isCompleted = completedPosts.includes(p.id);
-                // Opcional: Se for admin, pode querer ver como completo ou não. Deixamos natural.
-
-                let isLocked = false;
-                
-                if (isPaid && !hasSectionAccess) {
-                    isLocked = true; // Sem permissão de compra
-                } else {
-                    // Lógica Sequencial:
-                    // Se estiver LOGADO, mantém a regra de que precisa completar o anterior.
-                    // Se for VISITANTE (sem login), libera tudo que for GRATIS (aberto), pois não dá pra completar.
-                    if (currentUser) {
-                         if (index > 0 && !completedPosts.includes(pathPosts[index-1].id) && !isAdmin) {
-                            isLocked = true;
-                        }
-                    } else {
-                        // Visitante vendo conteúdo aberto = LIBERADO
-                        isLocked = false;
-                    }
-                }
-
-                // Estado Visual
-                let statusClass = "status-locked";
-                if (isCompleted) statusClass = "status-completed";
-                else if (!isLocked) statusClass = "status-active";
-
-                // Se acabou de completar este, força visual de completo mas com animação
-                let animationClass = "";
-                if (p.id === justCompletedId) {
-                    animationClass = "celebration-unlock";
-                    // Garante status completed visualmente
-                    statusClass = "status-completed"; 
-                }
-
-                // AVATAR LOGIC: Primeiro nó não-bloqueado e não-completo
-                // OU se acabamos de completar um, o avatar vai para o PRÓXIMO (index + 1) se existir
-                let showAvatar = false;
-                if (!isLocked && !isCompleted) showAvatar = true;
-                
-                // Se acabamos de completar este post, o avatar não deve estar nele, mas no próximo.
-                // Mas o loop varre sequencialmente. O próximo item cairá no `if` acima naturalmente.
-
-                // Coordenadas Sinuosas (Senoide)
-                const y = 40 + (index * spacing);
-                const x = centerX + Math.sin(index * 1.5) * amplitude; // Curva matemática
-
-                // Desenha a linha SVG até aqui
-                if (index === 0) {
-                    pathD += `M ${x} ${y}`;
-                } else {
-                    // Curva Bézier Suave (Quadrática)
-                    const cpY = (prevY + y) / 2;
-                    pathD += ` Q ${prevX} ${cpY}, ${x} ${y}`; 
-                }
-                prevX = x;
-                prevY = y;
-
-                // Renderiza o Nó HTML posicionado absolutamente
-                const nodeWrapper = document.createElement('div');
-                nodeWrapper.className = 'path-node-wrapper group'; // Adicionado 'group' para hover
-                nodeWrapper.style.left = x + 'px';
-                nodeWrapper.style.top = y + 'px';
-
-                // Ícone rotativo
-                const icon = icons[index % icons.length];
-                const iconHtml = isLocked ? '<i class="fas fa-lock"></i>' : (isCompleted ? '<i class="fas fa-check"></i>' : `<i class="fas ${icon}"></i>`);
-
-                // Crown for active
-                const crown = (!isLocked && !isCompleted) ? '<i class="fas fa-crown crown-icon"></i>' : '';
-
-                // AVATAR HTML
-                const avatarHtml = showAvatar ? `
-                    <div class="path-avatar-float">
-                        <div class="path-avatar-icon"><i class="fas fa-crow"></i></div>
-                        <div class="path-avatar-arrow">▼</div>
-                    </div>
-                ` : '';
-
-                // TOOLTIP HTML (Para locked)
-                const lockedTooltipHtml = isLocked ? `
-                    <div class="locked-tooltip">
-                        <i class="fas fa-key mb-1 block text-lg"></i>
-                        Selado.<br>Complete o rito anterior.
-                    </div>
-                ` : '';
-
-                // ONCLICK PARA MOBILE LOCKED
-                const clickAction = isLocked 
-                    ? "alert('Este conhecimento está selado. Complete o passo anterior para obter a chave.')" 
-                    : `openPostFromPath('${p.id}')`;
-
-                nodeWrapper.innerHTML = `
-                    ${avatarHtml}
-                    ${crown}
-                    <div class="game-node ${statusClass} ${animationClass}" onclick="${clickAction}">
-                        ${iconHtml}
-                    </div>
-                    ${lockedTooltipHtml}
-                    <div class="node-label">${p.title}</div>
-                    ${!isLocked && !isCompleted ? '<div class="stars-container"><div class="absolute w-full h-full animate-spin-slow opacity-30"><i class="fas fa-star absolute top-0 left-1/2 text-xs text-yellow-500"></i><i class="fas fa-star absolute bottom-0 left-1/2 text-xs text-yellow-500"></i></div></div>' : ''}
-                `;
-                container.appendChild(nodeWrapper);
-            });
-
-            // Finaliza o desenho da linha SVG
-            const pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            pathEl.setAttribute("d", pathD);
-            pathEl.setAttribute("stroke", "#333"); // Cor da trilha inativa
-            pathEl.setAttribute("stroke-width", "8");
-            pathEl.setAttribute("fill", "none");
-            pathEl.setAttribute("stroke-linecap", "round");
-            
-            // (Opcional: Poderia adicionar uma segunda linha 'stroke' colorida cobrindo até o ponto atual, mas isso requer calcular o comprimento do path)
-            
-            svg.appendChild(pathEl);
-        }
-
-        // Wrapper global para o onclick inline funcionar com module
-        window.openPostFromPath = function(id) {
-            openPost(id);
-        };
-
-
-        // 2. Students
-        const studentsListAdmin = document.getElementById('students-list-admin');
-        function fetchStudents() {
-            onSnapshot(query(collection(db, "users")), (snap) => {
-                allStudents = [];
-                studentsListAdmin.innerHTML = '';
-                snap.forEach(d => {
-                    if(d.id === ADMIN_UID) return;
-                    const st = { id: d.id, ...d.data() };
-                    allStudents.push(st);
-                    
-                    // Show Name if exists, else Email
-                    const displayLabel = st.displayName ? `${st.displayName} (${st.email.split('@')[0]})` : st.email;
-                    
-                    const div = document.createElement('div');
-                    div.className = "flex justify-between p-2 border-b border-white/5 hover:bg-white/5";
-                    div.innerHTML = `<span class="truncate w-32" title="${st.email}">${displayLabel}</span><button class="manage-student-btn text-primary-400" data-id="${st.id}"><i class="fas fa-cog"></i></button>`;
-                    studentsListAdmin.appendChild(div);
-                });
-            });
-        }
-        
-        document.getElementById('create-account-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('new-email').value;
-            const pass = document.getElementById('new-password').value;
-            const months = parseInt(document.getElementById('account-validity').value);
-            const status = document.getElementById('account-status');
-            status.textContent = "Gerando...";
-            try {
-                const cred = await createUserWithEmailAndPassword(auth, email, pass);
-                const exp = new Date(); exp.setMonth(exp.getMonth() + months);
-                await setDoc(doc(db, "users", cred.user.uid), { email, createdAt: new Date(), expiresAt: exp, accessibleSections: [] });
-                status.textContent = "Acesso Criado!"; status.className = "text-green-400 text-xs";
-                document.getElementById('create-account-form').reset();
-            } catch(e) { status.textContent = "Erro: " + e.code; status.className = "text-red-400 text-xs"; }
-        });
-
-        // 3. Posts
-        const createPostForm = document.getElementById('create-post-form');
-        const postStatus = document.getElementById('post-status');
-
-        createPostForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            postStatus.textContent = "Enviando ao Grimório...";
-            const secSelect = document.getElementById('post-section');
-            const secName = secSelect.options[secSelect.selectedIndex].text;
-            
-            try {
-                await addDoc(collection(db, "posts"), {
-                    title: document.getElementById('post-title').value,
-                    coverImage: document.getElementById('post-cover-image').value,
-                    content: document.getElementById('post-content').value,
-                    attachmentName: document.getElementById('post-attachment-name').value || null,
-                    attachmentURL: document.getElementById('post-attachment-link').value || null,
-                    access: document.getElementById('post-access').value,
-                    sectionId: secSelect.value,
-                    sectionName: secName,
-                    createdAt: new Date(),
-                    viewCount: 0
-                });
-                postStatus.textContent = "Publicado!"; createPostForm.reset();
-            } catch(e) { postStatus.textContent = "Falha no ritual."; }
-        });
 
         function fetchPosts() {
             onSnapshot(query(collection(db, "posts"), orderBy("createdAt", "asc")), (snap) => {
                 allPosts = [];
                 snap.forEach(d => allPosts.push({ id: d.id, ...d.data() }));
-                
-                // Se estivermos vendo uma trilha, atualiza ela em tempo real
-                if(activeSectionId) {
-                    renderProfessionalPath(activeSectionId);
-                }
+                if(activeSectionId) renderProfessionalPath(activeSectionId);
             });
         }
 
-        // === VIEW POST & COMMENTS & COMPLETION ===
-        const postViewTitle = document.getElementById('post-view-title');
-        const postViewContent = document.getElementById('post-view-content');
-        const postViewCover = document.getElementById('post-view-cover-image');
-        const postViewCount = document.getElementById('post-view-count');
-        const postViewAttachContainer = document.getElementById('post-view-attachment-container');
-        const postViewAttachLink = document.getElementById('post-view-attachment');
+        // === ADMIN LOGIC ===
+        function fetchStudents() {
+            const listContainer = document.getElementById('students-list-container');
+            const countBadge = document.getElementById('student-count');
+            if(studentsUnsubscribe) studentsUnsubscribe();
 
-        // COMMENTS ELEMENTS
-        const commentsList = document.getElementById('comments-list');
-        const commentInput = document.getElementById('comment-input');
-        const submitCommentBtn = document.getElementById('submit-comment-btn');
-        let currentPostId = null;
+            studentsUnsubscribe = onSnapshot(query(collection(db, "users")), (snap) => {
+                listContainer.innerHTML = '';
+                let count = 0;
+                snap.forEach(d => {
+                    if (d.id === ADMIN_UID) return; 
+                    count++;
+                    const user = d.data();
+                    const row = document.createElement('div');
+                    row.className = "flex justify-between items-center p-3 bg-white/5 border border-white/5 hover:bg-white/10 transition";
+                    row.innerHTML = `
+                        <div class="overflow-hidden">
+                            <p class="text-[10px] text-gray-300 truncate font-display tracking-wider">${user.email}</p>
+                        </div>
+                        <button onclick="deleteStudent('${d.id}')" class="text-red-900 hover:text-red-500 transition px-2">
+                            <i class="fas fa-skull"></i>
+                        </button>
+                    `;
+                    listContainer.appendChild(row);
+                });
+                countBadge.textContent = count;
+                if (count === 0) listContainer.innerHTML = '<p class="text-center text-gray-600 text-[10px] uppercase tracking-widest py-4">Nenhum neófito registrado.</p>';
+            });
+        }
+
+        document.getElementById('create-account-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('new-email').value;
+            const pass = document.getElementById('new-password').value;
+            const status = document.getElementById('account-status');
+            const btn = document.getElementById('create-student-btn');
+
+            status.textContent = "Registrando...";
+            btn.disabled = true;
+
+            try {
+                const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
+                const secondaryAuth = getAuth(secondaryApp);
+                const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, pass);
+                await setDoc(doc(db, "users", userCred.user.uid), {
+                    email: email, createdAt: new Date(), completedPosts: [], completionDates: {}, role: 'student'
+                });
+                await signOut(secondaryAuth);
+                await deleteApp(secondaryApp);
+
+                status.textContent = "Iniciado Registrado.";
+                status.className = "text-xs h-4 text-center text-primary-400";
+                document.getElementById('create-account-form').reset();
+            } catch (err) {
+                status.textContent = "Erro: " + err.code;
+                status.className = "text-xs h-4 text-center text-red-500";
+            }
+            btn.disabled = false;
+        });
+
+        window.deleteStudent = async (uid) => {
+            if(confirm("Banir este iniciado da Ordem?")) {
+                try { await deleteDoc(doc(db, "users", uid)); } catch(e) { console.error(e); }
+            }
+        };
+
+        document.getElementById('create-section-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const n = document.getElementById('section-name').value;
+            if(n) { await addDoc(collection(db, "sections"), { name: n, createdAt: new Date() }); e.target.reset(); }
+        });
+
+        window.deleteSection = async (id) => { if(confirm("Selar este Caminho?")) await deleteDoc(doc(db, "sections", id)); };
+
+        document.getElementById('create-post-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const status = document.getElementById('post-status');
+            status.textContent = "Consagrando...";
+            const secSelect = document.getElementById('post-section');
+            try {
+                await addDoc(collection(db, "posts"), {
+                    title: document.getElementById('post-title').value,
+                    subtitle: document.getElementById('post-subtitle').value,
+                    videoURL: document.getElementById('post-video-link').value,
+                    pdfURL: document.getElementById('post-pdf-link').value,
+                    content: document.getElementById('post-content').value,
+                    access: document.getElementById('post-access').value,
+                    sectionId: secSelect.value,
+                    createdAt: new Date()
+                });
+                status.textContent = "Ritual Arquivado.";
+                e.target.reset();
+            } catch(err) { console.error(err); status.textContent = "Falha no rito."; }
+        });
+
+        function openPath(id, name) {
+            activeSectionId = id;
+            document.getElementById('path-title').textContent = name;
+            document.getElementById('sections-hub').classList.add('hidden');
+            document.getElementById('active-path-view').classList.remove('hidden');
+            renderProfessionalPath(id);
+        }
+
+        document.getElementById('back-to-hub-btn').addEventListener('click', () => {
+            activeSectionId = null;
+            document.getElementById('active-path-view').classList.add('hidden');
+            document.getElementById('sections-hub').classList.remove('hidden');
+        });
+
+        // 🕰️ HELPER DE DATA PARA O CÁLCULO DE TRAVA DE TEMPO 🕰️
+        function getNextMonday(date) {
+            const d = new Date(date);
+            d.setDate(d.getDate() + ((7 - d.getDay() + 1) % 7 || 7));
+            d.setHours(0,0,0,0);
+            return d;
+        }
+
+        function renderProfessionalPath(sectionId) {
+            const container = document.getElementById('path-steps-container');
+            container.innerHTML = '';
+            
+            // 1. Pega e ordena os posts da trilha
+            const posts = allPosts.filter(p => p.sectionId === sectionId).sort((a,b) => (a.createdAt?.seconds||0) - (b.createdAt?.seconds||0));
+            
+            if(posts.length === 0) {
+                document.getElementById('empty-path-msg').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('empty-path-msg').classList.add('hidden');
+
+            const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            svg.setAttribute("class", "path-svg-line");
+            const spacing = 180;
+            const totalHeight = (posts.length * spacing) + 200;
+            container.style.height = totalHeight + 'px';
+            svg.style.height = totalHeight + 'px';
+            container.appendChild(svg);
+
+            let pathD = "";
+            const centerX = container.offsetWidth / 2;
+            let prevX = centerX;
+            let prevY = 50;
+
+            // 🕰️ LÓGICA DE GRUPOS DE 3 (SEMANAL)
+            // Calculamos o último índice disponível baseado no tempo
+            let maxUnlockedIndex = 9999;
+            
+            if (currentUser && currentUser.uid !== ADMIN_UID) {
+                maxUnlockedIndex = 0; // Começa liberando só o grupo 0 (index 0,1,2)
+                
+                // Itera pelos GRUPOS de 3
+                for (let group = 0; group < 100; group++) {
+                    // Pega o último post do grupo anterior
+                    // Grupo 0: posts 0,1,2.
+                    // Para desbloquear Grupo 1, precisamos ter terminado Grupo 0 E esperado até segunda.
+                    const lastPostOfPrevGroupIndex = ((group) * 3) - 1; 
+                    
+                    if (lastPostOfPrevGroupIndex < 0) {
+                        // Grupo 0 é sempre liberado inicialmente
+                        maxUnlockedIndex = 2; // Libera índices 0,1,2
+                        continue;
+                    }
+
+                    // Checa se o post final do grupo anterior existe
+                    if (lastPostOfPrevGroupIndex >= posts.length) break;
+
+                    const lastPostOfPrevGroup = posts[lastPostOfPrevGroupIndex];
+                    
+                    // Checa se completou o último post do grupo anterior
+                    if (completedPosts.includes(lastPostOfPrevGroup.id)) {
+                        
+                        // RECUPERA DATA DE CONCLUSÃO
+                        // Fallback para epoch 0 se não tiver data (compatibilidade com contas antigas)
+                        let compDate = new Date(0); 
+                        if (currentUserData && currentUserData.completionDates && currentUserData.completionDates[lastPostOfPrevGroup.id]) {
+                            compDate = currentUserData.completionDates[lastPostOfPrevGroup.id].toDate();
+                        }
+
+                        // Calcula próxima segunda-feira após a conclusão
+                        const unlockDate = getNextMonday(compDate);
+                        const now = new Date();
+
+                        if (now >= unlockDate) {
+                            // Passou do tempo! Desbloqueia o próximo grupo (ex: libera +3)
+                            maxUnlockedIndex = ((group + 1) * 3) - 1;
+                        } else {
+                            // Travado pelo tempo. Pare de calcular.
+                            break;
+                        }
+                    } else {
+                        // Não completou o grupo anterior, então não libera o próximo
+                        break;
+                    }
+                }
+            }
+
+            posts.forEach((p, i) => {
+                const isCompleted = completedPosts.includes(p.id);
+                const isAdmin = currentUser && currentUser.uid === ADMIN_UID;
+                
+                // LÓGICA DE BLOQUEIO:
+                // 1. Sequencial padrão: Anterior deve estar completo (exceto o primeiro).
+                // 2. Trava de Tempo (Segunda-feira): Index deve ser <= maxUnlockedIndex.
+                
+                let isLocked = false;
+                let isTimeLocked = false;
+
+                if (!isAdmin) {
+                    if (i > maxUnlockedIndex) {
+                        isLocked = true;
+                        isTimeLocked = true; // Travado especificamente pelo sistema de semanas
+                    } else if (i > 0 && !completedPosts.includes(posts[i-1].id)) {
+                        isLocked = true; // Travado porque não fez o anterior
+                    }
+                }
+                
+                // SVG Drawing
+                const y = 50 + (i * spacing);
+                const x = centerX + Math.sin(i * 1.5) * (window.innerWidth < 768 ? 60 : 120);
+
+                if (i === 0) pathD += `M ${x} ${y}`;
+                else pathD += ` Q ${prevX} ${(prevY + y) / 2}, ${x} ${y}`;
+                prevX = x; prevY = y;
+
+                const node = document.createElement('div');
+                node.className = "path-node-wrapper";
+                node.style.left = x + 'px';
+                node.style.top = y + 'px';
+                
+                let statusClass = isLocked ? 'status-locked' : (isCompleted ? 'status-completed' : 'status-active');
+                if (isTimeLocked) statusClass += ' status-time-locked'; // Adiciona estilo especial para trava de tempo
+
+                let icon = isLocked ? 'fa-lock' : (isCompleted ? 'fa-crown' : 'fa-fire');
+                if (isTimeLocked) icon = 'fa-hourglass-half'; // Ícone de ampulheta para trava de tempo
+
+                let clickFn = `openClass('${p.id}')`;
+                if (isTimeLocked) {
+                    clickFn = "alert('⏳ O selo deste conhecimento só se romperá na próxima segunda-feira, após a conclusão do ciclo anterior.')";
+                } else if (isLocked) {
+                    clickFn = "alert('🔒 O conhecimento deve ser conquistado em ordem. Complete o rito anterior.')";
+                }
+
+                const tooltipHtml = isTimeLocked ? 
+                    `<div class="locked-tooltip"><i class="fas fa-moon mr-1"></i> Aguarde a próxima<br>Segunda-feira</div>` : 
+                    `<div class="node-label">${p.title}</div>`;
+
+                node.innerHTML = `
+                    <div class="game-node ${statusClass}" onclick="${clickFn}">
+                        <i class="fas ${icon}"></i>
+                    </div>
+                    ${tooltipHtml}
+                `;
+                container.appendChild(node);
+            });
+
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", pathD);
+            path.setAttribute("stroke", "#333");
+            path.setAttribute("stroke-width", "4");
+            path.setAttribute("fill", "none");
+            svg.appendChild(path);
+        }
+
+        window.openClass = function(id) { openPost(id); }
+
+        function getDriveEmbedLink(url) {
+            if (!url) return '';
+            if (url.includes('drive.google.com')) {
+                return url.replace(/\/view.*/, '/preview').replace(/\/edit.*/, '/preview');
+            }
+            return url;
+        }
 
         async function openPost(id) {
             loadingSpinner.classList.remove('hidden');
-            const ref = doc(db, "posts", id);
-            const snap = await getDoc(ref);
-            
+            const snap = await getDoc(doc(db, "posts", id));
             if(snap.exists()) {
                 const p = snap.data();
-                if(p.access === 'pago') {
-                    const allowed = (currentUser && currentUser.uid === ADMIN_UID) || (currentUser && currentUserPermissions.includes(p.sectionId));
-                    if(!allowed) { 
-                        loadingSpinner.classList.add('hidden'); 
-                        alert("Este conhecimento está selado."); return; 
-                    }
-                }
-
                 currentPostId = id;
-                await updateDoc(ref, { viewCount: increment(1) });
-                
-                postViewTitle.textContent = p.title;
-                postViewCount.textContent = (p.viewCount || 0) + 1;
-                postViewCover.src = p.coverImage;
-                postViewContent.innerHTML = formatText(p.content);
-                
-                if(p.attachmentURL) {
-                    postViewAttachLink.href = p.attachmentURL;
-                    postViewAttachContainer.classList.remove('hidden');
+                document.getElementById('post-view-title').textContent = p.title;
+                document.getElementById('post-view-subtitle').textContent = p.subtitle || '';
+                document.getElementById('post-view-content').textContent = p.content || '';
+                document.getElementById('video-iframe').src = getDriveEmbedLink(p.videoURL);
+                const pdfBtn = document.getElementById('post-view-pdf-btn');
+                if(p.pdfURL) {
+                    pdfBtn.href = p.pdfURL;
+                    pdfBtn.classList.remove('hidden');
                 } else {
-                    postViewAttachContainer.classList.add('hidden');
+                    pdfBtn.classList.add('hidden');
                 }
-
-                // CONFIGURA BOTÃO DE CONCLUSÃO
-                const completeBtn = document.getElementById('mark-complete-btn');
-                
-                // Mas para user normal:
+                const compBtn = document.getElementById('mark-complete-btn');
                 if(completedPosts.includes(id)) {
-                    completeBtn.classList.remove('bg-primary-900', 'text-white', 'hover:scale-105');
-                    completeBtn.classList.add('bg-green-500/20', 'text-green-400', 'border', 'border-green-500/50', 'cursor-default');
-                    completeBtn.innerHTML = '<i class="fas fa-check-double"></i> Ritual Já Concluído';
-                    completeBtn.onclick = null;
+                    compBtn.className = "w-full bg-primary-900/10 border border-primary-500/30 text-gray-500 py-4 font-display font-bold uppercase tracking-[0.2em] text-[10px] cursor-default flex items-center justify-center gap-3";
+                    compBtn.innerHTML = '<i class="fas fa-crown"></i> Conhecimento Absorvido';
+                    compBtn.onclick = null;
                 } else {
-                    completeBtn.classList.add('bg-primary-900', 'text-white', 'hover:scale-105');
-                    completeBtn.classList.remove('bg-green-500/20', 'text-green-400', 'border', 'border-green-500/50', 'cursor-default');
-                    completeBtn.innerHTML = '<i class="fas fa-check-circle"></i> Concluir Leitura & Avançar';
-                    completeBtn.onclick = markPostComplete;
+                    compBtn.className = "w-full bg-transparent border border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-black py-4 font-display font-bold uppercase tracking-[0.2em] text-[10px] transition transform hover:scale-105 flex items-center justify-center gap-3";
+                    compBtn.innerHTML = '<i class="fas fa-check-circle text-lg"></i> Consagrar Leitura';
+                    compBtn.onclick = markComplete;
                 }
-
-                document.getElementById('post-view-edit-btn').onclick = () => openEdit(id);
-                document.getElementById('post-view-delete-btn').onclick = () => confirmDel(id, 'post');
+                
+                document.getElementById('post-view-delete-btn').onclick = async () => {
+                    if(confirm("Apagar este registro sagrado?")) {
+                        await deleteDoc(doc(db, "posts", id));
+                        showView('blog-view');
+                    }
+                };
 
                 loadComments(id);
-                stopSpeaking();
                 showView('post-view');
             }
             loadingSpinner.classList.add('hidden');
         }
 
-        // FUNÇÃO DE MARCAR COMO COMPLETO
-        async function markPostComplete() {
-            if(!currentUser || !currentPostId) return;
-            const btn = document.getElementById('mark-complete-btn');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consagrando...';
-            
+        document.getElementById('back-to-posts-btn').addEventListener('click', () => {
+            document.getElementById('video-iframe').src = "";
+            showView('blog-view');
+        });
+
+        async function markComplete() {
+            if(!currentUser || !currentPostId) return alert("Identifique-se primeiro.");
             try {
-                // Atualiza User no Firestore
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    completedPosts: arrayUnion(currentPostId)
+                // AGORA SALVAMOS TAMBÉM A DATA DE CONCLUSÃO
+                await updateDoc(doc(db, "users", currentUser.uid), { 
+                    completedPosts: arrayUnion(currentPostId),
+                    [`completionDates.${currentPostId}`]: new Date() // Timestamp para a lógica de tempo
                 });
                 
-                // Atualiza Localmente
                 if(!completedPosts.includes(currentPostId)) completedPosts.push(currentPostId);
                 
-                // ARMAZENA O ID PARA A ANIMAÇÃO QUANDO VOLTAR
-                sessionStorage.setItem('just_completed_post', currentPostId);
-
-                // UI Feedback
-                btn.className = "bg-yellow-500 text-black px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_30px_#FFD700] transform scale-110 transition";
-                btn.innerHTML = '<i class="fas fa-star"></i> Sábio! Avançando...';
-                
-                // Efeito sonoro simples (opcional, requer arquivo)
-                // const audio = new Audio('success.mp3'); audio.play();
-
-                setTimeout(() => {
-                    showView('blog-view'); // Volta para a trilha para ver o desbloqueio
-                }, 1500);
-
-            } catch(e) {
-                console.error(e);
-                alert("Erro ao salvar progresso.");
-                btn.innerHTML = originalText;
-            }
-        }
-
-        // LOAD COMMENTS (Client-side Sort Fix)
-        function loadComments(postId) {
-            if(commentsUnsubscribe) commentsUnsubscribe();
-            
-            const q = query(collection(db, "comments"), where("postId", "==", postId));
-            
-            commentsUnsubscribe = onSnapshot(q, (snap) => {
-                commentsList.innerHTML = '';
-                
-                if(snap.empty) {
-                    commentsList.innerHTML = '<p class="text-gray-600 text-xs italic">O silêncio reina. Seja o primeiro a falar.</p>';
-                    return;
+                // Atualiza o objeto local também para refletir imediatamente sem recarregar
+                if(currentUserData) {
+                    if(!currentUserData.completionDates) currentUserData.completionDates = {};
+                    currentUserData.completionDates[currentPostId] = { toDate: () => new Date() }; // Simula timestamp do Firestore
                 }
-                
-                let comments = [];
-                snap.forEach(d => comments.push({ id: d.id, ...d.data() }));
-                
-                comments.sort((a, b) => {
-                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
-                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
-                    return dateB - dateA;
-                });
-                
-                comments.forEach(c => {
-                    const isOwner = currentUser && (currentUser.uid === c.userId || currentUser.uid === ADMIN_UID);
-                    const displayName = c.userName || (c.userEmail ? c.userEmail.split('@')[0] : 'Anônimo');
-                    const displayIcon = c.userAvatar ? `<i class="fas ${c.userAvatar} mr-1 text-primary-500"></i>` : '';
 
-                    const div = document.createElement('div');
-                    div.className = "bg-black/40 border border-white/5 p-4 rounded relative";
-                    div.innerHTML = `
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-primary-500 text-[10px] uppercase font-bold tracking-widest flex items-center">${displayIcon} ${displayName}</span>
-                            <span class="text-gray-600 text-[9px]">${c.createdAt?.toDate ? c.createdAt.toDate().toLocaleDateString() : ''}</span>
-                        </div>
-                        <p class="text-gray-300 text-sm font-body leading-relaxed">${c.content}</p>
-                        ${isOwner ? `<button onclick="deleteComment('${c.id}')" class="absolute bottom-2 right-2 text-red-900 hover:text-red-500 transition text-[10px]"><i class="fas fa-trash"></i></button>` : ''}
-                    `;
-                    commentsList.appendChild(div);
-                });
-            });
-        }
-
-        // ADD COMMENT
-        submitCommentBtn.addEventListener('click', async () => {
-            if(!currentUser || !currentPostId) return;
-            const txt = commentInput.value.trim();
-            if(!txt) return;
-
-            submitCommentBtn.disabled = true;
-            submitCommentBtn.textContent = "Enviando...";
-
-            try {
-                await addDoc(collection(db, "comments"), {
-                    postId: currentPostId,
-                    userId: currentUser.uid,
-                    userEmail: currentUser.email,
-                    userName: currentProfile.displayName || currentUser.email.split('@')[0],
-                    userAvatar: currentProfile.avatar || 'fa-user-circle',
-                    content: txt,
-                    createdAt: new Date()
-                });
-                commentInput.value = '';
-            } catch(e) { console.error(e); alert("Erro ao comentar."); }
-            submitCommentBtn.disabled = false;
-            submitCommentBtn.textContent = "Enviar Comentário";
-        });
-
-        // DELETE COMMENT
-        window.deleteComment = async function(id) {
-            if(confirm("Deseja apagar este registro?")) {
-                await deleteDoc(doc(db, "comments", id));
-            }
-        };
-
-        function formatText(txt) {
-            if(!txt) return '';
-            let t = txt.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            t = t.replace(/!\[(.*?)\]\((.*?)\)/g, `<div class="my-10"><img src="$2" class="w-full rounded-sm border border-primary-900/30 shadow-lg"><p class="text-center text-[10px] text-gray-500 mt-2 uppercase tracking-widest">$1</p></div>`);
-            t = t.replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary-400 font-bold">$1</strong>');
-            t = t.replace(/##(.*?)##/g, '<span class="text-accent italic border-b border-accent/50">$1</span>');
-            t = t.replace(/^### (.*$)/gim, '<h3 class="text-2xl text-white font-display mt-8 mb-4 border-l-2 border-primary-500 pl-4">$1</h3>');
-            return t.replace(/\n/g, '<br>');
-        }
-
-        // === EDIT & DELETE POSTS ===
-        const editPostForm = document.getElementById('edit-post-form');
-        async function openEdit(id) {
-            const snap = await getDoc(doc(db, "posts", id));
-            if(snap.exists()) {
-                const p = snap.data();
-                document.getElementById('edit-post-id').value = id;
-                document.getElementById('edit-post-title').value = p.title;
-                document.getElementById('edit-post-cover-image').value = p.coverImage;
-                document.getElementById('edit-post-content').value = p.content;
-                document.getElementById('edit-post-attachment-name').value = p.attachmentName||'';
-                document.getElementById('edit-post-attachment-link').value = p.attachmentURL||'';
-                document.getElementById('edit-post-access').value = p.access;
-                document.getElementById('edit-post-section').value = p.sectionId;
-                showView('edit-post-view');
-            }
-        }
-
-        editPostForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('edit-post-id').value;
-            const secSelect = document.getElementById('edit-post-section');
-            const secName = secSelect.options[secSelect.selectedIndex].text;
-            
-            await updateDoc(doc(db, "posts", id), {
-                title: document.getElementById('edit-post-title').value,
-                coverImage: document.getElementById('edit-post-cover-image').value,
-                content: document.getElementById('edit-post-content').value,
-                attachmentName: document.getElementById('edit-post-attachment-name').value,
-                attachmentURL: document.getElementById('edit-post-attachment-link').value,
-                access: document.getElementById('edit-post-access').value,
-                sectionId: secSelect.value,
-                sectionName: secName
-            });
-            openPost(id); 
-        });
-
-        document.getElementById('cancel-edit-btn').addEventListener('click', () => {
-             if(document.getElementById('post-view').style.display === 'block') showView('post-view');
-             else showView('blog-view');
-        });
-
-        function confirmDel(id, type) {
-            itemToDelete = {id, type};
-            document.getElementById('delete-confirm-modal').style.display = 'flex';
-        }
-        document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
-            if(itemToDelete.type === 'post') {
-                await deleteDoc(doc(db, "posts", itemToDelete.id));
-                showView('blog-view');
-            } else if (itemToDelete.type === 'section') {
-                await deleteDoc(doc(db, "sections", itemToDelete.id));
-            }
-            document.getElementById('delete-confirm-modal').style.display = 'none';
-        });
-        document.getElementById('cancel-delete-btn').addEventListener('click', () => {
-            document.getElementById('delete-confirm-modal').style.display = 'none';
-        });
-
-        // === GLOBAL LISTENERS ===
-        appRoot.addEventListener('click', (e) => {
-            const card = e.target.closest('[data-id]');
-            
-            // Buttons inside list
-            if(e.target.closest('.edit-btn')) openEdit(e.target.closest('.edit-btn').dataset.id);
-            if(e.target.closest('.del-btn')) confirmDel(e.target.closest('.del-btn').dataset.id, 'post');
-            if(e.target.closest('.delete-sec-btn')) confirmDel(e.target.closest('.delete-sec-btn').dataset.id, 'section');
-            
-            // Student
-            if(e.target.closest('.manage-student-btn')) {
-                openManageStudent(e.target.closest('.manage-student-btn').dataset.id);
-            }
-        });
-
-        const manageModal = document.getElementById('manage-student-modal');
-        const studentExpiryDate = document.getElementById('student-expiry-date');
-        const studentStatusBadge = document.getElementById('student-status-badge');
-        let currentManagingUser = null;
-
-        async function openManageStudent(sid) {
-            // Re-fetch latest data for accuracy
-            const docSnap = await getDoc(doc(db, "users", sid));
-            if(!docSnap.exists()) return;
-            const st = { id: docSnap.id, ...docSnap.data() };
-            currentManagingUser = st;
-
-            document.getElementById('student-modal-email').textContent = st.email;
-            document.getElementById('student-modal-id').value = sid;
-            document.getElementById('student-modal-display-name').textContent = st.displayName || 'Sem Nome Mágico';
-            
-            // Handle Date Display
-            const expDate = st.expiresAt.toDate();
-            studentExpiryDate.textContent = expDate.toLocaleDateString('pt-BR');
-            
-            if(expDate > new Date()) {
-                studentStatusBadge.textContent = "ATIVO";
-                studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-green-900/50 text-green-400";
-            } else {
-                studentStatusBadge.textContent = "EXPIRADO";
-                studentStatusBadge.className = "px-2 py-1 text-[9px] uppercase font-bold rounded bg-red-900/50 text-red-400";
-            }
-
-            // Populate Sections
-            const list = document.getElementById('student-modal-sections-list');
-            list.innerHTML = '';
-            
-            allSections.forEach(sec => {
-                const checked = st.accessibleSections && st.accessibleSections.includes(sec.id);
-                const label = document.createElement('label');
-                label.className = "flex items-center gap-3 text-gray-300 text-sm p-2 hover:bg-white/5 cursor-pointer border-b border-white/5";
-                label.innerHTML = `<input type="checkbox" value="${sec.id}" ${checked?'checked':''} class="accent-primary-400 w-4 h-4"> ${sec.name}`;
-                list.appendChild(label);
-            });
-            manageModal.style.display = 'flex';
-        }
-        
-        // --- Access Buttons Logic ---
-        async function updateAccessTime(monthsToAdd) {
-            if(!currentManagingUser) return;
-            const ref = doc(db, "users", currentManagingUser.id);
-            
-            let newDate;
-            if (monthsToAdd === 0) {
-                 // Revoke (set to yesterday)
-                 newDate = new Date();
-                 newDate.setDate(newDate.getDate() - 1);
-            } else {
-                // If expired, start from today. If active, add to existing date.
-                const currentExp = currentManagingUser.expiresAt.toDate();
-                const baseDate = (currentExp > new Date()) ? currentExp : new Date();
-                
-                newDate = new Date(baseDate);
-                // Simple logic: treat 1 month as 30 days roughly for JS simplicity or use setMonth
-                if(monthsToAdd === 1) newDate.setDate(newDate.getDate() + 30); // Using days is safer for "months" sometimes
-                if(monthsToAdd === 3) newDate.setDate(newDate.getDate() + 90);
-            }
-            
-            await updateDoc(ref, { expiresAt: newDate });
-            openManageStudent(currentManagingUser.id); // Refresh modal
-        }
-
-        document.getElementById('renew-30-btn').addEventListener('click', () => updateAccessTime(1));
-        document.getElementById('renew-90-btn').addEventListener('click', () => updateAccessTime(3));
-        document.getElementById('revoke-btn').addEventListener('click', () => {
-            if(confirm("Tem certeza que deseja bloquear o acesso deste aluno imediatamente?")) updateAccessTime(0);
-        });
-
-        document.getElementById('save-student-sections-btn').addEventListener('click', async () => {
-            const sid = document.getElementById('student-modal-id').value;
-            const checks = document.querySelectorAll('#student-modal-sections-list input:checked');
-            const newSecs = Array.from(checks).map(c => c.value);
-            await updateDoc(doc(db, "users", sid), { accessibleSections: newSecs });
-            manageModal.style.display = 'none';
-        });
-        document.getElementById('close-student-modal-btn').addEventListener('click', () => manageModal.style.display = 'none');
-
-
-        // === AI TEXT & AUDIO ===
-        const geminiApiKeyInput = document.getElementById('gemini-api-key');
-        if(localStorage.getItem('geminiKey')) geminiApiKeyInput.value = localStorage.getItem('geminiKey');
-        geminiApiKeyInput.addEventListener('input', () => localStorage.setItem('geminiKey', geminiApiKeyInput.value));
-
-        async function runAI(el) {
-            const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
-            if(!key) return alert("Insira a API Key");
-            const txt = el.value; if(!txt) return;
-            
-            try {
-                const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${key}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }], systemInstruction: { parts: [{ text: "Formate este texto sobre bruxaria hekatina. Destaque termos importantes com ** e nomes de divindades com ##. Seja poético." }] } })
-                });
-                const res = await req.json();
-                el.value = res.candidates[0].content.parts[0].text;
+                openPost(currentPostId);
             } catch(e) { console.error(e); }
         }
-        document.getElementById('format-create-btn').addEventListener('click', () => runAI(document.getElementById('post-content')));
-        document.getElementById('format-edit-btn').addEventListener('click', () => runAI(document.getElementById('edit-post-content')));
 
-        const audioPlayer = document.getElementById('gemini-audio-player');
-        const btnSpeak = document.getElementById('btn-speak');
-        const btnSpeakText = document.getElementById('btn-speak-text');
-        const btnStopSpeak = document.getElementById('btn-stop-speak');
-
-        function base64ToBuffer(b64) {
-            const str = window.atob(b64);
-            const b = new Uint8Array(str.length);
-            for(let i=0; i<str.length; i++) b[i] = str.charCodeAt(i);
-            return b.buffer;
-        }
-        function makeWav(data) {
-            const b = new ArrayBuffer(44 + data.byteLength);
-            const v = new DataView(b);
-            const w = (o,s)=> { for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
-            w(0,'RIFF'); v.setUint32(4, 36+data.byteLength, true); w(8,'WAVE');
-            w(12,'fmt '); v.setUint32(16,16,true); v.setUint16(20,1,true);
-            v.setUint16(22,1,true); v.setUint32(24,24000,true); v.setUint32(28,48000,true);
-            v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data');
-            v.setUint32(40,data.byteLength,true);
-            new Uint8Array(b, 44).set(new Uint8Array(data));
-            return b;
-        }
-
-        async function speak() {
-            if(!audioPlayer.paused && audioPlayer.src) { audioPlayer.pause(); btnSpeakText.textContent = "Continuar"; return; }
-            if(audioPlayer.paused && audioPlayer.src) { audioPlayer.play(); btnSpeakText.textContent = "Pausar"; return; }
-
-            const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
-            if(!key) return alert("API Key necessária.");
-
-            btnSpeakText.textContent = "Carregando...";
-            const txt = document.getElementById('post-view-content').innerText.substring(0, 4000);
-            
-            try {
-                const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${key}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: txt }] }],
-                        generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } } }
-                    })
+        function loadComments(postId) {
+            if(commentsUnsubscribe) commentsUnsubscribe();
+            commentsUnsubscribe = onSnapshot(query(collection(db, "comments"), where("postId", "==", postId)), (snap) => {
+                const list = document.getElementById('comments-list');
+                list.innerHTML = '';
+                if(snap.empty) { list.innerHTML = '<p class="text-gray-700 font-display text-[10px] uppercase tracking-widest text-center">O silêncio impera.</p>'; return; }
+                let comms = [];
+                snap.forEach(d => comms.push({id: d.id, ...d.data()}));
+                comms.sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+                comms.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = "bg-white/5 p-6 border-l-2 border-primary-900";
+                    div.innerHTML = `
+                        <div class="flex justify-between mb-2">
+                            <span class="text-primary-500 text-[10px] font-bold uppercase tracking-widest">${c.userName}</span>
+                            <span class="text-gray-600 text-[9px]">${new Date(c.createdAt?.toDate()).toLocaleDateString()}</span>
+                        </div>
+                        <p class="text-gray-400 text-sm font-light italic">"${c.content}"</p>
+                    `;
+                    list.appendChild(div);
                 });
-                const res = await req.json();
-                const pcm = base64ToBuffer(res.candidates[0].content.parts[0].inlineData.data);
-                const wav = makeWav(pcm);
-                const blob = new Blob([wav], { type: 'audio/wav' });
-                audioPlayer.src = URL.createObjectURL(blob);
-                
-                audioPlayer.onplay = () => { btnSpeakText.textContent = "Pausar"; btnStopSpeak.classList.remove('hidden'); };
-                audioPlayer.onended = stopSpeaking;
-                audioPlayer.play();
-            } catch(e) { console.error(e); btnSpeakText.textContent = "Ouvir"; }
+            });
         }
 
-        function stopSpeaking() {
-            if(audioPlayer.src) { audioPlayer.pause(); audioPlayer.src = ""; }
-            btnSpeakText.textContent = "Ouvir o Chamado"; btnStopSpeak.classList.add('hidden');
-        }
-
-        btnSpeak.addEventListener('click', speak);
-        btnStopSpeak.addEventListener('click', stopSpeaking);
-        document.getElementById('back-to-posts-btn').addEventListener('click', () => {
-            stopSpeaking();
-            showView('blog-view'); // Volta para a trilha pois estamos no contexto do blog
-        });
-
-        // Adiciona listener para redimensionamento da janela para ajustar a trilha
-        window.addEventListener('resize', () => {
-            if(activeSectionId && !document.getElementById('active-path-view').classList.contains('hidden')) {
-                renderProfessionalPath(activeSectionId);
-            }
+        document.getElementById('submit-comment-btn').addEventListener('click', async () => {
+            const txt = document.getElementById('comment-input').value;
+            if(!currentUser || !txt) return;
+            await addDoc(collection(db, "comments"), {
+                postId: currentPostId,
+                userName: currentUser.email.split('@')[0],
+                content: txt,
+                createdAt: new Date()
+            });
+            document.getElementById('comment-input').value = '';
         });
 
     </script>
