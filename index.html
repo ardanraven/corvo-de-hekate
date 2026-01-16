@@ -18,7 +18,7 @@
             'Yule': {
                 name: 'Yule', 
                 primary: { 400: '#D4AF37', 500: '#C5A028', 900: '#3D3008' }, // Dourado
-                accent: '#8B0000', // Vermelho Sangue
+                accent: '#8B0000', // Vermelho Sanguae
                 particle: '❄', // Neve
                 particleColor: '#FFFFFF',
                 particleDirection: 'down'
@@ -804,9 +804,15 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div class="bg-black/40 p-4 border border-white/5">
                                     <h4 class="text-gray-400 text-xs uppercase tracking-widest mb-3">Módulos</h4>
-                                    <form id="create-section-form" class="flex gap-2 mb-2">
+                                    <form id="create-section-form" class="flex flex-col gap-2 mb-2">
                                         <input type="text" id="section-name" placeholder="Nome" class="input-luxe w-full p-1 text-xs">
-                                        <button type="submit" class="text-primary-400 hover:text-white"><i class="fas fa-plus"></i></button>
+                                        <div class="flex gap-2">
+                                            <input type="number" id="section-weekly-cap" placeholder="Aulas/Semana" value="3" min="1" max="7" class="input-luxe w-24 p-1 text-xs">
+                                            <label class="flex items-center gap-1 text-xs text-gray-400">
+                                                <input type="checkbox" id="section-enable-weekly-lock" class="w-3 h-3"> Ativar Trava
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="text-primary-400 hover:text-white bg-primary-900/20 p-1 rounded text-xs"><i class="fas fa-plus"></i> Criar</button>
                                     </form>
                                     <div id="sections-list-admin" class="max-h-24 overflow-y-auto text-xs text-gray-500 custom-scrollbar"></div>
                                 </div>
@@ -819,6 +825,34 @@
                                 <input type="password" id="gemini-api-key" placeholder="Cole a API Key do Gemini aqui" class="input-luxe w-full p-1 text-[10px]">
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- MODAL EDITAR SEÇÃO (NOVO) -->
+                <div id="edit-section-modal" class="hidden fixed inset-0 z-[85] bg-black/95 flex items-center justify-center p-4">
+                    <div class="bg-obsidian border border-white/10 p-8 w-full max-w-sm shadow-2xl">
+                        <h2 class="text-xl font-display text-white mb-6 border-b border-white/10 pb-4">Configurar Módulo</h2>
+                        <form id="edit-section-form" class="space-y-4">
+                            <input type="hidden" id="edit-section-id">
+                            <div>
+                                <label class="text-gray-400 text-xs uppercase mb-2 block">Nome do Módulo</label>
+                                <input type="text" id="edit-section-name" class="input-luxe w-full p-3" required>
+                            </div>
+                            <div>
+                                <label class="text-gray-400 text-xs uppercase mb-2 block">Aulas por Semana</label>
+                                <input type="number" id="edit-section-weekly-cap" min="1" max="7" class="input-luxe w-full p-3" value="3" required>
+                            </div>
+                            <label class="flex items-center gap-3 cursor-pointer bg-primary-900/10 p-3 border border-primary-900/30 rounded">
+                                <input type="checkbox" id="edit-section-enable-weekly-lock" class="w-4 h-4 accent-primary-400">
+                                <span class="text-sm text-primary-400">Ativar Limite Semanal</span>
+                            </label>
+                            <p class="text-[10px] text-gray-500 italic">Quando ativado, os alunos poderão completar apenas o número de aulas definido por semana.</p>
+                            <div class="flex gap-3 mt-6">
+                                <button type="submit" class="flex-1 bg-primary-900 text-white py-3 text-xs uppercase tracking-widest hover:bg-primary-600 transition rounded">Salvar</button>
+                                <button type="button" id="cancel-edit-section-btn" class="flex-1 bg-gray-800 text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-700 transition rounded">Cancelar</button>
+                            </div>
+                            <p id="edit-section-status" class="text-center mt-4 text-xs text-primary-500 h-4"></p>
+                        </form>
                     </div>
                 </div>
 
@@ -1370,7 +1404,17 @@
                     // Lista de Admin
                     const div = document.createElement('div');
                     div.className = "flex justify-between items-center p-2 hover:bg-white/5 rounded border-b border-white/5";
-                    div.innerHTML = `<span>${sec.name}</span> <button class="delete-sec-btn text-red-500 hover:text-red-300" data-id="${sec.id}"><i class="fas fa-times"></i></button>`;
+                    const lockBadge = sec.enableWeeklyLock ? `<span class="text-[9px] bg-primary-900/50 text-primary-400 px-2 py-1 rounded">3/semana</span>` : '<span class="text-[9px] text-gray-600">Sem limite</span>';
+                    div.innerHTML = `
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span>${sec.name}</span>
+                                ${lockBadge}
+                            </div>
+                        </div>
+                        <button class="edit-sec-btn text-primary-500 hover:text-primary-400 mr-2 text-xs" data-id="${sec.id}" title="Editar"><i class="fas fa-edit"></i></button>
+                        <button class="delete-sec-btn text-red-500 hover:text-red-300" data-id="${sec.id}"><i class="fas fa-times"></i></button>
+                    `;
                     sectionsListAdmin.appendChild(div);
 
                     // === RENDERIZAR CARD DA SEÇÃO NO HUB ===
@@ -1392,7 +1436,19 @@
         document.getElementById('create-section-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('section-name').value;
-            if(name) { await addDoc(collection(db, "sections"), {name, createdAt: new Date()}); document.getElementById('create-section-form').reset(); }
+            const weeklyCap = parseInt(document.getElementById('section-weekly-cap').value) || 3;
+            const enableWeeklyLock = document.getElementById('section-enable-weekly-lock').checked;
+            
+            if(name) { 
+                await addDoc(collection(db, "sections"), {
+                    name, 
+                    weeklyCap,
+                    enableWeeklyLock,
+                    createdAt: new Date()
+                }); 
+                document.getElementById('create-section-form').reset();
+                document.getElementById('section-enable-weekly-lock').checked = false;
+            }
         });
 
         // === LOGICA DE TRILHA PROFISSIONAL (SVG SNAKE) ===
@@ -1495,12 +1551,26 @@
                 if (isPaid && !hasSectionAccess) {
                     isLocked = true; // Sem permissão de compra
                 } else {
-                    // Lógica Sequencial:
-                    // Se estiver LOGADO, mantém a regra de que precisa completar o anterior.
-                    // Se for VISITANTE (sem login), libera tudo que for GRATIS (aberto), pois não dá pra completar.
+                    // Lógica Sequencial + Limite Semanal
                     if (currentUser) {
                          if (index > 0 && !completedPosts.includes(pathPosts[index-1].id) && !isAdmin) {
                             isLocked = true;
+                        }
+                        
+                        // NOVO: Verifica limite semanal se a seção tiver ativado
+                        if(!isLocked && !isAdmin) {
+                            const section = allSections.find(s => s.id === sectionId);
+                            if(section && section.enableWeeklyLock) {
+                                const weekKey = getWeekKey();
+                                const weeklyStats = (currentUser && currentUser.uid) ? allStudents.find(u => u.id === currentUser.uid)?.weeklyStats : {};
+                                
+                                if(weeklyStats && weeklyStats[sectionId] && weeklyStats[sectionId][weekKey]) {
+                                    const stats = weeklyStats[sectionId][weekKey];
+                                    if(stats.completed >= stats.cap && !isCompleted) {
+                                        isLocked = true;
+                                    }
+                                }
+                            }
                         }
                     } else {
                         // Visitante vendo conteúdo aberto = LIBERADO
@@ -1566,10 +1636,20 @@
                 ` : '';
 
                 // TOOLTIP HTML (Para locked)
+                let tooltipText = "Selado.<br>Complete o rito anterior.";
+                const section = allSections.find(s => s.id === sectionId);
+                if(section && section.enableWeeklyLock && !isAdmin && currentUser) {
+                    const weekKey = getWeekKey();
+                    const userData = allStudents.find(u => u.id === currentUser.uid);
+                    if(userData && userData.weeklyStats && userData.weeklyStats[sectionId] && userData.weeklyStats[sectionId][weekKey]) {
+                        const stats = userData.weeklyStats[sectionId][weekKey];
+                        tooltipText = `Limite atingido!<br>${stats.completed}/${stats.cap} aulas esta semana.<br>Volta segunda!`;
+                    }
+                }
                 const lockedTooltipHtml = isLocked ? `
                     <div class="locked-tooltip">
                         <i class="fas fa-key mb-1 block text-lg"></i>
-                        Selado.<br>Complete o rito anterior.
+                        ${tooltipText}
                     </div>
                 ` : '';
 
@@ -1760,15 +1840,53 @@
         // FUNÇÃO DE MARCAR COMO COMPLETO
         async function markPostComplete() {
             if(!currentUser || !currentPostId) return;
+            
+            // Busca o post atual para pegar a seção
+            const post = allPosts.find(p => p.id === currentPostId);
+            if(!post) return;
+            
+            // Pega a seção para verificar se tem limite semanal
+            const section = allSections.find(s => s.id === post.sectionId);
+            
             const btn = document.getElementById('mark-complete-btn');
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Consagrando...';
             
             try {
-                // Atualiza User no Firestore
-                await updateDoc(doc(db, "users", currentUser.uid), {
-                    completedPosts: arrayUnion(currentPostId)
-                });
+                // Se a seção tem limite semanal, precisa rastrear
+                if(section && section.enableWeeklyLock) {
+                    const userRef = doc(db, "users", currentUser.uid);
+                    const userData = await getDoc(userRef);
+                    
+                    let weeklyStats = userData.data().weeklyStats || {};
+                    const sectionId = post.sectionId;
+                    const weekKey = getWeekKey(); // Chave única para cada semana
+                    
+                    if(!weeklyStats[sectionId]) weeklyStats[sectionId] = {};
+                    if(!weeklyStats[sectionId][weekKey]) {
+                        weeklyStats[sectionId][weekKey] = { completed: 0, cap: section.weeklyCap || 3 };
+                    }
+                    
+                    // Se já completou o limite desta semana
+                    if(weeklyStats[sectionId][weekKey].completed >= weeklyStats[sectionId][weekKey].cap) {
+                        btn.innerHTML = originalText;
+                        alert(`⏳ Limite semanal atingido!\n\nVocê já completou ${weeklyStats[sectionId][weekKey].cap} aulas esta semana.\n\nVoltaremos segunda-feira com 3 novas aulas para você!`);
+                        return;
+                    }
+                    
+                    // Incrementa o contador semanal
+                    weeklyStats[sectionId][weekKey].completed += 1;
+                    
+                    await updateDoc(userRef, {
+                        completedPosts: arrayUnion(currentPostId),
+                        weeklyStats: weeklyStats
+                    });
+                } else {
+                    // Sem limite semanal, apenas registra
+                    await updateDoc(doc(db, "users", currentUser.uid), {
+                        completedPosts: arrayUnion(currentPostId)
+                    });
+                }
                 
                 // Atualiza Localmente
                 if(!completedPosts.includes(currentPostId)) completedPosts.push(currentPostId);
@@ -1780,9 +1898,6 @@
                 btn.className = "bg-yellow-500 text-black px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_30px_#FFD700] transform scale-110 transition";
                 btn.innerHTML = '<i class="fas fa-star"></i> Sábio! Avançando...';
                 
-                // Efeito sonoro simples (opcional, requer arquivo)
-                // const audio = new Audio('success.mp3'); audio.play();
-
                 setTimeout(() => {
                     showView('blog-view'); // Volta para a trilha para ver o desbloqueio
                 }, 1500);
@@ -1869,6 +1984,15 @@
             }
         };
 
+        // HELPER: Obter chave única da semana (segunda-feira como início)
+        function getWeekKey() {
+            const today = new Date();
+            const day = today.getDay();
+            const diff = today.getDate() - day + (day === 0 ? -6 : 1); // Ajusta para segunda
+            const monday = new Date(today.setDate(diff));
+            return monday.toISOString().split('T')[0]; // YYYY-MM-DD
+        }
+
         function formatText(txt) {
             if(!txt) return '';
             let t = txt.replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -1925,6 +2049,49 @@
             itemToDelete = {id, type};
             document.getElementById('delete-confirm-modal').style.display = 'flex';
         }
+        // === EDIT SECTION (NOVO) ===
+        const editSectionForm = document.getElementById('edit-section-form');
+        const editSectionModal = document.getElementById('edit-section-modal');
+        
+        async function openEditSection(sectionId) {
+            const section = allSections.find(s => s.id === sectionId);
+            if(!section) return;
+            
+            document.getElementById('edit-section-id').value = sectionId;
+            document.getElementById('edit-section-name').value = section.name;
+            document.getElementById('edit-section-weekly-cap').value = section.weeklyCap || 3;
+            document.getElementById('edit-section-enable-weekly-lock').checked = section.enableWeeklyLock || false;
+            editSectionModal.classList.remove('hidden');
+        }
+        
+        editSectionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const sectionId = document.getElementById('edit-section-id').value;
+            const status = document.getElementById('edit-section-status');
+            
+            try {
+                status.textContent = "Salvando...";
+                await updateDoc(doc(db, "sections", sectionId), {
+                    name: document.getElementById('edit-section-name').value,
+                    weeklyCap: parseInt(document.getElementById('edit-section-weekly-cap').value),
+                    enableWeeklyLock: document.getElementById('edit-section-enable-weekly-lock').checked
+                });
+                status.textContent = "Salvo com sucesso!";
+                status.className = "text-center mt-4 text-xs text-green-400 h-4";
+                setTimeout(() => {
+                    editSectionModal.classList.add('hidden');
+                }, 1000);
+            } catch(err) {
+                console.error(err);
+                status.textContent = "Erro ao salvar.";
+                status.className = "text-center mt-4 text-xs text-red-400 h-4";
+            }
+        });
+        
+        document.getElementById('cancel-edit-section-btn').addEventListener('click', () => {
+            editSectionModal.classList.add('hidden');
+        });
+
         document.getElementById('confirm-delete-btn').addEventListener('click', async () => {
             if(itemToDelete.type === 'post') {
                 await deleteDoc(doc(db, "posts", itemToDelete.id));
@@ -1946,6 +2113,7 @@
             if(e.target.closest('.edit-btn')) openEdit(e.target.closest('.edit-btn').dataset.id);
             if(e.target.closest('.del-btn')) confirmDel(e.target.closest('.del-btn').dataset.id, 'post');
             if(e.target.closest('.delete-sec-btn')) confirmDel(e.target.closest('.delete-sec-btn').dataset.id, 'section');
+            if(e.target.closest('.edit-sec-btn')) openEditSection(e.target.closest('.edit-sec-btn').dataset.id);
             
             // Student
             if(e.target.closest('.manage-student-btn')) {
