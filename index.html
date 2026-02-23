@@ -577,6 +577,8 @@
 
                     <button data-view="feed-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-primary-500 hover:text-white uppercase transition drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]"><i class="fas fa-scroll mr-1"></i> Mural</button>
 
+                    <button data-view="altar-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-primary-400 hover:text-white uppercase transition drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]"><i class="fas fa-fire mr-1"></i> Altar</button>
+
                     <button data-view="sobre-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Sacerdote</button>
                     <div class="w-[1px] h-4 bg-white/10"></div>
                     <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-primary-400" title="Calendário"><i class="fas fa-moon"></i></a>
@@ -606,6 +608,7 @@
                 <button data-view="home-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Santuário</button>
                 <button data-view="blog-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Grimório</button>
                 <button data-view="feed-view" class="internal-link text-2xl font-display text-primary-500 py-2 border-b border-white/10"><i class="fas fa-scroll mr-2"></i>Mural</button>
+                <button data-view="altar-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10"><i class="fas fa-fire mr-2 text-primary-500"></i>Altar</button>
                 <button data-view="sobre-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Sacerdote</button>
                 <button data-view="profile-view" class="internal-link text-primary-400 text-xl font-display py-2"><i class="fas fa-user mr-2"></i>Meu Perfil</button>
                 <a href="https://caminhodatocha.site" class="text-primary-400 text-xl font-display py-2"><i class="fas fa-gift mr-2"></i>Coven</a>
@@ -990,6 +993,74 @@
 
         <div id="feed-posts-container" class="space-y-10">
             <div class="text-center py-20"><i class="fas fa-circle-notch fa-spin text-primary-900 text-4xl"></i></div>
+        </div>
+    </div>
+
+    <div id="altar-view" class="view-container hidden max-w-6xl mx-auto pt-10 px-4 mb-20">
+        <div class="text-center mb-12 space-y-4">
+            <i class="fas fa-moon text-primary-500 text-3xl animate-pulse"></i>
+            <h3 class="text-4xl font-display text-white">O Altar das Sombras</h3>
+            <p class="text-gray-500 text-sm uppercase tracking-widest">Deixe sua oferenda; a chama durará até o próximo anoitecer (24h)</p>
+        </div>
+
+        <div class="bg-obsidian border border-primary-900/30 p-8 md:p-12 shadow-[0_0_40px_rgba(0,0,0,0.8)] relative overflow-hidden flex flex-col">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary-900/5 via-transparent to-transparent pointer-events-none"></div>
+
+            <div class="relative z-10 w-full max-w-2xl mx-auto mb-16">
+                <h4 class="text-primary-400 font-display text-lg border-b border-primary-900/30 pb-3 flex items-center justify-center gap-3 mb-8"><i class="fas fa-hand-sparkles"></i> Prestar Homenagem</h4>
+
+                <form id="altar-form" class="space-y-6">
+                    <div>
+                        <label class="block text-gray-400 text-xs uppercase tracking-widest mb-3 text-center">Escolha a Deidade</label>
+                        <div class="flex gap-4 justify-center">
+                            <label class="w-40 cursor-pointer">
+                                <input type="radio" name="altar-deity" value="Hekate" class="peer hidden" checked>
+                                <div class="border border-white/10 p-4 text-center text-gray-500 peer-checked:border-primary-400 peer-checked:text-primary-400 peer-checked:bg-primary-900/10 hover:bg-white/5 transition rounded-sm shadow-md">
+                                    <i class="fas fa-key block mb-2 text-xl"></i> Hekate
+                                </div>
+                            </label>
+                            <label class="w-40 cursor-pointer">
+                                <input type="radio" name="altar-deity" value="Nyx" class="peer hidden">
+                                <div class="border border-white/10 p-4 text-center text-gray-500 peer-checked:border-indigo-400 peer-checked:text-indigo-400 peer-checked:bg-indigo-900/10 hover:bg-white/5 transition rounded-sm shadow-md">
+                                    <i class="fas fa-star block mb-2 text-xl"></i> Nyx
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="max-w-md mx-auto">
+                        <label class="block text-gray-400 text-xs uppercase tracking-widest mb-3 text-center">Sua Oferenda</label>
+                        <select id="altar-type" class="w-full bg-[#050505] border border-primary-900/30 p-4 text-sm text-gray-300 focus:outline-none focus:border-primary-500 transition-colors cursor-pointer font-display text-center">
+                            <option value="vela">🕯️ Acender Vela</option>
+                            <option value="incenso">💨 Queimar Incenso</option>
+                            <option value="prece">📜 Sussurrar Prece Oculta</option>
+                        </select>
+                    </div>
+
+                    <div id="altar-message-container" class="hidden max-w-md mx-auto">
+                        <textarea id="altar-message" class="w-full bg-[#050505] border border-primary-900/30 p-4 text-sm text-gray-300 focus:outline-none focus:border-primary-500 transition-colors resize-none placeholder-gray-700 text-center" rows="3" placeholder="Escreva sua intenção ou prece..."></textarea>
+                    </div>
+
+                    <div class="flex justify-center pt-4">
+                        <button type="submit" class="w-full max-w-md bg-primary-900/40 border border-primary-500/50 text-primary-400 py-4 font-bold uppercase text-xs tracking-widest hover:bg-primary-500 hover:text-black transition shadow-[0_0_15px_rgba(212,175,55,0.2)]">Consagrar no Altar</button>
+                    </div>
+                    <p id="altar-status" class="text-xs text-center hidden mt-2 h-4"></p>
+                </form>
+            </div>
+
+            <div class="relative z-10 w-full flex flex-col justify-end min-h-[400px] border-t border-white/5 pt-10 mt-auto">
+            
+            <div class="absolute top-10 left-1/2 -translate-x-1/2 opacity-5 pointer-events-none">
+                <i class="fas fa-crow text-[12rem]"></i>
+            </div>
+            
+            <div id="active-offerings-container" class="flex flex-wrap items-end justify-center gap-8 md:gap-12 h-full pt-40 pb-4 relative z-10 w-full px-4">
+                <div class="w-full text-center text-gray-700 text-xs italic pb-10">O altar aguarda a primeira chama...</div>
+            </div>
+            
+            <div class="w-full h-8 bg-gradient-to-b from-primary-900/50 to-[#030303] border-t-2 border-primary-900/70 rounded-t-lg relative z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.6)]"></div>
+            <div class="w-full h-6 bg-[#020202] border-t border-white/5 rounded-b-sm relative z-10"></div>
+        </div>
         </div>
     </div>
 
@@ -2532,6 +2603,141 @@
 
         // Inicializar a busca dos feeds assim que abrir a página
         fetchFeedPosts();
+
+        // ==========================================
+        // 🕯️ SANTUÁRIO DIGITAL (ALTAR) 🕯️
+        // ==========================================
+        const altarForm = document.getElementById('altar-form');
+        const altarType = document.getElementById('altar-type');
+        const altarMsgContainer = document.getElementById('altar-message-container');
+        const activeOfferings = document.getElementById('active-offerings-container');
+
+        // Mostrar/esconder campo de prece
+        if(altarType) {
+            altarType.addEventListener('change', (e) => {
+                if(e.target.value === 'prece') {
+                    altarMsgContainer.classList.remove('hidden');
+                } else {
+                    altarMsgContainer.classList.add('hidden');
+                }
+            });
+        }
+
+        // Salvar oferenda
+        if(altarForm) {
+            altarForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if(!currentUser) { 
+                    alert("Apenas iniciados podem deixar oferendas. Faça seu login no Santuário."); 
+                    return; 
+                }
+
+                const deity = document.querySelector('input[name="altar-deity"]:checked').value;
+                const type = altarType.value;
+                const msg = document.getElementById('altar-message').value.trim();
+                const status = document.getElementById('altar-status');
+
+                status.textContent = "Entregando às sombras...";
+                status.classList.remove('hidden', 'text-red-400');
+                status.classList.add('text-primary-500');
+
+                try {
+                    await addDoc(collection(db, "offerings"), {
+                        userId: currentUser.uid,
+                        userName: currentProfile.displayName || currentUser.email.split('@')[0],
+                        deity: deity,
+                        type: type,
+                        message: type === 'prece' ? msg : null,
+                        createdAt: new Date()
+                    });
+                    
+                    altarForm.reset();
+                    altarMsgContainer.classList.add('hidden');
+                    status.textContent = "A chama foi acesa e recebida!";
+                    setTimeout(() => status.classList.add('hidden'), 3000);
+                } catch(err) {
+                    console.error(err);
+                    status.textContent = "As forças hesitaram. Tente novamente.";
+                    status.classList.replace('text-primary-500', 'text-red-400');
+                }
+            });
+        }
+
+        // Buscar oferendas em tempo real (apenas as das últimas 24h)
+        function fetchOfferings() {
+            // Calcula a data de exatas 24 horas atrás
+            const yesterday = new Date();
+            yesterday.setHours(yesterday.getHours() - 24);
+
+            const q = query(collection(db, "offerings"), where("createdAt", ">", yesterday), orderBy("createdAt", "asc"));
+            
+            onSnapshot(q, (snap) => {
+                if(!activeOfferings) return;
+                activeOfferings.innerHTML = '';
+                
+                if(snap.empty) {
+                    activeOfferings.innerHTML = '<div class="w-full text-center text-gray-700 text-xs italic pb-10">O altar repousa no escuro...</div>';
+                    return;
+                }
+
+                snap.forEach(docSnap => {
+                    renderOffering(docSnap.data());
+                });
+            });
+        }
+
+        // Renderizar o HTML da oferenda no altar
+        function renderOffering(off) {
+            const div = document.createElement('div');
+            div.className = "flex flex-col items-center group relative cursor-pointer animate-fade-in-up transition-transform hover:scale-110";
+            
+            // Define as cores: Dourado para Hekate, Azul Estelar para Nyx
+            const isNyx = off.deity === 'Nyx';
+            const shadowClass = isNyx ? 'shadow-[0_0_20px_#4F46E5]' : 'shadow-[0_0_20px_#D4AF37]';
+            const flameColor = isNyx ? 'bg-indigo-300' : 'bg-primary-400';
+            const candleBody = isNyx ? 'from-indigo-900 to-black' : 'from-primary-900 to-obsidian';
+            
+            // Monta o visual de acordo com o tipo
+            if(off.type === 'vela') {
+                div.innerHTML = `
+                    <div class="w-2 h-5 ${flameColor} rounded-full blur-[2px] animate-pulse mb-1 ${shadowClass}"></div>
+                    <div class="w-5 h-14 bg-gradient-to-b ${candleBody} border border-white/20 rounded-t-sm opacity-90"></div>
+                `;
+            } else if (off.type === 'incenso') {
+                div.innerHTML = `
+                    <div class="w-0.5 h-12 bg-gray-600 relative">
+                        <div class="absolute -top-6 -left-2 w-4 h-10 bg-gray-400 rounded-full blur-md opacity-30 animate-bounce-slow"></div>
+                        <div class="absolute top-0 left-[-1px] w-1.5 h-1.5 bg-red-600 rounded-full shadow-[0_0_8px_red]"></div>
+                    </div>
+                    <div class="w-8 h-2 bg-[#111] border border-gray-700 rounded-full mt-1"></div>
+                `;
+            } else if (off.type === 'prece') {
+                div.innerHTML = `
+                    <div class="relative ${isNyx ? 'text-indigo-400' : 'text-primary-400'} opacity-70 group-hover:opacity-100 transition duration-300">
+                        <i class="fas fa-scroll text-3xl drop-shadow-lg"></i>
+                        <i class="fas fa-sparkles absolute -top-2 -right-2 text-[10px] animate-pulse"></i>
+                    </div>
+                `;
+            }
+
+            // Tooltip bonitão que aparece no Hover (agora centralizado, sem cortar e com setinha)
+    const msgText = off.message ? `<br><span class="text-gray-300 font-body text-[10px] block mt-2 italic border-t border-white/10 pt-2 break-words whitespace-normal">"${off.message}"</span>` : '';
+    
+    div.innerHTML += `
+        <div class="absolute bottom-full mb-5 left-1/2 -translate-x-1/2 w-max max-w-[250px] bg-black/95 border ${isNyx ? 'border-indigo-500/50' : 'border-primary-500/50'} p-4 text-center text-[9px] uppercase tracking-widest text-white opacity-0 group-hover:opacity-100 transition-opacity z-50 pointer-events-none rounded shadow-2xl flex flex-col items-center">
+            <span class="${isNyx ? 'text-indigo-400' : 'text-primary-400'} font-bold">Oferecido por ${off.userName}</span>
+            <span class="mt-1">Devoção a ${off.deity}</span>
+            ${msgText}
+            
+            <div class="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent ${isNyx ? 'border-t-indigo-500/50' : 'border-t-primary-500/50'}"></div>
+        </div>
+    `;
+
+            activeOfferings.appendChild(div);
+        }
+
+        // Inicia a escuta do altar assim que o script carregar
+        fetchOfferings();
 
         // ==========================================
         // ☁️ UPLOAD DE IMAGENS AUTOMÁTICO (IMGBB) ☁️
