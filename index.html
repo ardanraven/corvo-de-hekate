@@ -11,7 +11,7 @@
         // 🔮 CONFIGURAÇÃO DO SACERDOTE 🔮
         // Opções: 'Yule', 'Imbolc', 'Ostara', 'Beltane', 'Litha', 'Lammas', 'Mabon', 'Samhain', 'AnoNovo'
         // ESPECIAL: Se escolher 'Hekate', ele alterna automaticamente com 'Nyx' (Os Dois Pilares)
-        const CURRENT_THEME = 'Lammas'; 
+        const CURRENT_THEME = 'Ostara'; 
 
         // BANCO DE DADOS DE ESTÉTICA
         const THEMES = {
@@ -574,6 +574,9 @@
                 <nav class="hidden md:flex items-center space-x-8">
                     <button data-view="home-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Santuário</button>
                     <button data-view="blog-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Grimório</button>
+
+                    <button data-view="feed-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-primary-500 hover:text-white uppercase transition drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]"><i class="fas fa-scroll mr-1"></i> Mural</button>
+
                     <button data-view="sobre-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Sacerdote</button>
                     <div class="w-[1px] h-4 bg-white/10"></div>
                     <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-primary-400" title="Calendário"><i class="fas fa-moon"></i></a>
@@ -773,10 +776,13 @@
                     <div class="grid lg:grid-cols-2 gap-10 relative z-10">
                         <form id="create-post-form" class="space-y-4">
                             <input type="text" id="post-title" class="input-luxe w-full p-3 font-display text-lg" placeholder="Título do Ritual" required>
-                            <input type="url" id="post-cover-image" class="input-luxe w-full p-3 font-body text-sm" placeholder="Link da Imagem (https://...)" required>
+                            <div class="relative">
+                                <input type="text" id="post-cover-image" class="input-luxe w-full p-3 font-body text-sm pr-24" placeholder="Link da Imagem gerado..." required readonly>
+                                <input type="file" id="post-cover-file" accept="image/*" class="hidden">
+                                <button type="button" onclick="document.getElementById('post-cover-file').click()" class="absolute right-2 top-2 bg-primary-900 text-white px-4 py-1.5 text-[10px] uppercase tracking-widest hover:bg-primary-500 hover:text-black transition shadow-lg rounded-sm"><i class="fas fa-upload"></i> Upload</button>
+                            </div>
                             <div class="relative">
                                 <textarea id="post-content" rows="6" class="input-luxe w-full p-3 font-body text-sm" placeholder="Escreva os segredos..." required></textarea>
-                                <button type="button" id="format-create-btn" class="absolute bottom-2 right-2 text-[10px] bg-black border border-primary-900 text-primary-400 px-3 py-1 uppercase hover:bg-primary-900 transition"><i class="fas fa-magic mr-1"></i> IA</button>
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <select id="post-access" class="input-luxe w-full p-2 text-sm bg-black cursor-pointer"><option value="aberto">🔓 Público</option><option value="pago">🔐 Membros</option></select>
@@ -821,9 +827,7 @@
                                     <div id="students-list-admin" class="max-h-32 overflow-y-auto text-xs text-gray-500 space-y-1 custom-scrollbar"></div>
                                 </div>
                             </div>
-                            <div class="bg-black/40 p-2 border border-white/5">
-                                <input type="password" id="gemini-api-key" placeholder="Cole a API Key do Gemini aqui" class="input-luxe w-full p-1 text-[10px]">
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -959,7 +963,36 @@
                 </div>
             </div>
 
-        </main>
+                
+    <div id="feed-view" class="view-container hidden max-w-3xl mx-auto pt-10 px-4 mb-20">
+        <div class="text-center mb-12 space-y-4">
+            <i class="fas fa-scroll text-primary-500 text-3xl animate-pulse"></i>
+            <h3 class="text-4xl font-display text-white">Mural do Coven</h3>
+            <p class="text-gray-500 text-sm uppercase tracking-widest">Comunicados, presságios e mensagens do Sacerdote</p>
+        </div>
+
+        <div id="admin-feed-form-container" class="hidden mb-12 bg-obsidian/80 backdrop-blur border border-primary-900/50 p-6 shadow-[0_0_30px_rgba(212,175,55,0.1)] relative overflow-hidden">
+            <div class="absolute -right-5 -top-5 text-6xl text-white/5 pointer-events-none"><i class="fas fa-bullhorn"></i></div>
+            <h4 class="text-primary-400 font-display text-lg mb-4 flex items-center gap-2"><i class="fas fa-pen"></i> Redigir Comunicado</h4>
+            
+            <form id="create-feed-post-form" class="space-y-4 relative z-10">
+                <textarea id="feed-post-content" class="w-full bg-[#050505] border border-primary-900/30 p-4 text-sm text-gray-300 focus:outline-none focus:border-primary-500 transition-colors resize-none placeholder-gray-700" rows="3" placeholder="O que as sombras sussurram hoje, Sacerdote?" required></textarea>
+                <div class="relative">
+                    <input type="text" id="feed-post-image" class="w-full bg-[#050505] border border-primary-900/30 p-3 text-sm text-gray-300 pr-24 focus:outline-none focus:border-primary-500 transition-colors" placeholder="Nenhuma imagem selecionada (Opcional)" readonly>
+                    <input type="file" id="feed-post-file" accept="image/*" class="hidden">
+                    <button type="button" onclick="document.getElementById('feed-post-file').click()" class="absolute right-2 top-1.5 bg-primary-900/50 border border-primary-900 text-primary-400 px-4 py-1.5 text-[10px] uppercase tracking-widest hover:bg-primary-500 hover:text-black transition"><i class="fas fa-image"></i> Adicionar</button>
+                </div>
+                <button type="submit" class="bg-primary-900 text-white px-8 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black transition-colors w-full sm:w-auto shadow-lg">Publicar no Mural</button>
+                <p id="feed-post-status" class="text-xs text-primary-500 hidden mt-2"></p>
+            </form>
+        </div>
+
+        <div id="feed-posts-container" class="space-y-10">
+            <div class="text-center py-20"><i class="fas fa-circle-notch fa-spin text-primary-900 text-4xl"></i></div>
+        </div>
+    </div>
+
+                </main>
 
         <footer class="bg-black py-12 text-center border-t border-primary-900/20 relative z-10 overflow-hidden">
             <div class="absolute inset-0 bg-accent/5 pointer-events-none"></div>
@@ -989,73 +1022,78 @@
             </div>
         </div>
 
-        <div id="post-view" class="view-container hidden fixed inset-0 z-[60] bg-[#050505] overflow-y-auto custom-scrollbar">
-            <div class="max-w-4xl mx-auto min-h-screen bg-obsidian border-x border-white/5 relative shadow-2xl">
-                <div class="sticky top-0 z-20 bg-obsidian/95 backdrop-blur border-b border-white/5 p-4 flex justify-between items-center h-16 shadow-lg">
-                    <button id="back-to-posts-btn" class="text-primary-400 text-xs uppercase tracking-[0.2em] hover:text-white transition flex items-center gap-2 group">
-                        <i class="fas fa-arrow-left group-hover:-translate-x-1 transition"></i> Voltar
+        <div id="post-view" class="view-container hidden fixed inset-0 z-[60] bg-[#030303] overflow-y-auto custom-scrollbar">
+    
+    <div class="sticky top-0 z-50 bg-[#030303]/80 backdrop-blur-md border-b border-white/5 px-6 py-4 flex justify-between items-center shadow-[0_4px_30px_rgba(0,0,0,0.6)]">
+        <button id="back-to-posts-btn" class="text-gray-400 text-[10px] uppercase tracking-[0.3em] hover:text-primary-400 transition flex items-center gap-3 group font-bold">
+            <i class="fas fa-arrow-left group-hover:-translate-x-2 transition-transform duration-300"></i> Retornar
+        </button>
+        <div class="admin-only-controls hidden gap-6">
+            <button id="post-view-edit-btn" class="text-gray-500 hover:text-primary-400 transition"><i class="fas fa-pen"></i></button>
+            <button id="post-view-delete-btn" class="text-gray-500 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto bg-obsidian/40 relative shadow-2xl mb-24 border-x border-b border-white/5">
+        
+        <div class="relative w-full h-[40vh] md:h-[55vh] group overflow-hidden border-b border-primary-900/30">
+            <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/40 to-transparent z-10"></div>
+            <img id="post-view-cover-image" class="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 transition duration-1000 transform group-hover:scale-105">
+        </div>
+
+        <div class="px-8 md:px-20 pb-20 relative z-20 -mt-32 md:-mt-40">
+            
+            <h1 id="post-view-title" class="text-4xl md:text-6xl font-display text-white text-center mb-6 leading-tight drop-shadow-2xl"></h1>
+            
+            <div class="flex justify-center items-center gap-4 text-[10px] text-gray-500 uppercase tracking-widest mb-10 border-b border-white/5 pb-8">
+                <span class="flex items-center gap-2"><i class="fas fa-eye text-primary-600"></i> <span id="post-view-count">0</span> Leituras</span>
+                <i class="fas fa-star-of-life text-[6px] text-primary-900"></i>
+                <span class="text-primary-400">Coven do Corvo</span>
+            </div>
+
+            <div class="flex justify-center mb-16">
+                 <div id="audio-controls" class="inline-flex items-center gap-6 px-8 py-3 border border-primary-900/30 rounded-full cursor-pointer hover:border-primary-400/60 hover:bg-primary-900/10 transition-all duration-300 group bg-black/80 backdrop-blur shadow-lg">
+                    <button id="btn-speak" class="flex items-center gap-3 text-primary-500 group-hover:text-primary-300 text-[10px] uppercase font-bold tracking-widest">
+                        <i id="btn-speak-icon" class="fas fa-play"></i> <span id="btn-speak-text">Ouvir o Chamado</span>
                     </button>
-                    <div class="admin-only-controls hidden gap-4">
-                        <button id="post-view-edit-btn" class="text-gray-500 hover:text-white transition"><i class="fas fa-pen"></i></button>
-                        <button id="post-view-delete-btn" class="text-gray-500 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>
-
-                <div class="p-6 md:p-16 pb-32">
-                    <h1 id="post-view-title" class="text-3xl md:text-5xl font-display text-white text-center mb-6 leading-tight"></h1>
-                    
-                    <div class="flex justify-center items-center gap-6 text-[10px] text-gray-500 uppercase tracking-widest mb-12 border-b border-white/5 pb-6">
-                        <span><i class="fas fa-eye text-primary-900 mr-2"></i><span id="post-view-count">0</span> Leituras</span>
-                        <i class="fas fa-circle text-[3px] text-primary-500"></i>
-                        <span>Coven do Corvo</span>
-                    </div>
-
-                    <div class="flex justify-center mb-12">
-                         <div id="audio-controls" class="inline-flex items-center gap-4 px-6 py-2 border border-primary-900/30 rounded-full cursor-pointer hover:border-primary-400/50 transition group bg-black/50">
-                            <button id="btn-speak" class="flex items-center gap-3 text-primary-500 group-hover:text-primary-300 text-xs uppercase font-bold tracking-widest">
-                                <i id="btn-speak-icon" class="fas fa-play text-[10px]"></i> <span id="btn-speak-text">Ouvir o Chamado</span>
-                            </button>
-                            <button id="btn-stop-speak" class="hidden text-red-800 hover:text-red-500 transition"><i class="fas fa-stop"></i></button>
-                            <audio id="gemini-audio-player" class="hidden"></audio>
-                        </div>
-                    </div>
-
-                    <div class="relative group mb-12">
-                        <div class="absolute inset-0 bg-primary-500/10 blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-                        <img id="post-view-cover-image" class="w-full h-auto max-h-[600px] object-cover border-y border-white/10 grayscale group-hover:grayscale-0 transition duration-1000 relative z-10">
-                    </div>
-
-                    <div id="post-view-content" class="prose prose-invert prose-lg max-w-none font-body text-gray-300 leading-loose text-justify"></div>
-
-                    <div id="post-view-attachment-container" class="hidden mt-20 pt-10 border-t border-primary-900/30 text-center">
-                        <p class="text-[10px] text-primary-600 uppercase tracking-widest mb-4">Conteúdo Adicional</p>
-                        <a id="post-view-attachment" href="#" target="_blank" class="inline-flex items-center gap-3 border border-primary-900 text-primary-400 px-8 py-3 text-xs uppercase tracking-widest hover:bg-primary-400 hover:text-black transition">
-                            <i class="fas fa-download"></i> Baixar Material
-                        </a>
-                    </div>
-
-                    <!-- BOTÃO DE CONCLUIR RITUAL (NOVO) -->
-                    <div class="mt-16 flex justify-center">
-                        <button id="mark-complete-btn" class="bg-primary-900 hover:bg-primary-500 hover:text-black text-white px-10 py-5 rounded-full font-display font-bold uppercase tracking-widest text-sm shadow-[0_0_20px_var(--primary-main)] transition transform hover:scale-105 flex items-center gap-3">
-                            <i class="fas fa-check-circle text-xl"></i> Concluir Leitura & Avançar
-                        </button>
-                    </div>
-                    
-                    <div id="comments-section" class="mt-24 border-t border-primary-900/20 pt-10">
-                         <h3 class="text-2xl font-display text-white mb-8 flex items-center gap-2"><i class="fas fa-comments text-primary-500"></i> Discussões do Coven</h3>
-                         
-                         <div id="comments-list" class="space-y-6 mb-10"></div>
-                         
-                         <div id="comment-form-container" class="hidden bg-black/30 p-6 border border-white/5 rounded">
-                             <h4 class="text-sm text-primary-400 font-display mb-4 uppercase tracking-widest">Deixar uma oferenda de palavras</h4>
-                             <textarea id="comment-input" class="input-luxe w-full p-4 text-sm mb-4 bg-obsidian" rows="3" placeholder="Compartilhe sua visão..."></textarea>
-                             <button id="submit-comment-btn" class="bg-primary-900/50 border border-primary-900 text-white px-6 py-2 text-xs uppercase tracking-widest hover:bg-primary-500 hover:text-black transition">Enviar Comentário</button>
-                         </div>
-                         <p id="comment-login-msg" class="text-center text-gray-600 text-xs italic mt-8">Entre no santuário para deixar sua marca.</p>
-                    </div>
+                    <button id="btn-stop-speak" class="hidden text-red-900 hover:text-red-500 transition"><i class="fas fa-stop"></i></button>
+                    <audio id="gemini-audio-player" class="hidden"></audio>
                 </div>
             </div>
+
+            <div id="post-view-content" class="prose prose-invert prose-lg max-w-none font-body text-gray-300 leading-loose text-justify selection:bg-primary-900 selection:text-white"></div>
+
+            <div id="post-view-attachment-container" class="hidden mt-20 pt-12 border-t border-primary-900/20 text-center">
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest mb-6">Material Complementar</p>
+                <a id="post-view-attachment" href="#" target="_blank" class="inline-flex items-center gap-4 bg-transparent border border-primary-500 text-primary-400 px-10 py-4 text-[10px] font-bold uppercase tracking-widest hover:bg-primary-500 hover:text-black transition-all duration-300">
+                    <i class="fas fa-download text-sm"></i> Baixar Pergaminho
+                </a>
+            </div>
+
+            <div class="mt-24 flex justify-center">
+                <button id="mark-complete-btn" class="group relative overflow-hidden bg-primary-900 text-white px-12 py-5 font-display font-bold uppercase tracking-[0.2em] text-xs shadow-[0_0_20px_var(--primary-main)] transition-all duration-500 hover:shadow-[0_0_40px_var(--primary-light)] transform hover:-translate-y-1 flex items-center gap-4 rounded-sm">
+                    <div class="absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    <i class="fas fa-check-circle text-lg relative z-10"></i> 
+                    <span class="relative z-10">Concluir & Avançar</span>
+                </button>
+            </div>
+            
+            <div id="comments-section" class="mt-28 bg-black/30 p-8 md:p-12 border border-white/5 rounded-sm">
+                 <h3 class="text-xl font-display text-white mb-10 flex items-center gap-3 border-b border-primary-900/30 pb-4">
+                    <i class="fas fa-feather text-primary-500"></i> Ecos do Coven
+                 </h3>
+                 
+                 <div id="comments-list" class="space-y-6 mb-12"></div>
+                 
+                 <div id="comment-form-container" class="hidden">
+                     <textarea id="comment-input" class="w-full bg-[#050505] border border-primary-900/30 p-5 text-sm mb-4 text-gray-300 focus:outline-none focus:border-primary-500 transition-colors resize-none placeholder-gray-700" rows="3" placeholder="Deixe sua marca neste conhecimento..."></textarea>
+                     <button id="submit-comment-btn" class="bg-primary-900/20 border border-primary-900 text-primary-400 px-8 py-3 text-[10px] uppercase font-bold tracking-widest hover:bg-primary-500 hover:text-black transition-colors">Enviar Reflexão</button>
+                 </div>
+                 <p id="comment-login-msg" class="text-center text-gray-600 text-xs italic mt-8">Adentre o santuário para deixar sua oferenda de palavras.</p>
+            </div>
         </div>
+    </div>
+</div>
 
         <div id="edit-post-view" class="view-container hidden fixed inset-0 z-[70] bg-black p-4 overflow-y-auto">
              <div class="max-w-2xl mx-auto mt-20 bg-obsidian p-8 border border-white/10 shadow-2xl">
@@ -1063,10 +1101,13 @@
                 <form id="edit-post-form" class="space-y-6">
                     <input type="hidden" id="edit-post-id">
                     <input type="text" id="edit-post-title" class="input-luxe w-full p-3 font-display" required>
-                    <input type="url" id="edit-post-cover-image" class="input-luxe w-full p-3" required>
+                    <div class="relative">
+                        <input type="text" id="edit-post-cover-image" class="input-luxe w-full p-3 pr-24" placeholder="Imagem de Capa..." required readonly>
+                        <input type="file" id="edit-post-file" accept="image/*" class="hidden">
+                        <button type="button" onclick="document.getElementById('edit-post-file').click()" class="absolute right-2 top-2 bg-primary-900 text-white px-4 py-1.5 text-[10px] uppercase tracking-widest hover:bg-primary-500 hover:text-black transition shadow-lg rounded-sm"><i class="fas fa-upload"></i> Upload</button>
+                    </div>
                     <div class="relative">
                         <textarea id="edit-post-content" rows="10" class="input-luxe w-full p-3" required></textarea>
-                        <button type="button" id="format-edit-btn" class="absolute bottom-3 right-3 text-primary-400 text-[10px] uppercase border border-primary-900 px-2 py-1 bg-black">IA</button>
                     </div>
                      <div class="grid grid-cols-2 gap-6">
                         <input type="text" id="edit-post-attachment-name" class="input-luxe w-full p-3">
@@ -1310,6 +1351,12 @@
                     adminPanel.style.display = 'none';
                     adminControls.forEach(el => el.style.display = 'none');
                 }
+                // Se for admin, mostra o form do feed. Se não, esconde.
+                if (isAdmin) {
+                    document.getElementById('admin-feed-form-container').classList.remove('hidden');
+                } else {
+                    document.getElementById('admin-feed-form-container').classList.add('hidden');
+                }
                 if(document.getElementById('login-view').style.display === 'flex') showView('blog-view');
 
             } else {
@@ -1417,18 +1464,26 @@
                     `;
                     sectionsListAdmin.appendChild(div);
 
-                    // === RENDERIZAR CARD DA SEÇÃO NO HUB ===
-                    const card = document.createElement('div');
-                    card.className = "project-card bg-obsidian border border-white/5 p-8 relative group cursor-pointer flex flex-col items-center justify-center text-center min-h-[250px] shadow-[0_0_20px_rgba(0,0,0,0.5)]";
-                    card.onclick = () => openPath(sec.id, sec.name);
+                          // === RENDERIZAR CARD DA SEÇÃO NO HUB (VERSÃO MODERNA) ===
+                          const card = document.createElement('div');
+                          card.className = "group relative bg-[#0a0a0b]/80 backdrop-blur-md border border-primary-900/30 p-10 flex flex-col items-center justify-center text-center min-h-[280px] cursor-pointer overflow-hidden transition-all duration-500 hover:border-primary-400 hover:shadow-[0_0_40px_rgba(212,175,55,0.15)] rounded-sm";
+                          card.onclick = () => openPath(sec.id, sec.name);
 
-                    card.innerHTML = `
-                         <div class="absolute inset-0 bg-gradient-to-t from-primary-900/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
-                         <i class="fas fa-dungeon text-5xl text-gray-700 mb-6 group-hover:text-primary-400 transition transform group-hover:scale-110"></i>
-                         <h4 class="text-xl font-display text-white mb-2 group-hover:text-primary-400 transition">${sec.name}</h4>
-                         <p class="text-[10px] text-gray-500 uppercase tracking-widest">Clique para iniciar a trilha</p>
-                    `;
-                    sectionsCardsContainer.appendChild(card);
+                          card.innerHTML = `
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary-900/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+      <div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-500/50 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+     
+      <i class="fas fa-dungeon text-5xl text-gray-800 mb-6 group-hover:text-primary-400 transition-all duration-500 transform group-hover:scale-110 relative z-10 drop-shadow-md"></i>
+     
+      <h4 class="text-2xl font-display text-gray-200 mb-4 group-hover:text-white transition-colors duration-500 relative z-10 tracking-wide">${sec.name}</h4>
+     
+      <div class="h-[1px] w-8 bg-primary-900/50 mb-5 group-hover:w-16 group-hover:bg-primary-400 transition-all duration-500 relative z-10"></div>
+     
+      <p class="text-[9px] text-gray-500 uppercase tracking-[0.2em] relative z-10 group-hover:text-primary-400 transition-colors">
+          Adentrar o Mistério <i class="fas fa-arrow-right ml-1 opacity-0 group-hover:opacity-100 transition-all transform group-hover:translate-x-2"></i>
+      </p>
+     `;
+                          sectionsCardsContainer.appendChild(card);
                 });
             });
         }
@@ -2205,26 +2260,6 @@
 
 
         // === AI TEXT & AUDIO ===
-        const geminiApiKeyInput = document.getElementById('gemini-api-key');
-        if(localStorage.getItem('geminiKey')) geminiApiKeyInput.value = localStorage.getItem('geminiKey');
-        geminiApiKeyInput.addEventListener('input', () => localStorage.setItem('geminiKey', geminiApiKeyInput.value));
-
-        async function runAI(el) {
-            const key = HARDCODED_API_KEY || geminiApiKeyInput.value;
-            if(!key) return alert("Insira a API Key");
-            const txt = el.value; if(!txt) return;
-            
-            try {
-                const req = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${key}`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: txt }] }], systemInstruction: { parts: [{ text: "Formate este texto sobre bruxaria hekatina. Destaque termos importantes com ** e nomes de divindades com ##. Seja poético." }] } })
-                });
-                const res = await req.json();
-                el.value = res.candidates[0].content.parts[0].text;
-            } catch(e) { console.error(e); }
-        }
-        document.getElementById('format-create-btn').addEventListener('click', () => runAI(document.getElementById('post-content')));
-        document.getElementById('format-edit-btn').addEventListener('click', () => runAI(document.getElementById('edit-post-content')));
 
         const audioPlayer = document.getElementById('gemini-audio-player');
         const btnSpeak = document.getElementById('btn-speak');
@@ -2298,6 +2333,286 @@
                 renderProfessionalPath(activeSectionId);
             }
         });
+
+        // ==========================================
+        // 🔮 SISTEMA DO MURAL / FEED DO COVEN 🔮
+        // ==========================================
+        const feedForm = document.getElementById('create-feed-post-form');
+        const feedContainer = document.getElementById('feed-posts-container');
+        let allFeedPosts = [];
+
+        // 1. Criar Postagem (Apenas Sacerdote)
+        if(feedForm) {
+            feedForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if(!currentUser || currentUser.uid !== ADMIN_UID) return;
+
+                const content = document.getElementById('feed-post-content').value;
+                const image = document.getElementById('feed-post-image').value;
+                const status = document.getElementById('feed-post-status');
+                
+                status.textContent = "Gravando comunicado nas estrelas...";
+                status.classList.remove('hidden');
+
+                try {
+                    await addDoc(collection(db, "feed_posts"), {
+                        content: content,
+                        image: image || null,
+                        authorId: currentUser.uid,
+                        createdAt: new Date(),
+                        likes: [] // Array de UIDs de quem curtiu
+                    });
+                    feedForm.reset();
+                    status.textContent = "Publicado com sucesso!";
+                    setTimeout(() => status.classList.add('hidden'), 3000);
+                } catch(err) {
+                    console.error(err);
+                    status.textContent = "Erro ao publicar.";
+                }
+            });
+        }
+
+        // 2. Buscar Postagens em Tempo Real
+        function fetchFeedPosts() {
+            const q = query(collection(db, "feed_posts"), orderBy("createdAt", "desc"));
+            onSnapshot(q, (snap) => {
+                feedContainer.innerHTML = '';
+                allFeedPosts = [];
+
+                if(snap.empty) {
+                    feedContainer.innerHTML = '<p class="text-center text-gray-600 text-sm italic">O mural aguarda os sussurros do Sacerdote.</p>';
+                    return;
+                }
+
+                snap.forEach(docSnap => {
+                    const post = { id: docSnap.id, ...docSnap.data() };
+                    allFeedPosts.push(post);
+                    renderFeedPost(post);
+                });
+            });
+        }
+
+        // 3. Renderizar cada Post no HTML
+        function renderFeedPost(post) {
+            const isLiked = currentUser && post.likes && post.likes.includes(currentUser.uid);
+            const likeCount = post.likes ? post.likes.length : 0;
+            const dateStr = post.createdAt?.toDate ? post.createdAt.toDate().toLocaleDateString('pt-BR', {day: '2-digit', month: 'long', hour:'2-digit', minute:'2-digit'}) : '';
+
+            const div = document.createElement('div');
+            div.className = "bg-obsidian border border-white/5 p-6 shadow-lg relative group";
+            
+            // Deleta o post se for admin (sempre visível)
+            const deleteBtn = (currentUser && currentUser.uid === ADMIN_UID) 
+                ? `<button onclick="deleteFeedPost('${post.id}')" class="absolute top-3 right-3 bg-red-900/30 border border-red-900/50 text-red-500 hover:bg-red-900 hover:text-red-300 transition-all px-3 py-2 text-xs font-bold tracking-widest flex items-center gap-1 rounded-sm shadow-lg"><i class="fas fa-trash"></i> Apagar</button>` : '';
+
+            const imgHtml = post.image ? `<img src="${post.image}" class="w-full h-auto max-h-96 object-cover border border-primary-900/30 mb-4 grayscale-[20%] hover:grayscale-0 transition duration-500">` : '';
+
+            div.innerHTML = `
+                ${deleteBtn}
+                <div class="flex items-center gap-3 mb-4 border-b border-white/5 pb-4">
+                    <div class="w-10 h-10 rounded-full bg-primary-900/20 border border-primary-500 flex items-center justify-center text-primary-400">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-white font-display text-sm tracking-widest">Sacerdote Leonardo</h5>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-widest">${dateStr}</p>
+                    </div>
+                </div>
+                
+                ${imgHtml}
+                
+                <div class="text-gray-300 font-body text-sm leading-relaxed mb-6 whitespace-pre-wrap">${post.content}</div>
+                
+                <div class="flex items-center gap-6 border-t border-white/5 pt-4">
+                    <button onclick="toggleFeedLike('${post.id}')" class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest transition-colors ${isLiked ? 'text-primary-500' : 'text-gray-500 hover:text-primary-400'}">
+                        <i class="${isLiked ? 'fas' : 'far'} fa-fire"></i> ${likeCount} Chamas
+                    </button>
+                    <button onclick="toggleCommentsUI('${post.id}')" class="flex items-center gap-2 text-[10px] text-gray-500 font-bold uppercase tracking-widest hover:text-white transition-colors">
+                        <i class="far fa-comment"></i> Comentar
+                    </button>
+                </div>
+
+                <div id="comments-ui-${post.id}" class="hidden mt-6 bg-black/40 p-4 border border-white/5">
+                    <div id="feed-comments-list-${post.id}" class="space-y-4 mb-4 max-h-48 overflow-y-auto custom-scrollbar pr-2"></div>
+                    
+                    ${currentUser ? `
+                    <div class="flex gap-2">
+                        <input type="text" id="feed-comment-input-${post.id}" class="w-full bg-[#050505] border border-primary-900/30 p-3 text-xs text-white focus:border-primary-500 transition-colors" placeholder="Deixe sua resposta...">
+                        <button onclick="addFeedComment('${post.id}')" class="bg-primary-900 text-white px-4 hover:bg-primary-500 hover:text-black transition"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                    ` : '<p class="text-[9px] text-gray-600 uppercase text-center italic">Acesse o santuário para comentar.</p>'}
+                </div>
+            `;
+            
+            feedContainer.appendChild(div);
+            loadFeedComments(post.id); // Já carrega os comentários em background
+        }
+
+        // 4. Interações: Curtir/Chamas (Precisa estar logado)
+        window.toggleFeedLike = async function(postId) {
+            if(!currentUser) { alert("Você precisa estar conectado para acender essa chama!"); return; }
+            
+            const postRef = doc(db, "feed_posts", postId);
+            const post = allFeedPosts.find(p => p.id === postId);
+            
+            if(post.likes && post.likes.includes(currentUser.uid)) {
+                await updateDoc(postRef, { likes: post.likes.filter(id => id !== currentUser.uid) });
+            } else {
+                const newLikes = post.likes ? [...post.likes, currentUser.uid] : [currentUser.uid];
+                await updateDoc(postRef, { likes: newLikes });
+            }
+        }
+
+        // 5. Exibir/Ocultar UI de Comentários
+        window.toggleCommentsUI = function(postId) {
+            const ui = document.getElementById(`comments-ui-${postId}`);
+            if(!ui) return;
+            ui.classList.toggle('hidden');
+        }
+
+        // 6. Enviar Comentário
+        window.addFeedComment = async function(postId) {
+            if(!currentUser) return;
+            const input = document.getElementById(`feed-comment-input-${postId}`);
+            if(!input) return;
+            const text = input.value.trim();
+            if(!text) return;
+
+            input.disabled = true;
+            try {
+                await addDoc(collection(db, "feed_comments"), {
+                    feedPostId: postId,
+                    userId: currentUser.uid,
+                    userName: currentProfile.displayName || currentUser.email.split('@')[0],
+                    content: text,
+                    createdAt: new Date()
+                });
+                input.value = '';
+            } catch(err) { console.error(err); }
+            input.disabled = false;
+        }
+
+        // 7. Carregar Comentários
+        function loadFeedComments(postId) {
+            const q = query(collection(db, "feed_comments"), where("feedPostId", "==", postId));
+            onSnapshot(q, (snap) => {
+                const listDiv = document.getElementById(`feed-comments-list-${postId}`);
+                if(!listDiv) return;
+                
+                listDiv.innerHTML = '';
+                let comments = [];
+                snap.forEach(d => comments.push({id: d.id, ...d.data()}));
+                comments.sort((a,b) => (a.createdAt?.toDate() || 0) - (b.createdAt?.toDate() || 0));
+
+                comments.forEach(c => {
+                    const isOwner = currentUser && (currentUser.uid === c.userId || currentUser.uid === ADMIN_UID);
+                    listDiv.innerHTML += `
+                        <div class="relative group">
+                            <p class="text-[10px] text-primary-500 font-bold uppercase mb-1">${c.userName} <span class="text-gray-600 lowercase font-normal">${c.createdAt?.toDate().toLocaleDateString()}</span></p>
+                            <p class="text-gray-300 text-xs font-body leading-relaxed">${c.content}</p>
+                            ${isOwner ? `<button onclick="deleteFeedComment('${c.id}')" class="absolute top-0 right-0 text-red-900 hover:text-red-500 opacity-0 group-hover:opacity-100 transition"><i class="fas fa-times text-[10px]"></i></button>` : ''}
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // 8. Deletar (Só para o Sacerdote)
+        window.deleteFeedPost = async function(postId) {
+            if(confirm("Apagar este aviso dos registros?")) {
+                await deleteDoc(doc(db, "feed_posts", postId));
+            }
+        }
+        window.deleteFeedComment = async function(commentId) {
+            if(confirm("Apagar este eco?")) {
+                await deleteDoc(doc(db, "feed_comments", commentId));
+            }
+        }
+
+        // Inicializar a busca dos feeds assim que abrir a página
+        fetchFeedPosts();
+
+        // ==========================================
+        // ☁️ UPLOAD DE IMAGENS AUTOMÁTICO (IMGBB) ☁️
+        // ==========================================
+        const IMGBB_API_KEY = "c3d86c0c95606522cb1f5faa1be29231";
+
+        async function uploadImageToImgBB(file, urlInputId, buttonEl) {
+            if (!file) return;
+            
+            // Guarda o texto original do botão para voltar depois
+            const originalHTML = buttonEl.innerHTML;
+            
+            // Estado de carregamento
+            buttonEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subindo...';
+            buttonEl.disabled = true;
+            buttonEl.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            try {
+                const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: "POST",
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Sucesso! Preenche o campo de texto com o link gerado
+                    document.getElementById(urlInputId).value = data.data.url;
+                    buttonEl.innerHTML = '<i class="fas fa-check"></i> Concluído!';
+                    buttonEl.classList.remove('bg-primary-900', 'text-white');
+                    buttonEl.classList.add('bg-green-600', 'text-white', 'border-green-500');
+                } else {
+                    throw new Error("Falha no retorno da API");
+                }
+            } catch (error) {
+                console.error("Erro na magia de upload:", error);
+                alert("Sacerdote, as sombras bloquearam o upload. Tente novamente.");
+                buttonEl.innerHTML = '<i class="fas fa-times"></i> Erro';
+            } finally {
+                // Restaura o botão depois de 2.5 segundos
+                setTimeout(() => { 
+                    buttonEl.innerHTML = originalHTML; 
+                    buttonEl.disabled = false; 
+                    buttonEl.className = buttonEl.className.replace(/bg-green-600|border-green-500|opacity-50|cursor-not-allowed/g, '');
+                }, 2500);
+            }
+        }
+
+        // Conectando os inputs de arquivo aos campos de texto
+        const createPostFile = document.getElementById('post-cover-file');
+        if(createPostFile) {
+            createPostFile.addEventListener('change', function() {
+                uploadImageToImgBB(this.files[0], 'post-cover-image', this.nextElementSibling);
+            });
+        }
+
+        const editPostFile = document.getElementById('edit-post-file');
+        if(editPostFile) {
+            editPostFile.addEventListener('change', function() {
+                uploadImageToImgBB(this.files[0], 'edit-post-cover-image', this.nextElementSibling);
+            });
+        }
+
+        const feedPostFile = document.getElementById('feed-post-file');
+        if(feedPostFile) {
+            feedPostFile.addEventListener('change', function() {
+                uploadImageToImgBB(this.files[0], 'feed-post-image', this.nextElementSibling);
+            });
+        }
+
+        // Dica extra: Limpar a imagem do Feed quando a postagem for feita com sucesso
+        const formFeedCriar = document.getElementById('create-feed-post-form');
+        if(formFeedCriar) {
+            formFeedCriar.addEventListener('submit', () => {
+                setTimeout(() => {
+                    document.getElementById('feed-post-image').value = '';
+                }, 1000); // Limpa o link da imagem quando limpar o form
+            });
+        }
 
     </script>
 </body>
