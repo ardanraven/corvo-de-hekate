@@ -571,23 +571,21 @@
                     </div>
                 </div>
 
-                <nav class="hidden md:flex items-center space-x-8">
+                <nav class="hidden md:flex items-center space-x-6">
                     <button data-view="home-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Santuário</button>
+                    
+                    <button data-view="dashboard-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-primary-500 hover:text-white uppercase transition drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]"><i class="fas fa-compass mr-1"></i> Visão Geral</button>
+                    
                     <button data-view="blog-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Grimório</button>
-
-                    <button data-view="dashboard-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]"><i class="fas fa-compass mr-1"></i> Visão Geral</button>
-
-                    <button data-view="feed-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-primary-500 hover:text-white uppercase transition drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]"><i class="fas fa-scroll mr-1"></i> Mural</button>
-
-                    <button data-view="altar-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-primary-400 hover:text-white uppercase transition drop-shadow-[0_0_5px_rgba(212,175,55,0.5)]"><i class="fas fa-fire mr-1"></i> Altar</button>
-
+                    <button data-view="feed-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition"><i class="fas fa-scroll mr-1"></i> Mural</button>
+                    <button data-view="altar-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-primary-400 hover:text-white uppercase transition"><i class="fas fa-fire mr-1"></i> Altar</button>
+                    
+                    <button data-view="profile-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition"><i class="fas fa-user-circle mr-1"></i> Meu Perfil</button>
+                    
                     <button data-view="sobre-view" class="internal-link text-xs font-display font-bold tracking-[0.2em] text-gray-400 hover:text-white uppercase transition">Sacerdote</button>
+                    
                     <div class="w-[1px] h-4 bg-white/10"></div>
                     <a href="https://ardanraven.github.io/Calendario/" target="_blank" class="text-gray-400 hover:text-primary-400" title="Calendário"><i class="fas fa-moon"></i></a>
-                    <a href="https://caminhodatocha.site" target="_blank" class="border border-primary-900/50 text-primary-400 px-5 py-2 text-[10px] uppercase tracking-widest hover:bg-primary-900 hover:text-white transition font-bold relative overflow-hidden group">
-                        <span class="relative z-10">Fazer Parte do Coven</span>
-                        <div class="absolute inset-0 bg-gradient-to-r from-accent/20 to-primary-900/20 opacity-0 group-hover:opacity-100 transition"></div>
-                    </a>
                 </nav>
 
                 <div class="flex items-center gap-4">
@@ -608,13 +606,12 @@
         <div id="mobile-menu" class="hidden fixed inset-0 z-30 bg-black pt-24 px-8 md:hidden">
             <div class="flex flex-col gap-6 text-center">
                 <button data-view="home-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Santuário</button>
-                <button data-view="blog-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Grimório</button>
                 <button data-view="dashboard-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10"><i class="fas fa-compass mr-2 text-primary-500"></i>Visão Geral</button>
-                <button data-view="feed-view" class="internal-link text-2xl font-display text-primary-500 py-2 border-b border-white/10"><i class="fas fa-scroll mr-2"></i>Mural</button>
+                <button data-view="blog-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Grimório</button>
+                <button data-view="feed-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10"><i class="fas fa-scroll mr-2"></i>Mural</button>
                 <button data-view="altar-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10"><i class="fas fa-fire mr-2 text-primary-500"></i>Altar</button>
+                <button data-view="profile-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10"><i class="fas fa-user-circle mr-2"></i>Meu Perfil</button>
                 <button data-view="sobre-view" class="internal-link text-2xl font-display text-white py-2 border-b border-white/10">Sacerdote</button>
-                <button data-view="profile-view" class="internal-link text-primary-400 text-xl font-display py-2"><i class="fas fa-user mr-2"></i>Meu Perfil</button>
-                <a href="https://caminhodatocha.site" class="text-primary-400 text-xl font-display py-2"><i class="fas fa-gift mr-2"></i>Coven</a>
                 <button onclick="document.getElementById('mobile-menu').classList.add('hidden')" class="text-gray-500 mt-8 uppercase text-xs">Fechar</button>
             </div>
         </div>
@@ -937,6 +934,29 @@
                              <p id="profile-status" class="text-center text-xs mt-4 h-4"></p>
                          </div>
                      </form>
+
+                     <div class="mt-12 border-t border-white/5 pt-12">
+                         <h3 class="text-2xl font-display text-white mb-6 flex items-center gap-3"><i class="fas fa-medal text-primary-500"></i> Selos de Poder</h3>
+                         <div id="profile-badges-container" class="flex flex-wrap justify-center md:justify-start gap-4">
+                             <div class="text-center w-full py-4"><i class="fas fa-circle-notch fa-spin text-primary-900"></i></div>
+                         </div>
+                     </div>
+
+                     <div class="mt-12 border-t border-white/5 pt-12">
+                         <h3 class="text-2xl font-display text-white mb-2 flex items-center gap-3"><i class="fas fa-book-journal-whills text-primary-500"></i> Meu Grimório Secreto</h3>
+                         <p class="text-gray-500 text-[10px] uppercase tracking-widest mb-8">Anotações, sonhos e feitiços. Apenas você tem a chave deste espaço.</p>
+                         
+                         <form id="diary-form" class="mb-8">
+                             <textarea id="diary-input" class="w-full bg-[#050505] border border-primary-900/30 p-5 text-sm text-gray-300 focus:outline-none focus:border-primary-500 transition-colors resize-none placeholder-gray-700 shadow-inner" rows="4" placeholder="O que as sombras te sussurraram hoje?" required></textarea>
+                             <div class="flex justify-end mt-3">
+                                 <button type="submit" class="bg-primary-900/40 border border-primary-500/50 text-primary-400 px-8 py-3 font-bold uppercase text-[10px] tracking-widest hover:bg-primary-500 hover:text-black transition shadow-[0_0_15px_rgba(212,175,55,0.1)]"><i class="fas fa-lock mr-2"></i> Guardar Segredo</button>
+                             </div>
+                             <p id="diary-status" class="text-xs text-primary-500 hidden mt-2 text-right"></p>
+                         </form>
+
+                         <div id="diary-entries-container" class="space-y-4 max-h-[400px] overflow-y-auto custom-scrollbar pr-3">
+                         </div>
+                     </div>
                  </div>
             </div>
 
@@ -1338,6 +1358,12 @@
 
         // === NAVEGAÇÃO ===
         function showView(viewId) {
+            // Se tentar entrar no perfil ou dashboard sem login, manda pro login
+            if ((viewId === 'profile-view' || viewId === 'dashboard-view') && !currentUser) {
+                document.getElementById('login-view').style.display = 'flex';
+                return;
+            }
+            
             allViews.forEach(view => {
                 if (view.classList.contains('fixed')) {
                     if(view.id === viewId) view.style.display = 'flex';
@@ -1443,6 +1469,10 @@
                         if(rb) rb.checked = true;
                     }
                 }
+
+                // Atualiza Selos e Diário Pessoal
+                renderBadges();
+                fetchPersonalNotes();
 
                 currentUser = user;
                 userInfo.style.display = 'flex';
@@ -2697,6 +2727,127 @@
                 `).join('');
             }
         }
+
+        // ==========================================
+        // 🔮 SISTEMA DE SELOS E GRIMÓRIO PESSOAL 🔮
+        // ==========================================
+
+        // --- 1. Lógica dos Selos (Badges) ---
+        function renderBadges() {
+            const container = document.getElementById('profile-badges-container');
+            if(!container) return;
+            
+            // Usamos o array completedPosts que você já tem funcionando perfeitamente!
+            const count = completedPosts ? completedPosts.length : 0;
+            let badgesHtml = '';
+
+            // Regras dos Selos (Você pode mudar a quantidade de aulas pra liberar!)
+            if(count >= 1) {
+                badgesHtml += `
+                    <div class="border border-primary-900/50 bg-black/40 p-4 rounded-sm flex flex-col items-center gap-3 w-28 text-center group hover:border-primary-400 transition cursor-default">
+                        <i class="fas fa-key text-3xl text-gray-400 group-hover:text-primary-400 transition drop-shadow-[0_0_8px_rgba(255,255,255,0.2)]"></i>
+                        <span class="text-[9px] uppercase tracking-widest text-primary-500 font-bold group-hover:text-white transition">Iniciada</span>
+                    </div>`;
+            }
+            if(count >= 3) {
+                badgesHtml += `
+                    <div class="border border-primary-900/50 bg-black/40 p-4 rounded-sm flex flex-col items-center gap-3 w-28 text-center group hover:border-orange-500 transition cursor-default">
+                        <i class="fas fa-fire text-3xl text-orange-600 group-hover:text-orange-400 transition drop-shadow-[0_0_8px_rgba(255,69,0,0.4)]"></i>
+                        <span class="text-[9px] uppercase tracking-widest text-orange-500 font-bold group-hover:text-white transition">Portadora da Chama</span>
+                    </div>`;
+            }
+            if(count >= 7) {
+                badgesHtml += `
+                    <div class="border border-primary-900/50 bg-black/40 p-4 rounded-sm flex flex-col items-center gap-3 w-32 text-center group hover:border-indigo-400 transition cursor-default">
+                        <i class="fas fa-moon text-3xl text-indigo-500 group-hover:text-indigo-300 transition drop-shadow-[0_0_8px_rgba(79,70,229,0.4)]"></i>
+                        <span class="text-[9px] uppercase tracking-widest text-indigo-400 font-bold group-hover:text-white transition">Sacerdotisa da Noite</span>
+                    </div>`;
+            }
+
+            if(badgesHtml === '') {
+                badgesHtml = '<p class="text-gray-600 text-xs italic">Complete os pergaminhos da trilha para despertar seus selos de poder.</p>';
+            }
+            container.innerHTML = badgesHtml;
+        }
+
+        // --- 2. Lógica do Grimório Pessoal (Diário) ---
+        const diaryForm = document.getElementById('diary-form');
+        const diaryContainer = document.getElementById('diary-entries-container');
+        let diaryUnsubscribe = null;
+
+        if(diaryForm) {
+            diaryForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if(!currentUser) return;
+                
+                const input = document.getElementById('diary-input');
+                const status = document.getElementById('diary-status');
+                const content = input.value.trim();
+                if(!content) return;
+
+                status.textContent = "Trancando a sete chaves...";
+                status.classList.remove('hidden');
+
+                try {
+                    await addDoc(collection(db, "personal_notes"), {
+                        userId: currentUser.uid,
+                        content: content,
+                        createdAt: new Date()
+                    });
+                    input.value = '';
+                    status.textContent = "Segredo guardado com sucesso!";
+                    setTimeout(() => status.classList.add('hidden'), 2000);
+                } catch(err) {
+                    console.error(err);
+                    status.textContent = "As forças hesitaram. Tente novamente.";
+                }
+            });
+        }
+
+        function fetchPersonalNotes() {
+            if(!currentUser) return;
+            if(diaryUnsubscribe) diaryUnsubscribe(); // Limpa se já existir uma escuta
+
+            // Busca apenas as anotações do usuário logado
+            const q = query(collection(db, "personal_notes"), where("userId", "==", currentUser.uid));
+            
+            diaryUnsubscribe = onSnapshot(q, (snap) => {
+                if(!diaryContainer) return;
+                diaryContainer.innerHTML = '';
+
+                if(snap.empty) {
+                    diaryContainer.innerHTML = '<p class="text-gray-600 text-xs italic text-center py-10">As páginas do seu grimório estão em branco no momento.</p>';
+                    return;
+                }
+
+                // Organizando por data (mais recente primeiro) no client-side pra evitar erros de index do Firebase
+                let notes = [];
+                snap.forEach(docSnap => notes.push({ id: docSnap.id, ...docSnap.data() }));
+                notes.sort((a, b) => (b.createdAt?.toDate() || 0) - (a.createdAt?.toDate() || 0));
+
+                notes.forEach(note => {
+                    const dateStr = note.createdAt?.toDate ? note.createdAt.toDate().toLocaleDateString('pt-BR', {day: '2-digit', month: 'long', hour:'2-digit', minute:'2-digit'}) : '';
+                    
+                    const div = document.createElement('div');
+                    div.className = "bg-black/40 border border-white/5 p-6 rounded-sm relative group hover:border-primary-900/50 transition";
+                    div.innerHTML = `
+                        <div class="flex justify-between items-center mb-4 border-b border-white/5 pb-2">
+                            <span class="text-primary-500 text-[9px] uppercase tracking-widest font-bold"><i class="fas fa-feather-alt mr-1"></i> ${dateStr}</span>
+                            <button onclick="deletePersonalNote('${note.id}')" class="text-red-900 hover:text-red-500 opacity-0 group-hover:opacity-100 transition text-[10px]" title="Queimar página"><i class="fas fa-fire"></i></button>
+                        </div>
+                        <p class="text-gray-300 text-sm font-body leading-relaxed whitespace-pre-wrap">${note.content}</p>
+                    `;
+                    diaryContainer.appendChild(div);
+                });
+            });
+        }
+
+        // Função global para poder apagar a nota
+        window.deletePersonalNote = async function(noteId) {
+            if(confirm("Queimar esta página do grimório para sempre? Essa ação não pode ser desfeita.")) {
+                await deleteDoc(doc(db, "personal_notes", noteId));
+            }
+        };
 
         // ==========================================
         // 🕯️ SANTUÁRIO DIGITAL (ALTAR) 🕯️
